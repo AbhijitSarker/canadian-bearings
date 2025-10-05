@@ -1,12 +1,16 @@
 import header_headphone_image from "./header_headphone_image.png";
 import header_playstation_image from "./header_playstation_image.png";
 import header_macbook_image from "./header_macbook_image.png";
-
+import erasebg_transformed from "./erasebg_transformed.png"
+import hero_bg_mask_group from "./hero_bg_mask_group.png"
 export const assets = {
   
   header_headphone_image,
   header_playstation_image,
   header_macbook_image,
+  erasebg_transformed,
+  hero_bg_mask_group
+
 };
 
 export const BagIcon = () => {

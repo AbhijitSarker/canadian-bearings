@@ -3,34 +3,71 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { assets } from "@/assets/assets";
 import { Button } from "./button";
+import ArrowRightLongLineIcon from '@/assets/icons/arrowRightLongLine'
 
 const HeaderSlider = () => {
   const sliderData = [
     {
       id: 1,
-      title: "Eliminate keyed connection failures with climax!",
+      title: "Eliminate Keyed Connection Failures with Climax",
       subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
-      buttonText1: "Buy Now",
-      imgSrc: assets.header_headphone_image,
+      buttonText1: "Shop Now",
+      imgSrc: assets.erasebg_transformed,
+      heroBg: assets.hero_bg_mask_group
     },
     {
       id: 2,
-      title: "Eliminate keyed connection failures with climax!",
-      subtitle: "Eliminate keyed connection failures with climax",
-      buttonText1: "Shop Now",
-      imgSrc: assets.header_playstation_image,
-    },
-    {
-      id: 3,
-      title: "PEliminate keyed connection failures with climax!",
-      subtitle: "Eliminate keyed connection failures with climax",
-      buttonText1: "Order Now",
-      imgSrc: assets.header_macbook_image,
-    },
+      children: [
+        {
+          id: 1,
+          title: "Eliminate Keyed Connection Failures with Climax",
+          subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+          buttonText1: "Shop Now",
+          backgroundColor: "#FBF7EE",
+          buttonType: "plain"
+        },
+        {
+          id: 2,
+          title: "Eliminate Keyed Connection Failures with Climax",
+          subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+          buttonText1: "Shop Now",
+          backgroundColor: "#FBF7EE",
+          buttonType: "cover"
+        },
+        {
+          id: 3,
+          title: "Eliminate Keyed Connection Failures with Climax",
+          subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+          buttonText1: "Shop Now",
+          backgroundColor: "#FBF7EE",
+          buttonType: "cover"
+        },
+        {
+          id: 4,
+          title: "Eliminate Keyed Connection Failures with Climax",
+          subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+          buttonText1: "Shop Now",
+          backgroundColor: "#FBF7EE",
+          buttonType: "cover"
+        },
+        {
+          id: 5,
+          title: "Eliminate Keyed Connection Failures with Climax",
+          subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+          buttonText1: "Shop Now",
+          backgroundColor: "#FBF7EE",
+          buttonType: "cover"
+        },
+      ]
+    }
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [mounted, setMounted] = useState(false);
+
+  
+
+  
 
   useEffect(() => {
     setMounted(true);
@@ -51,9 +88,9 @@ const HeaderSlider = () => {
   if (!mounted) return null;
 
   return (
-    <div className="overflow-hidden relative w-full">
+    <div className="overflow-hidden max-w-[1280px] w-full mx-auto">
       <div
-        className="flex transition-transform duration-700 ease-in-out"
+        className="flex relative transition-transform duration-700 ease-in-out"
         style={{
           transform: `translateX(-${currentSlide * 100}%)`,
         }}
@@ -61,42 +98,79 @@ const HeaderSlider = () => {
         {sliderData.map((slide, index) => (
           <div
             key={slide.id}
-            className="border flex flex-col-reverse md:flex-row items-center justify-between bg-[#FBFEF9] py-10 md:px-14 px-5 mt-6 rounded-xl min-w-full"
+            className="relative flex flex-col-reverse md:flex-row justify-between py-[45px] md:px-[40px] mt-6 rounded-[20px] min-w-full bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: slide.heroBg ? `url(${slide.heroBg.src})` : 'none',
+            }}
           >
-            <div className="mt-10 md:mt-0 border flex-1 flex flex-col">
-              <h1 className="max-w-2xl text-green-900 md:text-[78px] md:leading-[100%] text-2xl font-semibold">
-                {slide.title}
-              </h1>
-              <p>
-                {slide.subtitle}
-              </p>
-              <div className="flex items-center mt-4 md:mt-6 ">
-                {/* <button className="md:px-10 px-7 md:py-2.5 py-2 bg-orange-600 rounded-full text-white font-medium">
-                  {slide.buttonText1}
-                </button> */}
-                <Button>
-                  {slide.buttonText1}
-                </Button>
+            {slide.children ? (
+              <div className="max-h-[524px] h-full overflow-hidden">
+                <div className={`grid gap-6 w-full ${
+                    slide.children.length <= 2 ? "grid-cols-2" : "grid-cols-3"
+                  }`}>
+                  {slide.children.map((child, childIndex) => (
+                    <div
+                      key={child.id}
+                      className="relative flex flex-col items-start justify-center p-10 rounded-[20px]"
+                      style={{ backgroundColor: child.backgroundColor }}
+                    >
+                      <h2 className="text-green-900 text-[32px] font-semibold mb-3">
+                        {child.title}
+                      </h2>
+                      <p className="text-neutral-600 text-[18px] mb-4">
+                        {child.subtitle}
+                      </p>
+                      <Button
+                        variant={child.buttonType === "cover" ? "default" : "ghost"}
+                      >
+                        {child.buttonText1}
+                        <ArrowRightLongLineIcon />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <Image
-                className="h-[408px] w-[408px]"
-                src={slide.imgSrc || undefined}
-                alt={`Slide ${index + 1}`}
-              />
-            </div>
+              
+            ) : (
+              <>
+                <div className="absolute inset-0 bg-[#F6FEF3] opacity-40 rounded-[20px] z-0"></div>
+
+                <div className="relative z-10 mt-10 md:mt-0 flex flex-col">
+                  <div className="text-green-900 md:text-[78px] md:leading-[100%] max-w-[683px] w-full font-[500] mb-[12px]">
+                    {slide.title}
+                  </div>
+                  <div className="text-neutral-600 md:text-[18px] md:leading-[25px] max-w-[683px] w-full font-[300]">
+                    {slide.subtitle}
+                  </div>
+                  <div className="flex items-center mt-4 md:mt-6">
+                    <Button>
+                      {slide.buttonText1}
+                      <ArrowRightLongLineIcon />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="relative z-10 flex items-center justify-center">
+                  <Image
+                    className="h-[408px] w-[408px]"
+                    src={slide.imgSrc || undefined}
+                    alt={`Slide ${index + 1}`}
+                  />
+                </div>
+              </>
+            )}
           </div>
         ))}
       </div>
 
-      <div className="flex items-center justify-center gap-2 mt-8">
+      {/* Slider dots */}
+      <div className="justify-center flex items-center gap-3 z-20 mt-[32px]">
         {sliderData.map((_, index) => (
           <div
             key={index}
             onClick={() => handleSlideChange(index)}
-            className={`h-2 w-2 rounded-full cursor-pointer ${
-              currentSlide === index ? "bg-orange-600" : "bg-gray-500/30"
+            className={`h-3 w-3 rounded-full cursor-pointer transition-colors duration-300 ${
+              currentSlide === index ? "bg-green-500" : "bg-gray-400/50"
             }`}
           ></div>
         ))}

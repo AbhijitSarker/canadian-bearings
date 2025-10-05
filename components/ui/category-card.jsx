@@ -3,15 +3,15 @@ import Image from "next/image";
 
 const CategoryCard = ({ icon, name }) => {
   return (
-    <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow p-4 hover:shadow-md transition cursor-pointer border border-gray-100 min-w-[120px]">
-      <div className="w-16 h-16 flex items-center justify-center mb-2">
+    <div className="flex flex-col items-center justify-center bg-white rounded-[10px] pt-4 px-3 pb-2 cursor-pointer border border-neutral-200 w-[170px] h-[170px]">
+      <div className="w-[76px] h-[76px] flex items-center justify-center rounded-[40px] bg-neutral-50 overflow-hidden">
         {icon ? (
-          <Image src={icon} alt={name} width={64} height={64} className="object-contain w-full h-full" />
+          <Image src={icon} alt={name} width={62} height={62} className="object-contain w-full h-full" />
         ) : (
-          <div className="w-full h-full bg-gray-200 rounded-full" />
+          <div className="w-full h-full rounded-[40px] bg-neutral-50" />
         )}
       </div>
-      <span className="text-sm font-medium text-gray-700 text-center">{name}</span>
+      <span className="text-[16px] leading-[16px] font-[300] text-gray-800 text-center mt-[15px]">{name}</span>
     </div>
   );
 };

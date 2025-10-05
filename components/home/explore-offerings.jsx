@@ -1,45 +1,65 @@
 "use client"
 
-import { ArrowRight } from "lucide-react"
+import Image from "next/image"
+import offerings from '@/assets/offerings.png'
+import ArrowRightLongLineIcon from "@/assets/icons/arrowRightLongLine"
 
 export default function ExploreOfferings() {
   return (
-    <section className="py-16 bg-slate-700 text-white">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-12">Explore Our Offerings</h2>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="bg-slate-600 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Explore More Industries</h3>
-            <p className="text-slate-300 mb-6">
-              We understand the importance of reliable industrial solutions across various sectors. From manufacturing
-              to energy, we provide specialized components.
-            </p>
-            <button className="text-green-400 hover:text-green-300 flex items-center space-x-2">
-              <span>Explore Industries</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+    <section className="bg-[#384E59] md:p-[80px] p-[20px]">
+      <div className="lg:flex items-start justify-between gap-x-5 ">
+        <div className="max-w-[620px] w-full">
+          <div className="text-[40px] leading-[48px] font-[500] text-white mb-[20px]">
+            Explore Our Offerings
+          </div>
+          <div className="text-[16px] leading-[153%] font-[300] text-white">
+            From everyday tools to specialized equipment, our offerings are built to support your work, your team, and your success. Browse our collection and see how we help industries stay equipped, safe, and ready for any challenge.
           </div>
 
-          <div className="bg-slate-600 rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Work Safety</h3>
-            <p className="text-slate-300 mb-6">
-              Prioritizing workplace safety through quality products and comprehensive safety solutions for industrial
-              environments.
-            </p>
-            <button className="text-green-400 hover:text-green-300 flex items-center space-x-2">
-              <span>Shop for Safety</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+          <div className="md:flex items-start gap-x-5 mt-[40px]">
+            <div className="bg-[#EBF4F6] py-[20px] px-[15px] rounded-[10px] mb-5 md:mb-0">
+              <div className="text-[20px] leading-[146%] font-[500] text-[#1F1F1F] mb-[10px]">
+                Explore More Industries
+              </div>
+              <div className="text-[16px] leading-[153%] font-[400] text-[#5C5C5C] mb-[20px]">
+                We understand the importance of reliable industrial supplies across all sectors. No matter the industry you serve, our top priority is getting you the quality products you need....
+              </div>
+              <button className="flex items-center gap-1 text-[16px] leading-[20px] font-[500] text-green-500 border border-neutral-200 rounded-[10px] px-[13px] py-[10px]">
+                Shop by Industry
+                <ArrowRightLongLineIcon />
+              </button>
+            </div>
+            <div className="bg-[#EBF4F6] py-[20px] px-[15px] rounded-[10px]">
+              <div className="text-[20px] leading-[146%] font-[500] text-[#1F1F1F] mb-[10px]">
+                More Safety
+              </div>
+              <div className="text-[16px] leading-[153%] font-[400] text-[#5C5C5C] mb-[20px]">
+                We understand the importance of reliable industrial supplies across all sectors. No matter the industry you serve, our top priority is getting you the quality products you need....
+              </div>
+              <button className="flex items-center gap-1 text-[16px] leading-[20px] font-[500] text-green-500 border border-neutral-200 rounded-[10px] px-[13px] py-[10px]">
+                Shop by Safety
+                <ArrowRightLongLineIcon />
+              </button>
+            </div>
           </div>
-
-          <div className="lg:row-span-2">
-            <img
-              src="/placeholder.svg?height=400&width=300"
-              alt="Industrial worker in safety gear"
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </div>
+          <div className="bg-[#EBF4F6] py-[20px] px-[15px] rounded-[10px] mt-[20px]">
+              <div className="text-[20px] leading-[146%] font-[500] text-[#1F1F1F] mb-[10px]">
+                More Solutions
+              </div>
+              <div className="text-[16px] leading-[153%] font-[400] text-[#5C5C5C] mb-[20px]">
+                We understand the importance of reliable industrial supplies across all sectors. No matter the industry you serve, our top priority is getting you the quality products you need....
+              </div>
+              <button className="flex items-center gap-1 text-[16px] leading-[20px] font-[500] text-green-500 border border-neutral-200 rounded-[10px] px-[13px] py-[10px]">
+                Discover More About Us
+                <ArrowRightLongLineIcon />
+              </button>
+            </div>
+        </div>
+        <div className="mt-5 lg:mt-0">
+          <Image
+            src={offerings}
+            alt="Offerings Image"
+          />
         </div>
       </div>
     </section>

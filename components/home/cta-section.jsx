@@ -1,23 +1,28 @@
 "use client"
 
+import Image from "next/image"
+import ctaBackground from '@/assets/cta_background.png'
+
 export default function CTASection() {
   return (
-    <section className="py-20 bg-slate-800 text-white relative overflow-hidden">
-      <div className="absolute inset-0">
-        <img
-          src="/placeholder.svg?height=400&width=800"
-          alt="Business partnership"
-          className="w-full h-full object-cover opacity-30"
-        />
-      </div>
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-2xl">
-          <h2 className="text-5xl font-bold mb-6 leading-tight">WE'RE BETTER TOGETHER</h2>
-          <p className="text-xl text-slate-300 mb-8">
-            Partner with us for reliable industrial solutions and exceptional service.
-          </p>
-          <button className="bg-green-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-green-700 transition-colors">
-            Get Started Today
+    <section className="mb-[70px]">
+      <div className="relative md:px-[80px] px-[20px] w-full mx-auto ">
+        <div className="absolute inset-0 z-[-99] ">
+          <Image
+            src={ctaBackground}
+            alt="Business partnership"
+            className="w-full h-full object-cover rounded-[20px]"
+          />
+        </div>
+        <div className="py-[80px] px-[30px]">
+          <div className="mb-[30px] max-w-[563px] w-full">
+            <div className="md:text-[70px] text-[32px] leading-[100%] font-[500] text-white mb-[15px]">WE'RE BETTER TOGETHER</div>
+            <p className="md:text-[16px] text-[10px] leading-[18px] md:leading-[24px] font-[300] text-white">
+              Sign up today and get the benefit of ordering faster, saving product lists and submitting online quotes.
+            </p>
+          </div>
+          <button className="bg-green-500 text-white md:px-[20px] md:py-[15px] px-[12px] py-[8px] rounded-[10px] font-[600] md:text-[16px] text-[10px] leading-[18px] md:leading-[24px]">
+            Register Now
           </button>
         </div>
       </div>

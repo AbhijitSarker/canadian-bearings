@@ -1,34 +1,43 @@
 "use client"
 
-import { ArrowRight } from "lucide-react"
+import Image from "next/image"
+
+import layersBrand from '@/assets/brands/layers_brand.png'
+import sisyphusBrand from '@/assets/brands/sisyphus_brand.png'
+import circoolesBrand from '@/assets/brands/circooles_brand.png'
+import catalogBrand from '@/assets/brands/catalog_brand.png'
+import quotientBrand from '@/assets/brands/quotient_brand.png'
+
 
 export default function FeaturedBrands() {
   const brands = [
-    { name: "Layers", color: "bg-purple-100 text-purple-600" },
-    { name: "Sisyphus", color: "bg-green-100 text-green-600" },
-    { name: "Circooles", color: "bg-blue-100 text-blue-600" },
-    { name: "Catalog", color: "bg-gray-100 text-gray-600" },
-    { name: "Quotient", color: "bg-purple-100 text-purple-600" },
+    { name: "Layers", image: layersBrand },
+    { name: "Sisyphus", image: sisyphusBrand },
+    { name: "Circooles", image: circoolesBrand },
+    { name: "Catalog", image: catalogBrand },
+    { name: "Quotient", image: quotientBrand },
   ]
 
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">Featured Brands</h2>
-          <button className="text-green-600 hover:text-green-700 flex items-center space-x-1">
+    <section className="bg-[#D7EAF4] py-[64px] px-[20px]">
+      <div className="max-w-[1282px] w-[full] mx-auto">
+        <div className="md:flex justify-between items-start mb-8">
+          <div>
+            <div className="text-[40px] leading-[48px] font-[500] text-gray-800">Featured Brands</div>
+            <div className="text-[20px] leading-[30px] font-[300] text-gray-500 mt-[12px]">We’ve provide 200+ companies product for our customer.</div>
+          </div>
+          <button className="text-green-600 hover:text-green-700 flex items-center space-x-1 text-[18px] leading-[100%] font-[400] mt-5 md:mt-0">
             <span>Explore All Brands</span>
-            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="flex justify-center space-x-8">
+        <div className="flex flex-wrap justify-between items-center gap-5">
           {brands.map((brand, index) => (
-            <div
-              key={index}
-              className={`px-6 py-3 rounded-full ${brand.color} font-semibold cursor-pointer hover:scale-105 transition-transform`}
-            >
-              {brand.name}
+            <div key={index} className="flex items-center gap-x-[14px]">
+              <Image 
+                src={brand.image}
+                alt={brand.name}
+              />
             </div>
           ))}
         </div>

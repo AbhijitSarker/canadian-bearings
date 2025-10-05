@@ -1,120 +1,173 @@
 "use client"
 
-import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react"
+import Image from 'next/image'
+
+import facebook from '@/assets/facebook.png'
+import instagram from '@/assets/instagram.png'
+import twitter from '@/assets/twitter.png'
+import linkedin from '@/assets/linkedin.png'
+import siteLogo from '@/assets/site_logo.png'
+import MapIcon from '@/assets/icons/map'
+import CallIcon from '@/assets/icons/call'
+import EmailIcon from '@/assets/icons/email'
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-800 text-white">
-      {/* Newsletter Section */}
-      <div className="bg-slate-700 py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="mb-6 md:mb-0">
-              <h3 className="text-2xl font-bold mb-2">Sign Up For Email</h3>
-              <p className="text-slate-300">Stay updated with our latest products and offers</p>
+    <footer className="">
+      <div className="bg-[#384E59] text-white lg:px-[80px] sm:px-[60px] px-[20px] py-[20px] sm:py-[60px]">
+        <div className="max-w-[1280] w-full mx-auto">
+          <div className="flex flex-col-reverse lg:flex-row items-start justify-between border-b border-[#333333] pb-[40px] mb-[40px]">
+            <div className="max-w-[620px] w-full">
+              <div className="text-[40px] leading-[100%] font-[300] mb-[20px]">
+                Sign Up For Email
+              </div>
+              <div className="sm:flex items-start gap-x-4">
+                <input placeholder="Email Address" type="text" className="border border-[#FFFFFF4D] rounded-[10px] bg-transparent px-[20px] py-[15px] max-w-[460px] w-full" />
+                <button className="px-[32px] py-[15px] rounded-[10px] bg-green-500 text-[16px] leading-[20px] font-[600] mt-3 sm:mt-0">
+                  Subscribe
+                </button>
+              </div>
             </div>
-            <div className="flex space-x-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="px-4 py-2 rounded-lg bg-slate-600 text-white placeholder-slate-400 border border-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-              <button className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors">
-                Subscribe
-              </button>
+            <div className="mb-4 lg:mb-0">
+              Follow Us
+              <div className="flex items-center gap-x-[15px] mt-[15px]">
+                <button className="bg-[#FFFFFF33] rounded-full w-[36px] h-[36px] flex items-center justify-center hover:bg-green-500">
+                  <Image src={facebook} alt="Facebook" />
+                </button>
+                <button className="bg-[#FFFFFF33] rounded-full w-[36px] h-[36px] flex items-center justify-center hover:bg-green-500">
+                  <Image src={instagram} alt="Instagram" />
+                </button>
+                <button className="bg-[#FFFFFF33] rounded-full w-[36px] h-[36px] flex items-center justify-center hover:bg-green-500">
+                  <Image src={twitter} alt="Twitter" />
+                </button>
+                <button className="bg-[#FFFFFF33] rounded-full w-[36px] h-[36px] flex items-center justify-center hover:bg-green-500">
+                  <Image src={linkedin} alt="LinedIn" />
+                </button>
+              </div>
             </div>
-            <div className="flex space-x-4 mt-6 md:mt-0">
-              <span className="text-slate-300">Follow Us:</span>
-              <Facebook className="w-5 h-5 cursor-pointer hover:text-green-400" />
-              <Twitter className="w-5 h-5 cursor-pointer hover:text-green-400" />
-              <Linkedin className="w-5 h-5 cursor-pointer hover:text-green-400" />
-              <Instagram className="w-5 h-5 cursor-pointer hover:text-green-400" />
+          </div>
+          <div className="md:flex items-start gap-x-6">
+            <div className="md:max-w-[360px] w-full md:h-[247px] md:border-r border-b md:border-b-0 border-[#8C8C8C] mb-[32px] md:mb-0 md:pb-0 pb-[32px]">
+              <Image src={siteLogo} alt="Site Logo" className="mb-[15px]" />
+              <div className="max-w-[319px] w-full text-[16px] leading-[24px] font-[300] pr-[40px]">
+                BlockOut embodies Italian artisanship with unrivalled luxury and timeless style,dedication to luxury shines through in every pair.
+              </div>
+            </div>
+            <div className="xl:flex items-start gap-x-6">
+              <div className="sm:flex items-start gap-x-10 mt-5 sm:mt-0">
+                <div className="min-w-[180px] w-full mb-3 xs:mb-0">
+                  <div className="text-[20px] leading-[100%] font-[500] mb-[18px]">
+                    Service
+                  </div>
+                  <div className="flex flex-col gap-y-[15px]">
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      Track Orders
+                    </button>
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      Request a Quote
+                    </button>
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      Find a Location
+                    </button>
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      Support Center
+                    </button>
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      FAQs
+                    </button>
+                  </div>
+                </div>
+                <div className="min-w-[180px] w-full">
+                  <div className="text-[20px] leading-[100%] font-[500] mb-[18px]">
+                    Company Info
+                  </div>
+                  <div className="flex flex-col gap-y-[15px]">
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      Contact Us
+                    </button>
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      About Us
+                    </button>
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      Press Releases
+                    </button>
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      Careers
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="sm:flex items-start gap-x-10 w-[470px] mt-5 sm:mt-0">
+                <div className="min-w-[195px] w-full mb-4 xs:mb-0">
+                  <div className="text-[20px] leading-[100%] font-[500] mb-[18px]">
+                    Support + Resources
+                  </div>
+                  <div className="flex flex-col gap-y-[15px]">
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      Feedback
+                    </button>
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      Canadian Bearings Login
+                    </button>
+                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                      Terms & Conditions
+                    </button>
+                  </div>
+                </div>
+                <div className="max-w-[235px] w-full">
+                  <div className="text-[20px] leading-[100%] font-[500] mb-[18px]">
+                    We're Here To Help
+                  </div>
+                  <div className="flex flex-col gap-y-[15px]">
+                    <button className="text-[16px] leading-[20px] font-[300] text-left flex items-center gap-x-2">
+                      <EmailIcon />
+                      <div>
+                        Chat with us
+                      </div>
+                    </button>
+                    <button className="text-[16px] leading-[20px] font-[300] text-left flex items-center gap-x-2">
+                      <EmailIcon />
+                      <div>
+                        information@office.com
+                      </div>
+                    </button>
+                    <button className="text-[16px] leading-[20px] font-[300] text-left flex items-start gap-x-2">
+                      <CallIcon />
+                      <div>
+                        <p>+ (0777) 888 88 888</p>
+                        <p>Monday - Friday</p>
+                        <p>From 8:30 am to 5:30 pm EST</p>
+                        <p>Saturday - Sunday : Closed</p>
+                      </div>
+                    </button>
+                    <button className="text-[16px] leading-[20px] font-[300] text-left flex items-center gap-x-2">
+                      <MapIcon />
+                      <div>
+                        2307 Beverley, New York
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Main Footer */}
-      <div className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-green-600 rounded flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">C</span>
-                </div>
-                <span className="font-semibold">All Bearings</span>
-              </div>
-              <p className="text-slate-400 text-sm">
-                Your trusted partner for industrial components and mechanical solutions.
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Services</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Product Catalog
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Custom Solutions
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Technical Support
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Installation
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">Company Info</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li>
-                  <a href="#" className="hover:text-white">
-                    About Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-white">
-                    Blog
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4">We're Here To Help</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li>Customer Service</li>
-                <li>1-800-123-4567</li>
-                <li>support@allbearings.com</li>
-                <li>Mon-Fri 8AM-6PM EST</li>
-              </ul>
-            </div>
+      <div className="border-t border-neutral-200 bg-[#D3E1E8] py-[16px] lg:px-[80px] sm:px-[60px] px-[20px]">
+        <div className="md:flex items-center justify-between text-[12px] leading-[100%] font-[400]">
+          <div className="mb-4 md:mb-0">
+            Copyright © 2004 Canadian Bearings Ltd. All Rights Reserved.
           </div>
-
-          <div className="border-t border-slate-700 mt-8 pt-8 text-center text-sm text-slate-400">
-            <p>&copy; 2025 All Bearings. All rights reserved. | Privacy Policy | Terms & Conditions</p>
+          <div className="flex items-center">
+            <button className="pr-[11px] border-r border-neutral-300">
+              Privacy Policy
+            </button>
+            <button className="px-[11px] border-r border-neutral-300">
+              Customer Support
+            </button>
+            <button className="pl-[11px]">
+              Terms & Conditions
+            </button>
           </div>
         </div>
       </div>
