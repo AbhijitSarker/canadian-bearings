@@ -77,8 +77,8 @@ export default function PopularReads() {
   };
 
   return (
-    <section className="py-[70px] md:px-[80px] px-[20px] bg-white">
-      <div className="container mx-auto px-4">
+    <section className="py-[70px] bg-white">
+      <div className="container mx-auto">
         <div className="md:flex justify-between items-center mb-8">
           <div className="text-[40px] leading-[48px] font-[500] text-neutral-950">Popular Reads</div>
           <div className="flex items-center space-x-2 mt-5 md:mt-0">
@@ -100,7 +100,7 @@ export default function PopularReads() {
           {/* Map over currentArticles to display only articles for the active page */}
           {currentArticles.map((article) => (
             <article key={article.id} className="group cursor-pointer border p-[10px] rounded-[10px]">
-              <div className="aspect-video bg-gray-200 rounded-lg mb-4 overflow-hidden mb-[15px]">
+              <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden mb-[15px]">
                 <Image
                   src={article.image}
                   alt={article.title}

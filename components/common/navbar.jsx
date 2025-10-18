@@ -11,12 +11,12 @@ import SearchLineIcon from "@/assets/icons/serachLine";
 
 export default function Navbar() {
   return (
-    <section className="bg-green-50 py-[10px] xl:px-[80px] px-[20px]">
-        <div className="lg:flex items-center gap-x-2 justify-between">
+    <section className="bg-green-50 py-[10px]">
+          <div className="lg:flex items-center gap-x-2 justify-between  container mx-auto ">
             <div className="flex items-center lg:max-w-[743px] w-full">
                 <Image src={site_logo} alt={'Logo'} className="mr-[17px]" />
                 <div className="border bg-neutral-0 border-neutral-200 rounded-[30px] py-[8px] px-[12px] lg:max-w-[188px] w-full mr-[10px]">
-                    Select Box
+                    ||| All Products
                 </div>
                 <div className="border bg-neutral-0 border-neutral-200 rounded-[30px] lg:max-w-[439px] w-full flex items-center justify-between">
                     <div className="ml-[20px]">

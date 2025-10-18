@@ -104,22 +104,22 @@ const Home = () => {
   ];
 
   return (
-    <div className="max-w-[1440px] w-full mx-auto">
+    <div className="w-full">
       <TopHeader/>
       <Navbar/>
       <HeaderSlider />
 
       {/* Category Section */}
-      <section className="my-[70px] md:px-[80px] px-[20px] mx-auto">
+      <section className="my-[70px] container mx-auto">
         <div className="md:flex justify-between items-center mb-[30px]">
           <h2 className="text-[40px] leading-[48px] font-[500] text-gray-800 mb-5 md:mb-0">Shop Our Top Categories</h2>
           <a href="#" className="text-green-600 text-[18px] leading-[100%] font-medium hover:underline">Explore All Categories</a>
         </div>
         <Slider {...category_settings}>
           {categories.map((cat, idx) => (
-            <div>
+            // <div>
               <CategoryCard key={cat.name + idx} icon={cat.icon} name={cat.name} />
-            </div>
+            // </div>
           ))}
       </Slider>
       </section>
