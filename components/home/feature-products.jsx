@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect } from "react";
 import ArrowLeftSLineIcon from "@/assets/icons/arrowLeftSLine";
 import ArrowRightSLineIcon from "@/assets/icons/arrowRightSLine";

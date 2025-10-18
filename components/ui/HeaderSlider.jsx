@@ -16,7 +16,7 @@ const HeaderSlider = () => {
       heroBg: assets.hero_bg_mask_group
     },
     {
-      id: 1,
+      id: 2,
       title: "Eliminate Keyed Connection Failures with Climax",
       subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
       buttonText1: "Shop Now",
@@ -24,7 +24,7 @@ const HeaderSlider = () => {
       heroBg: assets.hero_bg_mask_group
     },
     {
-      id: 1,
+      id: 3,
       title: "Eliminate Keyed Connection Failures with Climax",
       subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
       buttonText1: "Shop Now",
