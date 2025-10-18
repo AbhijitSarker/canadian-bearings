@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
         <body className={`${outfit.className} antialiased text-gray-700`} >
           <Toaster />
           <TopHeader/>
-                <Navbar/>
+          <Navbar/>
             {children}
         </body>
       </html>

@@ -15,7 +15,7 @@ export default function Footer() {
   return (
     <footer className="">
       <div className="bg-[#384E59] text-white lg:px-[80px] sm:px-[60px] px-[20px] py-[20px] sm:py-[60px]">
-        <div className="max-w-[1280] w-full mx-auto">
+        <div className="container mx-auto">
           <div className="flex flex-col-reverse lg:flex-row items-start justify-between border-b border-[#333333] pb-[40px] mb-[40px]">
             <div className="max-w-[620px] w-full">
               <div className="text-[40px] leading-[100%] font-[300] mb-[20px]">
@@ -97,7 +97,7 @@ export default function Footer() {
                   </div>
                 </div>
               </div>
-              <div className="sm:flex items-start gap-x-10 w-[470px] mt-5 sm:mt-0">
+              <div className="sm:flex items-start gap-x-10 mt-5 sm:mt-0">
                 <div className="min-w-[195px] w-full mb-4 xs:mb-0">
                   <div className="text-[20px] leading-[100%] font-[500] mb-[18px]">
                     Support + Resources
