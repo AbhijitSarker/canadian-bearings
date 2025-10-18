@@ -168,7 +168,8 @@ const HeaderSlider = () => {
 
                 <div className="relative z-10 flex items-center justify-center">
                   <Image
-                    className="h-[408px] w-[408px]"
+                    // className=""
+                    width={400}
                     src={slide.imgSrc || undefined}
                     alt={`Slide ${index + 1}`}
                   />
