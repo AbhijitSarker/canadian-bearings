@@ -14,7 +14,7 @@ const dummy_languages = [
 
 export default function TopHeader({bgColor = "bg-green-50", textColor = "text-neutral-600", iconColor = "#4E9647"}) {
   return (
-    <section className={`${bgColor} ${textColor} py-[10px] md:px-[80px] px-[20px] border-b border-neutral-200`}>
+    <section className={`${bgColor} ${textColor} border-b border-neutral-200`}>
           <div className="lg:flex justify-between items-center container mx-auto">
             <div className="flex items-center gap-x-[8px] mb-3 lg:mb-0">
                 <TelephoneIcon color={iconColor} />

@@ -19,8 +19,8 @@ export default function FeaturedBrands() {
   ]
 
   return (
-    <section className="bg-[#D7EAF4] py-[64px] px-[20px]">
-      <div className="max-w-[1282px] w-[full] mx-auto">
+    <section className="bg-[#D7EAF4]">
+      <div className="container mx-auto py-[64px]" >
         <div className="md:flex justify-between items-start mb-8">
           <div>
             <div className="text-[40px] leading-[48px] font-[500] text-gray-800">Featured Brands</div>

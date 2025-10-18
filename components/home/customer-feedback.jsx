@@ -72,7 +72,7 @@ export default function CustomerFeedback() {
 
   return (
     <section className="py-[70px]">
-      <div className="max-w-[1282px] w-full mx-auto px-4"> {/* Added px-4 for consistent padding */}
+      <div className="w-full container mx-auto">
         <div className="md:flex justify-between items-center mb-[50px]">
           <div className="text-[40px] leading-[48px] font-[500] text-gray-800">Recent Customers Feedback</div>
           <div className="flex gap-3 items-center mt-5 md:mt-0"> {/* Grouped buttons and added items-center */}
@@ -83,7 +83,7 @@ export default function CustomerFeedback() {
         </div>
 
         {/* Carousel Container */}
-        <div className="overflow-hidden"> {/* Changed to overflow-hidden for carousel effect */}
+        <div className="overflow-hidden"> 
           <div
             className="flex transition-transform duration-500 ease-in-out"
             style={{
@@ -93,8 +93,8 @@ export default function CustomerFeedback() {
             {reviews.map((review) => (
               <div
                 key={review.id}
-                className="flex-shrink-0" // Ensures items don't shrink
-                style={{ width: `${100 / slidesToShow}%` }} // Each item takes full width of the container
+                className="flex-shrink-0"
+                style={{ width: `${100 / slidesToShow}%` }}
               >
                 <ReviewCard review={review} />
               </div>
