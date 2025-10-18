@@ -16,50 +16,66 @@ const HeaderSlider = () => {
       heroBg: assets.hero_bg_mask_group
     },
     {
-      id: 2,
-      children: [
-        {
-          id: 1,
-          title: "Eliminate Keyed Connection Failures with Climax",
-          subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
-          buttonText1: "Shop Now",
-          backgroundColor: "#FBF7EE",
-          buttonType: "plain"
-        },
-        {
-          id: 2,
-          title: "Eliminate Keyed Connection Failures with Climax",
-          subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
-          buttonText1: "Shop Now",
-          backgroundColor: "#FBF7EE",
-          buttonType: "cover"
-        },
-        {
-          id: 3,
-          title: "Eliminate Keyed Connection Failures with Climax",
-          subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
-          buttonText1: "Shop Now",
-          backgroundColor: "#FBF7EE",
-          buttonType: "cover"
-        },
-        {
-          id: 4,
-          title: "Eliminate Keyed Connection Failures with Climax",
-          subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
-          buttonText1: "Shop Now",
-          backgroundColor: "#FBF7EE",
-          buttonType: "cover"
-        },
-        {
-          id: 5,
-          title: "Eliminate Keyed Connection Failures with Climax",
-          subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
-          buttonText1: "Shop Now",
-          backgroundColor: "#FBF7EE",
-          buttonType: "cover"
-        },
-      ]
-    }
+      id: 1,
+      title: "Eliminate Keyed Connection Failures with Climax",
+      subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+      buttonText1: "Shop Now",
+      imgSrc: assets.erasebg_transformed,
+      heroBg: assets.hero_bg_mask_group
+    },
+    {
+      id: 1,
+      title: "Eliminate Keyed Connection Failures with Climax",
+      subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+      buttonText1: "Shop Now",
+      imgSrc: assets.erasebg_transformed,
+      heroBg: assets.hero_bg_mask_group
+    },
+    // {
+    //   id: 2,
+    //   children: [
+    //     {
+    //       id: 1,
+    //       title: "Eliminate Keyed Connection Failures with Climax",
+    //       subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+    //       buttonText1: "Shop Now",
+    //       backgroundColor: "#FBF7EE",
+    //       buttonType: "plain"
+    //     },
+    //     {
+    //       id: 2,
+    //       title: "Eliminate Keyed Connection Failures with Climax",
+    //       subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+    //       buttonText1: "Shop Now",
+    //       backgroundColor: "#FBF7EE",
+    //       buttonType: "cover"
+    //     },
+    //     {
+    //       id: 3,
+    //       title: "Eliminate Keyed Connection Failures with Climax",
+    //       subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+    //       buttonText1: "Shop Now",
+    //       backgroundColor: "#FBF7EE",
+    //       buttonType: "cover"
+    //     },
+    //     {
+    //       id: 4,
+    //       title: "Eliminate Keyed Connection Failures with Climax",
+    //       subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+    //       buttonText1: "Shop Now",
+    //       backgroundColor: "#FBF7EE",
+    //       buttonType: "cover"
+    //     },
+    //     {
+    //       id: 5,
+    //       title: "Eliminate Keyed Connection Failures with Climax",
+    //       subtitle: "Keyed Locking Devices (KLDs) deliver unmatched positional accuracy and repeatability...",
+    //       buttonText1: "Shop Now",
+    //       backgroundColor: "#FBF7EE",
+    //       buttonType: "cover"
+    //     },
+    //   ]
+    // }
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -88,7 +104,7 @@ const HeaderSlider = () => {
   if (!mounted) return null;
 
   return (
-    <div className="overflow-hidden max-w-[1280px] w-full mx-auto">
+    <div className="overflow-hidden w-full container mx-auto">
       <div
         className="flex relative transition-transform duration-700 ease-in-out"
         style={{
@@ -133,7 +149,7 @@ const HeaderSlider = () => {
               
             ) : (
               <>
-                <div className="absolute inset-0 bg-[#F6FEF3] opacity-40 rounded-[20px] z-0"></div>
+                <div className="absolute inset-0 bg-[#F6FEF3] opacity-40 rounded-[20px] z-0 border"></div>
 
                 <div className="relative z-10 mt-10 md:mt-0 flex flex-col">
                   <div className="text-green-900 md:text-[78px] md:leading-[100%] max-w-[683px] w-full font-[500] mb-[12px]">

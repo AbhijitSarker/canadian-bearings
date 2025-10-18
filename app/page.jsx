@@ -104,7 +104,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="max-w-[1440px] w-full mx-auto">
+    <div className="w-full">
       <TopHeader/>
       <Navbar/>
       <HeaderSlider />
@@ -117,9 +117,9 @@ const Home = () => {
         </div>
         <Slider {...category_settings}>
           {categories.map((cat, idx) => (
-            <div>
+            // <div>
               <CategoryCard key={cat.name + idx} icon={cat.icon} name={cat.name} />
-            </div>
+            // </div>
           ))}
       </Slider>
       </section>
