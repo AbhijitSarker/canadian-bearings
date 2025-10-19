@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { MailIcon, LockIcon, EyeIcon, EyeOffIcon, Apple, Linkedin } from "lucide-react";
+import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
+import { GrLinkedin } from "react-icons/gr";
+import { FaApple } from "react-icons/fa";
 import authLeftBanner from "@/assets/authLeftBanner.svg";
 import Image from "next/image";
 
@@ -112,7 +114,7 @@ export default function SignInPage() {
                 type="button"
                 className="border border-gray-200 rounded-lg py-2 flex items-center justify-center text-sm hover:bg-gray-50"
               >
-                <Apple className="w-4 h-4 mr-2" /> Apple
+                <FaApple className="w-4 h-4 mr-2" /> Apple
               </button>
               <button
                 type="button"
@@ -124,7 +126,7 @@ export default function SignInPage() {
                 type="button"
                 className="border border-gray-200 rounded-lg py-2 flex items-center justify-center text-sm hover:bg-gray-50"
               >
-                <Linkedin className="w-4 h-4 mr-2" /> LinkedIn
+                <GrLinkedin className="w-4 h-4 mr-2" /> LinkedIn
               </button>
             </div>
 

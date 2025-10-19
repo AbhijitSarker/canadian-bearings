@@ -4,6 +4,9 @@ import Link from "next/link";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
 import Image from "next/image";
 import authLeftBanner from "@/assets/authLeftBanner.svg";
+import { FcGoogle } from "react-icons/fc";
+import { GrLinkedin } from "react-icons/gr";
+import { FaApple } from "react-icons/fa";
 export default function RegisterPage1() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -146,15 +149,33 @@ export default function RegisterPage1() {
               </div>
 
               {/* Social Buttons */}
-              <div className="flex items-center justify-center space-x-4 mt-6">
-                <button className="border border-gray-300 rounded-lg px-8 py-2 hover:bg-gray-100 transition">
-                  
+              <div className="grid grid-cols-3 gap-2">
+                {/* <button className="border border-gray-300 rounded-lg px-8 py-2 hover:bg-gray-100 transition">
+                  <FaApple className="w-4 h-4 mr-2" />
                 </button>
                 <button className="border border-gray-300 rounded-lg px-8 py-2 hover:bg-gray-100 transition">
-                  G
+                  <FcGoogle className="w-4 h-4 mr-2" />
                 </button>
                 <button className="border border-gray-300 rounded-lg px-8 py-2 hover:bg-gray-100 transition">
-                  in
+                  <GrLinkedin className="w-4 h-4 mr-2" />
+                </button> */}
+                <button
+                  type="button"
+                  className="border border-gray-200 rounded-lg py-2 flex items-center justify-center text-sm hover:bg-gray-50"
+                >
+                  <FaApple className="w-4 h-4 mr-2" /> Apple
+                </button>
+                <button
+                  type="button"
+                  className="border border-gray-200 rounded-lg py-2 flex items-center justify-center text-sm hover:bg-gray-50"
+                >
+                  <FcGoogle className="w-4 h-4 mr-2" /> Google
+                </button>
+                <button
+                  type="button"
+                  className="border border-gray-200 rounded-lg py-2 flex items-center justify-center text-sm hover:bg-gray-50"
+                >
+                  <GrLinkedin className="w-4 h-4 mr-2" /> LinkedIn
                 </button>
               </div>
 
