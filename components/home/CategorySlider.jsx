@@ -5,6 +5,9 @@ import Slider from "react-slick";
 import CategoryCard from "@/components/ui/category-card";
 import ArrowLeftSLineIcon from "@/assets/icons/arrowLeftSLine";
 import ArrowRightSLineIcon from "@/assets/icons/arrowRightSLine";
+import headphoneImg from "@/assets/header_headphone_image.png";
+import macbookImg from "@/assets/header_macbook_image.png";
+import playstationImg from "@/assets/header_playstation_image.png";
 
 function SampleNextArrow(props) {
   const { className, style, onClick } = props;
@@ -32,7 +35,7 @@ function SamplePrevArrow(props) {
   );
 }
 
-const CategorySlider = ({ categories }) => {
+const CategorySlider = () => {
   const settings = {
     dots: false,
     infinite: true,
@@ -60,13 +63,30 @@ const CategorySlider = ({ categories }) => {
       },
     ],
   };
-
+  // Sample category data
+  const categories = [
+    { name: "Abrasives", icon: headphoneImg },
+    { name: "Bearings", icon: macbookImg },
+    { name: "Cutting Tools", icon: playstationImg },
+    { name: "Electrical Supplies", icon: headphoneImg },
+    { name: "Fasteners", icon: macbookImg },
+    { name: "Hardware & Material", icon: playstationImg },
+    { name: "Mechanical Power Transmission", icon: headphoneImg },
+    { name: "Mechanical Power Transmission", icon: headphoneImg },
+    { name: "Mechanical Power Transmission", icon: headphoneImg },
+    { name: "Mechanical Power Transmission", icon: headphoneImg },
+    { name: "Mechanical Power Transmission", icon: headphoneImg },
+  ];
   return (
-    <Slider {...settings}>
-      {categories.map((cat, idx) => (
-        <CategoryCard key={cat.name + idx} icon={cat.icon} name={cat.name} />
-      ))}
-    </Slider>
+    <div>
+      <div className="container mx-auto px-10">
+        <Slider {...settings}>
+          {categories.map((cat, idx) => (
+            <CategoryCard key={cat.name + idx} icon={cat.icon} name={cat.name} />
+          ))}
+        </Slider>
+      </div>
+    </div>
   );
 };
 
