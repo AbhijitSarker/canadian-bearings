@@ -6,8 +6,8 @@ import ctaBackground from '@/assets/cta_background.png'
 export default function CTASection() {
   return (
     <section className="mb-[70px]">
-      <div className="relative container mx-auto ">
-        <div className="absolute inset-0 z-[-99] ">
+      <div className="relative container mx-auto px-4 ">
+        <div className="absolute inset-0 z-[-99] container mx-auto px-4">
           <Image
             src={ctaBackground}
             alt="Business partnership"

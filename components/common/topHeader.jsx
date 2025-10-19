@@ -138,7 +138,7 @@ export default function TopHeader({ bgColor = "bg-green-50", textColor = "text-n
                         <div className="relative">
                             <button
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                className="border border-neutral-300 bg-green-50 rounded-md py-2 px-4 text-sm  transition-colors min-w-[140px] flex items-center justify-between gap-3 shadow-sm"
+                                className="border border-neutral-300 bg-green-50 rounded-md py-1 px-2 text-sm  transition-colors min-w-[140px] flex items-center justify-between gap-3 shadow-sm"
                             >
                                 <div className="flex items-center gap-2">
                                     <span className="text-2xl leading-none">{selectedLanguage.flag}</span>
@@ -183,23 +183,10 @@ export default function TopHeader({ bgColor = "bg-green-50", textColor = "text-n
                         <div className="text-sm">
                             {selectedLanguage.translations.sales} : {selectedLanguage.translations.phone}
                         </div>
-                    </div>
-
-                    {/* Links Row */}
-                    <div className="flex items-center justify-center gap-2 text-xs flex-wrap">
-                        <div className="px-[8px] border-r border-neutral-300 whitespace-nowrap">
-                            {selectedLanguage.translations.quote}
-                        </div>
-                        <div className="px-[8px] border-r border-neutral-300 whitespace-nowrap">
-                            {selectedLanguage.code === 'EN' ? 'Support' : selectedLanguage.translations.support}
-                        </div>
-                        <div className="px-[8px] whitespace-nowrap">
-                            {selectedLanguage.code === 'EN' ? 'Knowledge' : selectedLanguage.translations.knowledge}
-                        </div>
                         <div className="relative">
                             <button
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                className="border border-neutral-300 bg-green-50 rounded-md py-1.5 px-3 text-xs  transition-colors flex items-center gap-2 shadow-sm"
+                                className="border border-neutral-300 bg-green-50 rounded-md py-1 px-2 text-xs  transition-colors flex items-center gap-2 shadow-sm"
                             >
                                 <span className="text-lg leading-none">{selectedLanguage.flag}</span>
                                 <span className="font-medium">{selectedLanguage.code}</span>
@@ -231,6 +218,20 @@ export default function TopHeader({ bgColor = "bg-green-50", textColor = "text-n
                                 </div>
                             )}
                         </div>
+                    </div>
+
+                    {/* Links Row */}
+                    <div className="flex items-center justify-center gap-2 text-xs flex-wrap">
+                        <div className="px-[8px] border-r border-neutral-300 whitespace-nowrap">
+                            {selectedLanguage.translations.quote}
+                        </div>
+                        <div className="px-[8px] border-r border-neutral-300 whitespace-nowrap">
+                            {selectedLanguage.code === 'EN' ? 'Support' : selectedLanguage.translations.support}
+                        </div>
+                        <div className="px-[8px] whitespace-nowrap">
+                            {selectedLanguage.code === 'EN' ? 'Knowledge' : selectedLanguage.translations.knowledge}
+                        </div>
+                        
                     </div>
                 </div>
             </div>

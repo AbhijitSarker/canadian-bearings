@@ -14,8 +14,9 @@ import EmailIcon from '@/assets/icons/email'
 export default function Footer() {
   return (
     <footer className="">
-      <div className="bg-[#384E59] text-white lg:px-[80px] sm:px-[60px] px-[20px] py-[20px] sm:py-[60px]">
-        <div className="container mx-auto">
+      {/* <div className=''> */}
+      <div className=" px-4 bg-[#384E59] text-white py-[20px] sm:py-[60px]">
+        <div className="container mx-auto px-4">
           <div className="flex flex-col-reverse lg:flex-row items-start justify-between border-b border-[#333333] pb-[40px] mb-[40px]">
             <div className="max-w-[620px] w-full">
               <div className="text-[40px] leading-[100%] font-[300] mb-[20px]">
@@ -47,14 +48,14 @@ export default function Footer() {
             </div>
           </div>
           <div className="md:flex items-start gap-x-6">
-            <div className="md:max-w-[360px] w-full md:h-[247px] md:border-r border-b md:border-b-0 border-[#8C8C8C] mb-[32px] md:mb-0 md:pb-0 pb-[32px]">
+            <div className="md:border-r border-b md:border-b-0 border-[#8C8C8C] mb-[32px] md:mb-0 md:pb-0 pb-[32px]">
               <Image src={siteLogo} alt="Site Logo" className="mb-[15px]" />
               <div className="max-w-[319px] w-full text-[16px] leading-[24px] font-[300] pr-[40px]">
-                BlockOut embodies Italian artisanship with unrivalled luxury and timeless style,dedication to luxury shines through in every pair.
+                BlockOut embodies Italian artisanship with unrivalled luxury and timeless style, dedication to luxury shines through in every pair.
               </div>
             </div>
-            <div className="xl:flex items-start gap-x-6">
-              <div className="sm:flex items-start gap-x-10 mt-5 sm:mt-0">
+            <div className="flex flex-col md:flex-row items-start justify-between gap-6 w-full">
+              {/* <div className="sm:flex items-start gap-x-10 mt-5 sm:mt-0"> */}
                 <div className="min-w-[180px] w-full mb-3 xs:mb-0">
                   <div className="text-[20px] leading-[100%] font-[500] mb-[18px]">
                     Service
@@ -96,8 +97,8 @@ export default function Footer() {
                     </button>
                   </div>
                 </div>
-              </div>
-              <div className="sm:flex items-start gap-x-10 mt-5 sm:mt-0">
+              {/* </div> */}
+              {/* <div className="sm:flex items-start gap-x-10 mt-5 sm:mt-0"> */}
                 <div className="min-w-[195px] w-full mb-4 xs:mb-0">
                   <div className="text-[20px] leading-[100%] font-[500] mb-[18px]">
                     Support + Resources
@@ -148,13 +149,13 @@ export default function Footer() {
                     </button>
                   </div>
                 </div>
-              </div>
+              {/* </div> */}
             </div>
           </div>
         </div>
       </div>
-      <div className="border-t border-neutral-200 bg-[#D3E1E8] py-[16px] lg:px-[80px] sm:px-[60px] px-[20px]">
-        <div className="md:flex items-center justify-between text-[12px] leading-[100%] font-[400]">
+      <div className="border-t border-neutral-200 bg-[#D3E1E8] py-[16px]">
+        <div className="container mx-auto px-4 md:flex items-center justify-between text-[12px] leading-[100%] font-[400]">
           <div className="mb-4 md:mb-0">
             Copyright © 2004 Canadian Bearings Ltd. All Rights Reserved.
           </div>
@@ -171,6 +172,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
+      {/* </div> */}
     </footer>
   )
 }

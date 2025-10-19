@@ -103,7 +103,7 @@ const FeaturedProducts = () => {
 
   return (
     <div className="w-full py-16 overflow-hidden">
-      <div className=" container mx-auto">
+      <div className=" container mx-auto px-4">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-4xl font-medium text-gray-800">Feature Products</h2>

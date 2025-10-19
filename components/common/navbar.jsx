@@ -8,9 +8,10 @@ import Heart3LineIcon from "@/assets/icons/heart3Line";
 import UserLineIcon from "@/assets/icons/userLine";
 import ShoppingCart2LineIcon from "@/assets/icons/shoppingCart2Line";
 import SearchLineIcon from "@/assets/icons/serachLine";
-import { HamburgerIcon } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 import { Menu } from 'lucide-react';
+import Link from "next/link";
 
 export default function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,10 +22,13 @@ export default function Navbar() {
                 {/* Desktop & Tablet Layout */}
                 <div className="hidden md:flex items-center gap-x-2 justify-between">
                     <div className="flex items-center lg:max-w-[743px] w-full gap-x-2">
-                        <Image src={site_logo} alt={'Logo'} className="flex-shrink-0" />
+                        <Link href="/">
+                            <Image src={site_logo} alt={'Logo'} className="flex-shrink-0" />
+                        </Link>
                         <div className=" flex items-center justify-start gap-2 border bg-neutral-0 border-neutral-200 rounded-[30px] py-[8px] px-[12px] text-sm whitespace-nowrap">
                             <Menu />
                             All Products
+                            <ChevronDown />
                         </div>
                         <div className="border bg-neutral-0 border-neutral-200 rounded-[30px] lg:max-w-[439px] w-full flex items-center justify-between">
                             <div className="ml-[20px] text-sm">
@@ -48,10 +52,10 @@ export default function Navbar() {
                             <Heart3LineIcon />
                             Favourites
                         </div>
-                        <div className="flex items-center pl-[10px] mr-[15px] text-[14px] leading-[100%] text-neutral-950 font-[400] whitespace-nowrap">
+                        <Link href="/auth/signin" className="flex items-center pl-[10px] mr-[15px] text-[14px] leading-[100%] text-neutral-950 font-[400] whitespace-nowrap hover:underline">
                             <UserLineIcon />
                             Sign In
-                        </div>
+                        </Link>
                         <div className="bg-green-500 w-[40px] h-[40px] overflow-hidden rounded-full flex justify-center items-center flex-shrink-0">
                             <ShoppingCart2LineIcon />
                         </div>
@@ -62,7 +66,9 @@ export default function Navbar() {
                 <div className="md:hidden">
                     {/* Top Row */}
                     <div className="flex items-center justify-between mb-3">
-                        <Image src={site_logo} alt={'Logo'} className="h-8 w-auto" />
+                        <Link href="/">
+                            <Image src={site_logo} alt={'Logo'} className="flex-shrink-0" />
+                        </Link>
                         <div className="flex items-center gap-x-3">
                             <button
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -82,6 +88,7 @@ export default function Navbar() {
                         <div className=" flex items-center justify-start gap-2 border bg-neutral-0 border-neutral-200 rounded-[30px] py-[8px] px-[12px] text-sm whitespace-nowrap">
                             <Menu />
                             All Products
+                            <ChevronDown />
                         </div>
                         <div className="border bg-neutral-0 border-neutral-200 rounded-[30px] w-full flex items-center justify-between">
                             <div className="ml-[20px] text-sm text-gray-400">
@@ -108,10 +115,10 @@ export default function Navbar() {
                                 <Heart3LineIcon />
                                 Favourites
                             </div>
-                            <div className="flex items-center gap-x-[5px] text-[14px] text-neutral-950 font-[400] py-2">
+                            <Link href="/auth/signin" className="flex items-center gap-x-[5px] text-[14px] text-neutral-950 font-[400] py-2">
                                 <UserLineIcon />
                                 Sign In
-                            </div>
+                            </Link>
                         </div>
                     )}
                 </div>

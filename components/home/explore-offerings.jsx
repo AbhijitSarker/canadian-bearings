@@ -5,7 +5,7 @@ import ArrowRightLongLineIcon from "@/assets/icons/arrowRightLongLine"
 export default function ExploreOfferings() {
   return (
     <section className="bg-[#384E59] md:py-[80px] py-[20px]">
-      <div className="lg:flex items-start justify-between gap-x-5 container mx-auto">
+      <div className="lg:flex items-start justify-between gap-x-5 container mx-auto px-4">
         <div className="max-w-[620px] w-full">
           <div className="text-[40px] leading-[48px] font-[500] text-white mb-[20px]">
             Explore Our Offerings

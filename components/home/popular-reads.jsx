@@ -78,7 +78,7 @@ export default function PopularReads() {
 
   return (
     <section className="py-[70px] bg-white">
-      <div className="container mx-auto">
+      <div className="container mx-auto px-4">
         <div className="md:flex justify-between items-center mb-8">
           <div className="text-[40px] leading-[48px] font-[500] text-neutral-950">Popular Reads</div>
           <div className="flex items-center space-x-2 mt-5 md:mt-0">

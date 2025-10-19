@@ -30,8 +30,8 @@ const reviews = [
 function ReviewCard({ review }) { // Destructure review prop
   return (
     <div className="bg-alpha-200 rounded-[20px] px-[40px]">
-          <div className="md:flex items-center">
-            <div className="max-w-[920px] w-full py-[31px] pr-[80px] md:border-r border-b md:border-b-0 mb-[31px] border-neutral-200"> {/* Fixed w-[full] to w-full */}
+          <div className="md:flex items-center justify-between">
+            <div className="max-w-[920px] w-full py-[31px] md:border-r border-b md:border-b-0 my-[31px] border-neutral-200"> 
               <div className="lg:text-[28px] text-[14px] leading-[24px] lg:leading-[38px] font-[300] text-neutral-950 mb-[32px]">
                 "{review.description}"
               </div>
@@ -43,9 +43,9 @@ function ReviewCard({ review }) { // Destructure review prop
               <Image
               src={review.image}
               alt={review.name} 
-              width={150} // Added width for Next.js Image optimization
-              height={150} // Added height for Next.js Image optimization
-              className="rounded-full object-cover" // Added styling for avatar
+              width={150}
+              height={150}
+              className="rounded-full object-cover pb-8 md:pb-0"
               />
             </div>
           </div>
@@ -71,8 +71,8 @@ export default function CustomerFeedback() {
   };
 
   return (
-    <section className="py-[70px]">
-      <div className="w-full container mx-auto">
+    <section className="py-[70px] w-full ">
+      <div className="container mx-auto px-4">
         <div className="md:flex justify-between items-center mb-[50px]">
           <div className="text-[40px] leading-[48px] font-[500] text-gray-800">Recent Customers Feedback</div>
           <div className="flex gap-3 items-center mt-5 md:mt-0"> {/* Grouped buttons and added items-center */}
