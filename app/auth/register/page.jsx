@@ -2,11 +2,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { EyeIcon, EyeOffIcon, LockIcon, MailIcon } from "lucide-react";
-import Image from "next/image";
-import authLeftBanner from "@/assets/authLeftBanner.svg";
+// left banner is provided by the auth layout
 import { FcGoogle } from "react-icons/fc";
 import { GrLinkedin } from "react-icons/gr";
 import { FaApple } from "react-icons/fa";
+
 export default function RegisterPage1() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -18,39 +18,18 @@ export default function RegisterPage1() {
   const passwordStrength = password.length >= 8 ? "Weak" : "Very Weak";
 
   return (
-    <div>
-      <div className="container mx-auto">
-        <div className="flex min-h-screen bg-white">
-          {/* Left Panel */}
-          <div className="hidden md:flex w-1/2 h-screen overflow-hidden">
-            <div className="relative w-full h-full">
-              <Image
-                src={authLeftBanner}
-                alt="Welcome to Canadian Bearings"
-                className="object-contain rounded-r-[3rem]"
-                priority
-                sizes="(max-width: 768px) 0vw, 50vw"
-                fill
-                style={{
-                  objectFit: 'contain',
-                  objectPosition: 'center'
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Right Form */}
-          <div className="flex flex-col justify-center w-full md:w-1/2 p-8 md:p-16">
-            <div className="flex justify-end text-sm mb-4">
-              <p>
-                Do you have already account?{" "}
-                <Link href="/login" className="text-green-600 font-medium">
-                  Sign in
-                </Link>
-              </p>
-            </div>
-
-            <h2 className="text-2xl font-semibold mb-6">Customer Information</h2>
+    <div className="w-full md:w-1/2 p-6 md:p-16 relative">
+      <div className="w-full ">
+          
+        <div className="absolute top-4 right-4 text-sm md:top-6 md:right-8">
+          <p>
+            Do you have already account?{" "}
+            <Link href="/auth/signin" className="text-green-600 font-medium">
+              Sign in
+            </Link>
+          </p>
+        </div>
+            <h2 className="text-2xl font-semibold mb-6 mt-6 md:mt-0">Customer Information</h2>
 
             <form className="space-y-4">
               {/* Name Fields */}
@@ -195,8 +174,6 @@ export default function RegisterPage1() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
       </div>
     </div>
   );

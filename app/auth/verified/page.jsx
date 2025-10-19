@@ -4,7 +4,8 @@ import Link from "next/link";
 
 export default function VerifiedPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white px-6 text-center">
+    <div className="w-full md:w-1/2 p-6 md:p-16">
+      <div className="flex flex-col items-center text-left bg-white px-0 md:px-6">
       {/* Verified Badge */}
       <div className="relative flex items-center justify-center w-28 h-28 mb-6">
         <div className="absolute inset-0 rounded-full bg-green-600/90 scale-110" 
@@ -19,7 +20,7 @@ export default function VerifiedPage() {
       <h2 className="text-xl font-semibold text-gray-900 mb-2">
         Account Verified!
       </h2>
-      <p className="text-gray-500 text-sm max-w-md">
+      <p className="text-gray-500 text-sm max-w-md text-center">
         Welcome aboard! Start your success journey with Canadian Bearings!
       </p>
 
@@ -30,6 +31,7 @@ export default function VerifiedPage() {
       >
         Let’s Start Shopping
       </Link>
+      </div>
     </div>
   );
 }

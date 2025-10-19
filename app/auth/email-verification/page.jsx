@@ -1,33 +1,11 @@
 "use client";
 import Link from "next/link";
 import { MailIcon } from "lucide-react";
-import authLeftBanner from "@/assets/authLeftBanner.svg";
-import Image from "next/image";
 
 export default function VerifiedEmailPage() {
   return (
-    <div className="flex min-h-screen bg-white">
-      {/* Left Side - Gradient Background */}
-      <div className="hidden md:flex w-1/2 h-screen overflow-hidden">
-            <div className="relative w-full h-full">
-              <Image
-                src={authLeftBanner}
-                alt="Welcome to Canadian Bearings"
-                className="object-contain rounded-r-[3rem]"
-                priority
-                sizes="(max-width: 768px) 0vw, 50vw"
-                fill
-                style={{
-                  objectFit: 'contain',
-                  objectPosition: 'center'
-                }}
-              />
-            </div>
-          </div>
-
-      {/* Right Side - Content */}
-      <div className="flex flex-col justify-center w-full md:w-1/2 p-8 md:p-16">
-        <div className="max-w-md w-full mx-auto">
+    <div className="w-full md:w-1/2 p-6 md:p-16">
+      <div className="max-w-lg w-full mx-auto text-center">
           {/* Mail Icon Circle */}
           <div className="flex justify-center mb-8">
             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
@@ -53,14 +31,13 @@ export default function VerifiedEmailPage() {
               Experiencing issues receiving the email?
             </p>
             <Link 
-              href="#" 
+              href="/auth/reset-password" 
               className="text-sm text-gray-800 font-medium hover:underline"
             >
               Didn't get an email?
             </Link>
           </div>
         </div>
-      </div>
     </div>
   );
 }

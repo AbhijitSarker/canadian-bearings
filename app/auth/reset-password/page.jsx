@@ -2,8 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { MailIcon } from "lucide-react";
-import authLeftBanner from "@/assets/authLeftBanner.svg";
-import Image from "next/image";
+// left banner provided by auth layout
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");
@@ -15,40 +14,20 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
-      {/* Left Panel */}
-      <div className="hidden md:flex w-1/2 h-screen overflow-hidden">
-        <div className="relative w-full h-full">
-          <Image
-            src={authLeftBanner}
-            alt="Welcome to Canadian Bearings"
-            className="object-contain rounded-r-[3rem]"
-            priority
-            sizes="(max-width: 768px) 0vw, 50vw"
-            fill
-            style={{
-              objectFit: 'contain',
-              objectPosition: 'center'
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Right Form Panel */}
-      <div className="flex flex-col justify-center w-full md:w-1/2 p-8 md:p-16">
-        <div className="max-w-md w-full mx-auto">
+    <div className="w-full md:w-1/2 p-6 md:p-16 relative min-h-0">
+      <div className="max-w-lg w-full mx-auto">
           {/* Sign In Link */}
-          <div className="flex justify-end mb-8">
-            <p className="text-sm">
-              Do you have already account?{" "}
-              <Link href="/signIn" className="text-green-600 font-medium">
-                Sign in
-              </Link>
-            </p>
-          </div>
+        <div className="absolute top-4 right-4 text-sm md:top-6 md:right-8">
+          <p>
+            Do you have already account?{" "}
+            <Link href="/auth/signin" className="text-green-600 font-medium">
+              Sign in
+            </Link>
+          </p>
+        </div>
 
           {/* Reset Icon */}
-          <div className="flex justify-center mb-6">
+        <div className="flex mb-6 mt-6 md:mt-0">
             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
               <svg
                 viewBox="0 0 24 24"
@@ -93,16 +72,15 @@ export default function ResetPasswordPage() {
               >
                 ← Back
               </Link>
-              <button
-                type="submit"
+              <Link
+              href="/auth/email-verification"
                 className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
               >
                 Reset
-              </button>
+              </Link>
             </div>
           </form>
         </div>
-      </div>
     </div>
   );
 }

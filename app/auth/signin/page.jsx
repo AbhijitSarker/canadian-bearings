@@ -5,8 +5,7 @@ import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { GrLinkedin } from "react-icons/gr";
 import { FaApple } from "react-icons/fa";
-import authLeftBanner from "@/assets/authLeftBanner.svg";
-import Image from "next/image";
+// left banner is provided by the auth layout
 
 export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,39 +18,19 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
-      {/* Left gradient info section */}
-      <div className="hidden md:flex w-1/2 h-screen overflow-hidden">
-        <div className="relative w-full h-full">
-          <Image
-            src={authLeftBanner}
-            alt="Welcome to Canadian Bearings"
-            className="object-contain rounded-r-[3rem]"
-            priority
-            sizes="(max-width: 768px) 0vw, 50vw"
-            fill
-            style={{
-              objectFit: 'contain',
-              objectPosition: 'center'
-            }}
-          />
-        </div>
+  <div className="flex flex-col justify-start w-full md:w-1/2 p-6 md:p-16 relative min-h-0">
+      {/* top register link */}
+  <div className="absolute top-4 right-4 text-sm md:top-6 md:right-8">
+        <p>
+          Don’t have an account?{" "}
+          <Link href="/auth/register" className="text-green-600 font-medium">
+            Register
+          </Link>
+        </p>
       </div>
 
-      {/* Right sign in form */}
-      <div className="flex flex-col justify-center w-full md:w-1/2 p-8 md:p-16 relative">
-        {/* top register link */}
-        <div className="absolute top-6 right-8 text-sm">
-          <p>
-            Don’t have an account?{" "}
-            <Link href="/register_1" className="text-green-600 font-medium">
-              Register
-            </Link>
-          </p>
-        </div>
-
-        <div className="max-w-md w-full mx-auto">
-          <h2 className="text-2xl font-semibold mb-6 text-gray-800">Sign In</h2>
+  <div className="max-w-lg w-full mx-auto">
+        <h2 className="text-2xl font-semibold mb-6 mt-6 md:mt-0 text-gray-800">Sign In</h2>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
@@ -86,7 +65,7 @@ export default function SignInPage() {
             {/* Forgot password */}
             <div className="flex justify-end text-sm">
               <Link
-                href="/forgot-password"
+              href="/auth/reset-password"
                 className="text-gray-500 hover:underline"
               >
                 Forgot Password?
@@ -147,7 +126,6 @@ export default function SignInPage() {
             </div>
           </form>
         </div>
-      </div>
     </div>
   );
 }

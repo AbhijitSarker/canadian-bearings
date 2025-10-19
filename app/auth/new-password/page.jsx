@@ -2,8 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { LockIcon, EyeIcon, EyeOffIcon } from "lucide-react";
-import authLeftBanner from "@/assets/authLeftBanner.svg";
-import Image from "next/image";
+// left banner provided by auth layout
 
 export default function NewPasswordPage() {
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -18,28 +17,8 @@ export default function NewPasswordPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white">
-      {/* Left Panel */}
-      <div className="hidden md:flex w-1/2 h-screen overflow-hidden">
-            <div className="relative w-full h-full">
-              <Image
-                src={authLeftBanner}
-                alt="Welcome to Canadian Bearings"
-                className="object-contain rounded-r-[3rem]"
-                priority
-                sizes="(max-width: 768px) 0vw, 50vw"
-                fill
-                style={{
-                  objectFit: 'contain',
-                  objectPosition: 'center'
-                }}
-              />
-            </div>
-          </div>
-
-      {/* Right Panel */}
-      <div className="flex flex-col justify-center w-full md:w-1/2 p-8 md:p-16">
-        <div className="max-w-md w-full mx-auto">
+    <div className="w-full md:w-1/2 p-6 md:p-16 min-h-0">
+      <div className="max-w-lg w-full mx-auto">
           <h2 className="text-2xl font-semibold mb-6">Add New Password</h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -106,7 +85,6 @@ export default function NewPasswordPage() {
             </div>
           </form>
         </div>
-      </div>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/common/navbar";
 import TopHeader from "@/components/common/topHeader";
+import Footer from "@/components/home/footer";
 
 const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
 
@@ -19,6 +20,8 @@ export default function RootLayout({ children }) {
           <TopHeader/>
           <Navbar/>
             {children}
+        <Footer />
+
         </body>
       </html>
   );
