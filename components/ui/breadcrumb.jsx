@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
+import Link from "next/link";
 import { ChevronRight, MoreHorizontal } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -29,13 +30,18 @@ const BreadcrumbItem = React.forwardRef(({ className, ...props }, ref) => (
 BreadcrumbItem.displayName = "BreadcrumbItem"
 
 const BreadcrumbLink = React.forwardRef(({ asChild, className, ...props }, ref) => {
-  const Comp = asChild ? Slot : "a"
+  // Prefer Next.js Link for client-side navigation when used normally.
+  if (asChild) {
+    const Comp = Slot;
+    return (
+      <Comp ref={ref} className={cn("transition-colors hover:text-foreground", className)} {...props} />
+    );
+  }
 
+  // When not using asChild, render Next's Link to enable client-side transitions
+  const { href, ...rest } = props;
   return (
-    <Comp
-      ref={ref}
-      className={cn("transition-colors hover:text-foreground", className)}
-      {...props} />
+    <Link href={href} ref={ref} className={cn("transition-colors hover:text-foreground", className)} {...rest} />
   );
 })
 BreadcrumbLink.displayName = "BreadcrumbLink"
@@ -56,13 +62,14 @@ const BreadcrumbSeparator = ({
   className,
   ...props
 }) => (
-  <li
+  <span
     role="presentation"
     aria-hidden="true"
-    className={cn("[&>svg]:w-3.5 [&>svg]:h-3.5", className)}
-    {...props}>
+    className={cn("inline-flex items-center px-1 [&>svg]:w-3.5 [&>svg]:h-3.5", className)}
+    {...props}
+  >
     {children ?? <ChevronRight />}
-  </li>
+  </span>
 )
 BreadcrumbSeparator.displayName = "BreadcrumbSeparator"
 

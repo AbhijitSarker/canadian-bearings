@@ -6,12 +6,11 @@ export const metadata = {
   description: "E-Commerce with Next.js ",
 };
 
-export default function RootLayout({ children }) {
+// Nested layouts must NOT render <html> or <body> — only the root layout should.
+export default function SearchLayout({ children }) {
   return (
-      <html lang="en">
-        <body className={`${outfit.className} antialiased text-gray-700`} >
-            {children}
-        </body>
-      </html>
+    <div className={`${outfit.className} antialiased text-gray-700`}>
+      {children}
+    </div>
   );
 }

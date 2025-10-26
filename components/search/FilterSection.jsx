@@ -53,7 +53,7 @@ const FilterSection = ({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search..."
-              className="w-full rounded-lg border border-neutral-200 px-10 py-3 text-sm bg-neutral-50 focus:outline-none"
+              className="w-full rounded-lg border border-neutral-200 px-10 py-3 text-sm focus:outline-none"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
               <div className="text-[12px] text-neutral-500 bg-white border border-neutral-200 rounded-md px-2 py-1">⌘1</div>

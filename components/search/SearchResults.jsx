@@ -30,7 +30,7 @@ const SearchResults = ({ products = [] }) => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search within results..."
-            className="w-full rounded-md border px-4 py-3 bg-neutral-50"
+            className="w-full rounded-md border px-4 py-3"
           />
         </div>
 
