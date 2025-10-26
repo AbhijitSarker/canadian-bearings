@@ -5,13 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 * {
     scroll-behavior: smooth;
 
 }
-
 
 .slick-prev:before,
 .slick-next:before {
@@ -27,8 +24,6 @@
 .slick-next:before {
   content: "" !important; /* removes default arrow glyph */
 }
-
-
 
 @layer base {
   :root {

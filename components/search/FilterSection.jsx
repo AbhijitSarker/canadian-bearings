@@ -32,7 +32,7 @@ const FilterSection = ({
   };
 
   return (
-    <div className="mb-6 bg-white rounded-[10px] border border-[#E9EAEB] p-4">
+    <div className="mb-6 bg-white rounded-lg border border-[#E9EAEB] p-4 overflow-auto">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between text-left"
@@ -53,10 +53,10 @@ const FilterSection = ({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search..."
-              className="w-full rounded-lg border border-neutral-200 px-10 py-3 text-sm focus:outline-none"
+              className="w-full rounded-lg border border-neutral-200 px-10 py-2 text-sm focus:outline-none"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
-              <div className="text-[12px] text-neutral-500 bg-white border border-neutral-200 rounded-md px-2 py-1">⌘1</div>
+              <div className="text-[12px] text-neutral-600 bg-white border border-neutral-200 rounded-md px-2 py-1">⌘1</div>
             </div>
           </div>
 

@@ -5,11 +5,9 @@ import SearchShell from "../../components/search/SearchShell";
 const Search = () => {
   return (
     <div className="w-full">
-      <div className="container mx-auto">
+      <div className="container mx-auto p-4">
         <PageBanner />
-        <main>
-          <SearchShell />
-        </main>
+        <SearchShell />
       </div>
     </div>
   );
