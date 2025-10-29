@@ -10,7 +10,7 @@ export default function LowerNavbar() {
 
   return (
     <nav className="bg-[#324a50] text-neutral-0" role="navigation" aria-label="Lower navigation">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 py-2">
         {/* Desktop & Tablet Layout */}
         <div className="hidden md:flex items-center gap-x-2 justify-between py-2">
           <div className="flex items-center gap-x-3">
@@ -61,7 +61,7 @@ export default function LowerNavbar() {
 
         {/* Mobile Layout */}
         <div className="md:hidden">
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between">
             <div>
               <button
                 className="flex items-center gap-2 bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.08)] text-white px-3 py-1 rounded-full text-sm"
@@ -81,7 +81,7 @@ export default function LowerNavbar() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="p-2"
+                className="px-2"
                 aria-label="Toggle menu"
               >
                 <Menu />
@@ -92,31 +92,9 @@ export default function LowerNavbar() {
               </div>
             </div>
           </div>
-
-          {/* Scrollable center links on small screens */}
-          <div className="flex items-center gap-3">
-            <div className="flex gap-4 items-center overflow-x-auto w-full md:hidden py-1 px-1">
-              <Link href="#" className="text-white text-sm whitespace-nowrap px-2">
-                Product
-              </Link>
-              <Link href="#" className="text-white text-sm whitespace-nowrap px-2">
-                Brands
-              </Link>
-              <Link href="#" className="text-white text-sm whitespace-nowrap px-2">
-                Services
-              </Link>
-              <Link href="#" className="text-white text-sm whitespace-nowrap px-2">
-                Resource
-              </Link>
-              <Link href="#" className="text-white text-sm whitespace-nowrap px-2">
-                Industries
-              </Link>
-            </div>
-          </div>
-
           {/* Mobile Menu (drawer-like) */}
           {mobileOpen && (
-            <div className="mt-3 bg-white rounded-lg shadow-lg p-4 space-y-3 text-neutral-950">
+            <div className="mt-3  bg-white rounded-lg shadow-lg p-4 space-y-3 text-neutral-950">
               <div className="flex flex-col">
                 <Link href="#" className="py-2">Product</Link>
                 <Link href="#" className="py-2">Brands</Link>

@@ -29,7 +29,7 @@ export default function Navbar() {
                             <div className="ml-[20px] text-sm">
                                 Search...
                             </div>
-                            <div className="bg-green-50 w-[32px] h-[32px] flex justify-center items-center rounded-full mr-[4px] my-[4px]">
+                            <div className="bg-green-50 w-[24px] h-[24px] flex justify-center items-center rounded-full mr-[4px] my-[4px]">
                                 <SearchLineIcon />
                             </div>
                         </div>
@@ -43,7 +43,7 @@ export default function Navbar() {
                             <UserLineIcon />
                             Sign In
                         </Link>
-                        <div className="bg-green-500 w-[40px] h-[40px] overflow-hidden rounded-full flex justify-center items-center flex-shrink-0">
+                        <div className="bg-green-500 w-[34px] h-[34px] overflow-hidden rounded-full flex justify-center items-center flex-shrink-0">
                             <ShoppingCart2LineIcon />
                         </div>
                     </div>
@@ -52,37 +52,31 @@ export default function Navbar() {
                 {/* Mobile Layout */}
                 <div className="md:hidden">
                     {/* Top Row */}
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center justify-between">
                         <Link href="/">
                             <Image src={site_logo} alt={'Logo'} className="flex-shrink-0" />
                         </Link>
+                        <div className="flex items-center gap-x-2 w-full px-4">
+                            <div className="border bg-neutral-0 border-neutral-200 rounded-[30px] w-full flex items-center justify-between">
+                                <div className="ml-[20px] text-sm text-gray-400">
+                                    Search...
+                                </div>
+                                <div className="bg-green-50 w-[32px] h-[32px] flex justify-center items-center rounded-full mr-[4px] my-[4px]">
+                                    <SearchLineIcon />
+                                </div>
+                            </div>
+                        </div>
                         <div className="flex items-center gap-x-3">
-                            <button
-                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="p-2"
-                                aria-label="Toggle menu"
-                            >
-                                <ListUnorderedIcon />
-                            </button>
+                            <Link href="/auth/signin" className="flex items-center gap-x-[5px] text-[14px] text-neutral-950 font-[400] py-2 bg-white rounded-full px-2 hover:bg-green-50">
+                                <Heart3LineIcon />
+
+                            </Link>
+                            <Link href="/auth/signin" className="flex items-center gap-x-[5px] text-[14px] text-neutral-950 font-[400] py-2 bg-white rounded-full px-2 hover:bg-green-50">
+                                <UserLineIcon />
+
+                            </Link>
                             <div className="bg-green-500 w-[40px] h-[40px] rounded-full flex justify-center items-center">
                                 <ShoppingCart2LineIcon />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Search Row */}
-                    <div className="flex items-center gap-x-2">
-                        <div className=" flex items-center justify-start gap-2 border bg-neutral-0 border-neutral-200 rounded-[30px] py-[8px] px-[12px] text-sm whitespace-nowrap">
-                            <Menu />
-                            All Products
-                            <ChevronDown />
-                        </div>
-                        <div className="border bg-neutral-0 border-neutral-200 rounded-[30px] w-full flex items-center justify-between">
-                            <div className="ml-[20px] text-sm text-gray-400">
-                                Search...
-                            </div>
-                            <div className="bg-green-50 w-[32px] h-[32px] flex justify-center items-center rounded-full mr-[4px] my-[4px]">
-                                <SearchLineIcon />
                             </div>
                         </div>
                     </div>
