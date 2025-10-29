@@ -2,8 +2,8 @@ import { Outfit } from "next/font/google";
 const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
 
 export const metadata = {
-  title: "Canadian Bearings",
-  description: "E-Commerce with Next.js ",
+  title: "Search | Canadian Bearings",
+  description: "Canadian Bearings Product Search Page",
 };
 
 // Nested layouts must NOT render <html> or <body> — only the root layout should.

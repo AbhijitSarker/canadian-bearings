@@ -25,12 +25,7 @@ export default function Navbar() {
                         <Link href="/">
                             <Image src={site_logo} alt={'Logo'} className="flex-shrink-0" />
                         </Link>
-                        <div className=" flex items-center justify-start gap-2 border bg-neutral-0 border-neutral-200 rounded-[30px] py-[8px] px-[12px] text-sm whitespace-nowrap">
-                            <Menu />
-                            All Products
-                            <ChevronDown />
-                        </div>
-                        <div className="border bg-neutral-0 border-neutral-200 rounded-[30px] lg:max-w-[439px] w-full flex items-center justify-between">
+                        <div className="border bg-neutral-0 border-neutral-200 rounded-[30px] w-full flex items-center justify-between">
                             <div className="ml-[20px] text-sm">
                                 Search...
                             </div>
@@ -40,14 +35,6 @@ export default function Navbar() {
                         </div>
                     </div>
                     <div className="flex items-center lg:max-w-[467px] w-full justify-end">
-                        <div className="flex items-center pr-[10px] border-r border-neutral-300 gap-x-[5px] text-[14px] leading-[100%] text-neutral-950 font-[400] whitespace-nowrap">
-                            <ListUnorderedIcon />
-                            Quick Order
-                        </div>
-                        <div className="flex items-center px-[10px] border-r border-neutral-300 gap-x-[5px] text-[14px] leading-[100%] text-neutral-950 font-[400] whitespace-nowrap">
-                            <MapPinLineIcon />
-                            Location
-                        </div>
                         <div className="flex items-center px-[10px] border-r border-neutral-300 gap-x-[5px] text-[14px] leading-[100%] text-neutral-950 font-[400] whitespace-nowrap">
                             <Heart3LineIcon />
                             Favourites

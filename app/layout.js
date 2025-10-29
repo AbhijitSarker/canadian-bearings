@@ -5,6 +5,7 @@ import Navbar from "@/components/common/navbar";
 import TopHeader from "@/components/common/topHeader";
 import Footer from "@/components/home/footer";
 import BreadcrumbBar from "@/components/common/BreadcrumbBar";
+import LowerNavbar from "@/components/common/LowerNavbar";
 
 const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
 
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
           <Toaster />
           <TopHeader/>
           <Navbar/>
+          <LowerNavbar/>
           <BreadcrumbBar />
             {children}
         <Footer />

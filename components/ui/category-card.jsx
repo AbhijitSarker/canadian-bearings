@@ -1,17 +1,16 @@
 import React from "react";
-import Image from "next/image";
 
+// Category Card Component (kept consistent with CategorySlider)
 const CategoryCard = ({ icon, name }) => {
+  // Support imported image modules (object with .src) or plain URL strings
+  const src = typeof icon === 'string' ? icon : (icon && (icon.src || icon.default || icon.url)) || '';
+
   return (
-    <div className="flex flex-col items-center justify-center bg-white rounded-[10px] pt-4 px-3 pb-2 cursor-pointer border border-neutral-200">
-      <div className="w-[76px] h-[76px] flex items-center justify-center rounded-[40px] bg-neutral-50 overflow-hidden">
-        {icon ? (
-          <Image src={icon} alt={name} width={62} height={62} className="object-contain w-full h-full" />
-        ) : (
-          <div className="w-full h-full rounded-[40px] bg-neutral-50" />
-        )}
+    <div className="flex flex-col items-center justify-center bg-white rounded-lg p-4 cursor-pointer border border-gray-200 hover:border-green-500 hover:shadow-md transition-all duration-200 w-[170px] h-[170px]">
+      <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-50 mb-4">
+        <img src={src} alt={name} className="w-16 h-16 object-contain" />
       </div>
-      <span className="text-[16px] leading-[16px] font-[300] text-gray-800 text-center mt-[15px]">{name}</span>
+      <span className="text-base font-light text-gray-800 text-center leading-4">{name}</span>
     </div>
   );
 };

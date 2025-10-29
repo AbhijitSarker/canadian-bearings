@@ -1,9 +1,21 @@
 import React from "react";
+import greenBanner from "@/assets/greenBanner.svg";
 
 const PageBanner = ({ title = 'Showing search result...', subtitle }) => {
+  // Imported assets can be either a URL string or an object (e.g. { src, height, width })
+  const bgUrl = typeof greenBanner === "string" ? greenBanner : (greenBanner?.src ?? greenBanner?.default ?? null);
+
   return (
-    <header className="relative container mx-auto bg-[#f6fef3] rounded-3xl">
-      <div className="p-8 container mx-auto ">
+    <header
+      className="relative container mx-auto p-4 bg-cover bg-no-repeat rounded-3xl"
+    >
+      <div className="p-8 container mx-auto "
+        style={{
+          backgroundImage: bgUrl ? `url(${bgUrl})` : undefined,
+          backgroundPosition: 'center',
+          backgroundColor: bgUrl ? undefined : '#f6fef3'
+        }}
+        >
         <div className="max-w-5xl">
           <h1 className="text-[46px] font-semibold text-neutral-950">
             {title}

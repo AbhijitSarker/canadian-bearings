@@ -5,7 +5,7 @@ import ctaBackground from '@/assets/cta_background.png'
 
 export default function CTASection() {
   return (
-    <section className="mb-[70px]">
+    <section className="my-[70px]">
       <div className="relative container mx-auto px-4 ">
         <div className="absolute inset-0 z-[-99] container mx-auto px-4">
           <Image
