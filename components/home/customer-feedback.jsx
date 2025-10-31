@@ -130,3 +130,4 @@ function CustomerFeedback() {
     </section>
   )
 }
+export default CustomerFeedback;
