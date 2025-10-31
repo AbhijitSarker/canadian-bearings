@@ -5,7 +5,7 @@ import Navbar from "@/components/common/navbar";
 import TopHeader from "@/components/common/topHeader";
 import Footer from "@/components/home/footer";
 import BreadcrumbBar from "@/components/common/BreadcrumbBar";
-import LowerNavbar from "@/components/common/LowerNavbar";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
 
@@ -16,17 +16,17 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-      <html lang="en">
-        <body className={`${outfit.className} antialiased text-gray-700`} >
-          <Toaster />
-          <TopHeader/>
-          <Navbar/>
-          <LowerNavbar/>
+    <html lang="en">
+      <body className={`${outfit.className} antialiased text-gray-700`} >
+        <AuthProvider>
+          <Toaster position="top-right" />
+          <TopHeader />
+          <Navbar />
           <BreadcrumbBar />
-            {children}
-        <Footer />
-
-        </body>
-      </html>
+          {children}
+          <Footer />
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
