@@ -3,6 +3,7 @@ import PageBanner from "@/components/search/PageBanner";
 import CategoryCard from "@/components/ui/category-card";
 import SearchShell from "@/components/search/SearchShell";
 import { notFound } from "next/navigation";
+import { allowedNames, slugify } from "../allowed-names";
 
 // Subcategory icons (reuse existing category assets as placeholders)
 import cat1 from "@/assets/categories/category1.png";
@@ -50,37 +51,6 @@ const CategoryPage = async ({ params }) => {
   // await it before accessing properties to avoid the runtime warning.
   const p = await params;
   const slug = (p?.category || "").toLowerCase();
-
-  // list of top-level category names to validate against
-  const allowedNames = [
-    "Abrasives",
-    "Bearings",
-    "Cutting Tools",
-    "Electrical Supplies",
-    "Fasteners",
-    "Hardware & Material",
-    "Mechanical Power Transmission",
-    "Facility Supplies",
-    "Hydraulics",
-    "Lab Supplies",
-    "Linear Motion Systems",
-    "Lubrication Systems & Lubricants",
-    "Material Handling",
-    "Motors & Drives",
-    "MRO Chemicals",
-    "Pneumatics",
-    "Process Equipment",
-    "Safety & Environment",
-    "Tools",
-    "Seals",
-  ];
-
-  const slugify = (name) =>
-    name
-      .toLowerCase()
-      .replace(/&/g, "and")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
 
   const slugToName = Object.fromEntries(allowedNames.map((n) => [slugify(n), n]));
 

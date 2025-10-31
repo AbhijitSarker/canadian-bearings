@@ -3,6 +3,7 @@ import PageBanner from "@/components/search/PageBanner";
 import CategoryCard from "@/components/ui/category-card";
 import SearchShell from "@/components/search/SearchShell";
 import { notFound } from "next/navigation";
+import { allowedNames, slugify } from "./allowed-names";
 
 // Subcategory icons (reuse existing category assets as placeholders)
 import cat1 from "@/assets/categories/category1.png";
@@ -49,13 +50,6 @@ const CategoryPage = ({ params }) => {
   const slug = (params?.category || "").toLowerCase();
 
 
-
-  const slugify = (name) =>
-    name
-      .toLowerCase()
-      .replace(/&/g, "and")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
 
   const slugToName = Object.fromEntries(allowedNames.map((n) => [slugify(n), n]));
 
