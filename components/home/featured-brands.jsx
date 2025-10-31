@@ -1,5 +1,4 @@
-"use client"
-
+ 
 import Image from "next/image"
 
 import layersBrand from '@/assets/brands/layers_brand.png'

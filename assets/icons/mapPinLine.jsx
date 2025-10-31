@@ -1,5 +1,3 @@
-"use client"
-
 
 export default function MapPinLineIcon({color = "#171717"}) {
     return (

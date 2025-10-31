@@ -45,8 +45,11 @@ function titleFromSlug(slug) {
     .replace(/\b\w+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1));
 }
 
-const CategoryPage = ({ params }) => {
-  const slug = (params?.category || "").toLowerCase();
+const CategoryPage = async ({ params }) => {
+  // `params` is a promise-like object in Next's app router for some usages —
+  // await it before accessing properties to avoid the runtime warning.
+  const p = await params;
+  const slug = (p?.category || "").toLowerCase();
 
   // list of top-level category names to validate against
   const allowedNames = [

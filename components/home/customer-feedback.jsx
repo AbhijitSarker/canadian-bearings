@@ -53,7 +53,7 @@ function ReviewCard({ review }) { // Destructure review prop
   )
 }
 
-export default function CustomerFeedback() {
+function CustomerFeedback() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const totalSlides = reviews.length;
   const slidesToShow = 1; // Display one review at a time

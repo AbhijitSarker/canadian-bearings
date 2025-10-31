@@ -1,5 +1,3 @@
-"use client"
-
 
 export default function ArrowRightSLineIcon({ color = "#4E9647" }) {
     return (

@@ -1,6 +1,4 @@
-"use client"
-
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import ProductCard from "../ui/product-card";
 import SearchLineIcon from "@/assets/icons/serachLine";
 import { SlidersHorizontal, ChevronDown, Check, Layout, List } from "lucide-react";

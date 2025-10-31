@@ -1,5 +1,3 @@
-"use client"
-
 
 export default function ArrowRightLongLineIcon({ color = "#4E9647" }) {
     return (
