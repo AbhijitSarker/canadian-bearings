@@ -7,22 +7,24 @@ import PopularReads from "@/components/home/popular-reads";
 import CTASection from "@/components/home/cta-section";
 import CategorySlider from "@/components/home/CategorySlider";
 import FeaturedProducts from "@/components/home/feature-products";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 
 const Home = () => {
 
   return (
-    <div className="w-full">
-      <HeaderSlider />
-      <CategorySlider />
-      <FeaturedProducts />
-      <FeaturedBrands />
-      <CustomerFeedback />
-      <ExploreOfferings />
-      <PopularReads />
-      <CTASection />
-
-    </div>
+    <ProtectedRoute>
+      <div className="w-full">
+        <HeaderSlider />
+        <CategorySlider />
+        <FeaturedProducts />
+        <FeaturedBrands />
+        <CustomerFeedback />
+        <ExploreOfferings />
+        <PopularReads />
+        <CTASection />
+      </div>
+    </ProtectedRoute>
   );
 };
 

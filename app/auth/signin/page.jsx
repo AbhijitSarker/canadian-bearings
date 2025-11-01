@@ -14,6 +14,7 @@ export default function SignInPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { login } = useAuth();
   const router = useRouter();
@@ -24,9 +25,12 @@ export default function SignInPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // clear previous error
+    setErrorMessage("");
 
     if (!username || !password) {
-      toast.error("Please enter both username and password");
+      const msg = "Please enter both username and password";
+      setErrorMessage(msg);
       return;
     }
 
@@ -39,11 +43,13 @@ export default function SignInPage() {
         toast.success("Login successful!");
         router.push(returnUrl);
       } else {
-        toast.error(result.error || "Login failed. Please check your credentials.");
+        const msg = result.error || "Login failed. Please check your credentials.";
+        setErrorMessage(msg);
       }
     } catch (error) {
       console.error("Login error:", error);
-      toast.error("An unexpected error occurred. Please try again.");
+      const msg = "An unexpected error occurred. Please try again.";
+      setErrorMessage(msg);
     } finally {
       setIsLoading(false);
     }
@@ -64,6 +70,11 @@ export default function SignInPage() {
         <h2 className="text-2xl font-semibold mb-6 mt-6 md:mt-0 text-gray-800">Sign In</h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {errorMessage && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+              {errorMessage}
+            </div>
+          )}
           {/* Username */}
           <div className="relative">
             <MailIcon className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
@@ -72,7 +83,11 @@ export default function SignInPage() {
               required
               placeholder="Username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                // clear server error when user starts typing
+                if (errorMessage) setErrorMessage("");
+              }}
               disabled={isLoading}
               className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-400 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
@@ -86,7 +101,11 @@ export default function SignInPage() {
               required
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                // clear server error when user starts typing
+                if (errorMessage) setErrorMessage("");
+              }}
               disabled={isLoading}
               className="w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-400 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
