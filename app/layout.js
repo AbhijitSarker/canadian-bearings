@@ -17,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${outfit.className} antialiased text-gray-700`} >
+      <body className={[outfit.className, "antialiased", "text-gray-700"].join(" ")} >
         <AuthProvider>
           <Toaster position="top-right" />
           <TopHeader />

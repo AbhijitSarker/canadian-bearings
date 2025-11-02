@@ -7,10 +7,8 @@ import MapPinLineIcon from "@/assets/icons/mapPinLine";
 import Heart3LineIcon from "@/assets/icons/heart3Line";
 import UserLineIcon from "@/assets/icons/userLine";
 import ShoppingCart2LineIcon from "@/assets/icons/shoppingCart2Line";
-import SearchLineIcon from "@/assets/icons/serachLine";
-import SearchBar from './SearchBar';
+import SearchBar from '../search/SearchBar';
 import { ChevronDown, LogOut } from "lucide-react";
-import { Menu } from 'lucide-react';
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 

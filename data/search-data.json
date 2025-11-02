@@ -1,0 +1,580 @@
+{
+    "products": [
+        {
+            "id": "SKF-6203-2ZJEM",
+            "category": "Ball Bearings",
+            "subcategory": "Deep Groove Ball Bearings",
+            "name": "SKF 6203 2ZJEM",
+            "description": "Single Row Cylindrical Bore Deep Groove Ball Bearing",
+            "itemNumber": "I01525229",
+            "price": 31.89,
+            "brand": "SKF",
+            "image": "/assets/products/skf-6203.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "17mm",
+                "outerDiameter": "40mm",
+                "width": "12mm",
+                "weight": "0.065 kg"
+            }
+        },
+        {
+            "id": "DODGE-P2B-SC-100",
+            "category": "Mounted Bearings",
+            "subcategory": "Pillow Block Bearings",
+            "name": "DODGE P2B-SC-100",
+            "description": "2 Bolt Pillow Block Bearing",
+            "itemNumber": "I01526789",
+            "price": 89.99,
+            "brand": "DODGE",
+            "image": "/assets/products/dodge-p2b.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "1 inch",
+                "housing": "Cast Iron",
+                "sealType": "Double Lip",
+                "weight": "2.5 kg"
+            }
+        },
+        {
+            "id": "TIMKEN-22222EJW33C3",
+            "category": "Roller Bearings",
+            "subcategory": "Spherical Roller Bearings",
+            "name": "TIMKEN 22222EJW33C3",
+            "description": "Spherical Roller Bearing",
+            "itemNumber": "I01527890",
+            "price": 245.50,
+            "brand": "TIMKEN",
+            "image": "/assets/products/timken-22222.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "110mm",
+                "outerDiameter": "200mm",
+                "width": "53mm",
+                "weight": "5.2 kg"
+            }
+        },
+        {
+            "id": "NTN-UCFL205-100D1",
+            "category": "Mounted Bearings",
+            "subcategory": "Flange Bearings",
+            "name": "NTN UCFL205-100D1",
+            "description": "2 Bolt Flange Bearing",
+            "itemNumber": "I01528901",
+            "price": 75.25,
+            "brand": "NTN",
+            "image": "/assets/products/ntn-ucfl205.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "1 inch",
+                "housing": "Cast Iron",
+                "sealType": "Double Seal",
+                "weight": "1.8 kg"
+            }
+        },
+        {
+            "id": "NSK-6204ZZ",
+            "category": "Ball Bearings",
+            "subcategory": "Deep Groove Ball Bearings",
+            "name": "NSK 6204ZZ",
+            "description": "Shielded Deep Groove Ball Bearing",
+            "itemNumber": "I01529012",
+            "price": 28.45,
+            "brand": "NSK",
+            "image": "/assets/products/nsk-6204.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "20mm",
+                "outerDiameter": "47mm",
+                "width": "14mm",
+                "weight": "0.105 kg"
+            }
+        },
+        {
+            "id": "FAG-NU2209-E-TVP2",
+            "category": "Roller Bearings",
+            "subcategory": "Cylindrical Roller Bearings",
+            "name": "FAG NU2209-E-TVP2",
+            "description": "Single Row Cylindrical Roller Bearing",
+            "itemNumber": "I01530123",
+            "price": 156.80,
+            "brand": "FAG",
+            "image": "/assets/products/fag-nu2209.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "45mm",
+                "outerDiameter": "85mm",
+                "width": "19mm",
+                "weight": "0.58 kg"
+            }
+        },
+        {
+            "id": "DODGE-P4B-IP-407R",
+            "category": "Mounted Bearings",
+            "subcategory": "Pillow Block Bearings",
+            "name": "DODGE P4B-IP-407R",
+            "description": "4 Bolt Pillow Block Bearing",
+            "itemNumber": "I01531234",
+            "price": 165.99,
+            "brand": "DODGE",
+            "image": "/assets/products/dodge-p4b.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "2-7/16 inch",
+                "housing": "Cast Iron",
+                "sealType": "Triple Lip",
+                "weight": "8.5 kg"
+            }
+        },
+        {
+            "id": "SKF-32210-J2",
+            "category": "Roller Bearings",
+            "subcategory": "Tapered Roller Bearings",
+            "name": "SKF 32210 J2",
+            "description": "Single Row Tapered Roller Bearing",
+            "itemNumber": "I01532345",
+            "price": 98.75,
+            "brand": "SKF",
+            "image": "/assets/products/skf-32210.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "50mm",
+                "outerDiameter": "90mm",
+                "width": "24.75mm",
+                "weight": "0.69 kg"
+            }
+        },
+        {
+            "id": "IKO-LWL7C1R60",
+            "category": "Linear Motion",
+            "subcategory": "Linear Ball Bearings",
+            "name": "IKO LWL7C1R60",
+            "description": "Closed Type Linear Ball Bearing",
+            "itemNumber": "I01533456",
+            "price": 42.30,
+            "brand": "IKO",
+            "image": "/assets/products/iko-lwl7.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "7mm",
+                "outerDiameter": "16mm",
+                "length": "60mm",
+                "weight": "0.028 kg"
+            }
+        },
+        {
+            "id": "NTN-UCF208D1",
+            "category": "Mounted Bearings",
+            "subcategory": "Flange Bearings",
+            "name": "NTN UCF208D1",
+            "description": "4 Bolt Flange Bearing",
+            "itemNumber": "I01534567",
+            "price": 92.50,
+            "brand": "NTN",
+            "image": "/assets/products/ntn-ucf208.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "1-1/2 inch",
+                "housing": "Cast Iron",
+                "sealType": "Double Seal",
+                "weight": "3.2 kg"
+            }
+        },
+        {
+            "id": "TIMKEN-SET410",
+            "category": "Roller Bearings",
+            "subcategory": "Tapered Roller Bearings",
+            "name": "TIMKEN SET410",
+            "description": "Tapered Roller Bearing Set",
+            "itemNumber": "I01535678",
+            "price": 125.40,
+            "brand": "TIMKEN",
+            "image": "/assets/products/timken-set410.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "1.968 inch",
+                "outerDiameter": "4.125 inch",
+                "width": "1.156 inch",
+                "weight": "1.15 kg"
+            }
+        },
+        {
+            "id": "NSK-HR30210J",
+            "category": "Roller Bearings",
+            "subcategory": "Tapered Roller Bearings",
+            "name": "NSK HR30210J",
+            "description": "Metric Tapered Roller Bearing",
+            "itemNumber": "I01536789",
+            "price": 67.80,
+            "brand": "NSK",
+            "image": "/assets/products/nsk-hr30210.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "50mm",
+                "outerDiameter": "90mm",
+                "width": "21.75mm",
+                "weight": "0.52 kg"
+            }
+        },
+        {
+            "id": "SKF-NJ306ECP",
+            "category": "Roller Bearings",
+            "subcategory": "Cylindrical Roller Bearings",
+            "name": "SKF NJ306ECP",
+            "description": "Single Row Cylindrical Roller Bearing",
+            "itemNumber": "I01537890",
+            "price": 178.90,
+            "brand": "SKF",
+            "image": "/assets/products/skf-nj306.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "30mm",
+                "outerDiameter": "72mm",
+                "width": "19mm",
+                "weight": "0.45 kg"
+            }
+        },
+        {
+            "id": "INA-NK25-20",
+            "category": "Roller Bearings",
+            "subcategory": "Needle Roller Bearings",
+            "name": "INA NK25/20",
+            "description": "Needle Roller Bearing without Inner Ring",
+            "itemNumber": "I01538901",
+            "price": 35.60,
+            "brand": "INA",
+            "image": "/assets/products/ina-nk25.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "25mm",
+                "outerDiameter": "35mm",
+                "width": "20mm",
+                "weight": "0.045 kg"
+            }
+        },
+        {
+            "id": "DODGE-FCSCM107",
+            "category": "Mounted Bearings",
+            "subcategory": "Cartridge Bearings",
+            "name": "DODGE FCSCM107",
+            "description": "Flange Cartridge Bearing",
+            "itemNumber": "I01539012",
+            "price": 145.75,
+            "brand": "DODGE",
+            "image": "/assets/products/dodge-fcscm.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "1-7/16 inch",
+                "housing": "Steel",
+                "sealType": "Triple Seal",
+                "weight": "2.1 kg"
+            }
+        },
+        {
+            "id": "FAG-23120-E1A-K-M-C3",
+            "category": "Roller Bearings",
+            "subcategory": "Spherical Roller Bearings",
+            "name": "FAG 23120-E1A-K-M-C3",
+            "description": "Spherical Roller Bearing with Tapered Bore",
+            "itemNumber": "I01540123",
+            "price": 389.50,
+            "brand": "FAG",
+            "image": "/assets/products/fag-23120.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "100mm",
+                "outerDiameter": "165mm",
+                "width": "52mm",
+                "weight": "3.85 kg"
+            }
+        },
+        {
+            "id": "THK-HSR20A",
+            "category": "Linear Motion",
+            "subcategory": "Linear Guides",
+            "name": "THK HSR20A",
+            "description": "Linear Motion Guide Block",
+            "itemNumber": "I01541234",
+            "price": 215.30,
+            "brand": "THK",
+            "image": "/assets/products/thk-hsr20.jpg",
+            "inStock": true,
+            "specifications": {
+                "railWidth": "20mm",
+                "blockLength": "63mm",
+                "blockWidth": "34mm",
+                "weight": "0.31 kg"
+            }
+        },
+        {
+            "id": "NTN-6305LLU",
+            "category": "Ball Bearings",
+            "subcategory": "Deep Groove Ball Bearings",
+            "name": "NTN 6305LLU",
+            "description": "Contact Sealed Deep Groove Ball Bearing",
+            "itemNumber": "I01542345",
+            "price": 42.80,
+            "brand": "NTN",
+            "image": "/assets/products/ntn-6305.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "25mm",
+                "outerDiameter": "62mm",
+                "width": "17mm",
+                "weight": "0.22 kg"
+            }
+        },
+        {
+            "id": "TIMKEN-NA48290SW-48220D",
+            "category": "Roller Bearings",
+            "subcategory": "Tapered Roller Bearings",
+            "name": "TIMKEN NA48290SW-48220D",
+            "description": "Double Row Tapered Roller Bearing Assembly",
+            "itemNumber": "I01543456",
+            "price": 425.60,
+            "brand": "TIMKEN",
+            "image": "/assets/products/timken-na48290.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "3 inch",
+                "outerDiameter": "4.92 inch",
+                "width": "2.51 inch",
+                "weight": "4.25 kg"
+            }
+        },
+        {
+            "id": "SKF-23230CCK-W33",
+            "category": "Roller Bearings",
+            "subcategory": "Spherical Roller Bearings",
+            "name": "SKF 23230CCK/W33",
+            "description": "Spherical Roller Bearing with Tapered Bore",
+            "itemNumber": "I01544567",
+            "price": 598.90,
+            "brand": "SKF",
+            "image": "/assets/products/skf-23230.jpg",
+            "inStock": true,
+            "specifications": {
+                "bore": "150mm",
+                "outerDiameter": "270mm",
+                "width": "96mm",
+                "weight": "18.5 kg"
+            }
+        }
+    ],
+    "suggestions": [
+        "2 bolt flange bearing",
+        "4 bolt flange bearing",
+        "linear bearing",
+        "needle roller bearing",
+        "dodge pillow block bearing",
+        "SKF ball bearing",
+        "TIMKEN roller bearing",
+        "NTN mounted bearing",
+        "spherical roller bearing",
+        "tapered roller bearing",
+        "cylindrical roller bearing",
+        "deep groove ball bearing",
+        "linear motion guide",
+        "cartridge bearing",
+        "sealed ball bearing",
+        "metric bearing",
+        "inch bearing",
+        "high precision bearing",
+        "heavy duty bearing",
+        "cast iron housing"
+    ],
+    "categories": [
+        {
+            "id": 1,
+            "name": "Mounted Bearings",
+            "path": "Bearings > Mounted Bearings",
+            "productCount": 5
+        },
+        {
+            "id": 2,
+            "name": "Pillow Block Bearings",
+            "path": "Bearings > Mounted Bearings > Pillow Block Bearings",
+            "productCount": 2
+        },
+        {
+            "id": 3,
+            "name": "Flange Bearings",
+            "path": "Bearings > Mounted Bearings > Flange Bearings",
+            "productCount": 2
+        },
+        {
+            "id": 4,
+            "name": "Cartridge Bearings",
+            "path": "Bearings > Mounted Bearings > Cartridge Bearings",
+            "productCount": 1
+        },
+        {
+            "id": 5,
+            "name": "Ball Bearings",
+            "path": "Bearings > Ball Bearings",
+            "productCount": 4
+        },
+        {
+            "id": 6,
+            "name": "Deep Groove Ball Bearings",
+            "path": "Bearings > Ball Bearings > Deep Groove Ball Bearings",
+            "productCount": 4
+        },
+        {
+            "id": 7,
+            "name": "Roller Bearings",
+            "path": "Bearings > Roller Bearings",
+            "productCount": 9
+        },
+        {
+            "id": 8,
+            "name": "Spherical Roller Bearings",
+            "path": "Bearings > Roller Bearings > Spherical Roller Bearings",
+            "productCount": 3
+        },
+        {
+            "id": 9,
+            "name": "Cylindrical Roller Bearings",
+            "path": "Bearings > Roller Bearings > Cylindrical Roller Bearings",
+            "productCount": 2
+        },
+        {
+            "id": 10,
+            "name": "Tapered Roller Bearings",
+            "path": "Bearings > Roller Bearings > Tapered Roller Bearings",
+            "productCount": 4
+        },
+        {
+            "id": 11,
+            "name": "Needle Roller Bearings",
+            "path": "Bearings > Roller Bearings > Needle Roller Bearings",
+            "productCount": 1
+        },
+        {
+            "id": 12,
+            "name": "Linear Motion",
+            "path": "Bearings > Linear Motion",
+            "productCount": 2
+        },
+        {
+            "id": 13,
+            "name": "Linear Ball Bearings",
+            "path": "Bearings > Linear Motion > Linear Ball Bearings",
+            "productCount": 1
+        },
+        {
+            "id": 14,
+            "name": "Linear Guides",
+            "path": "Bearings > Linear Motion > Linear Guides",
+            "productCount": 1
+        }
+    ],
+    "brands": [
+        {
+            "id": 1,
+            "name": "SKF",
+            "logo": "/assets/brands/skf.png",
+            "productCount": 5,
+            "origin": "Sweden"
+        },
+        {
+            "id": 2,
+            "name": "DODGE",
+            "logo": "/assets/brands/dodge.png",
+            "productCount": 3,
+            "origin": "USA"
+        },
+        {
+            "id": 3,
+            "name": "TIMKEN",
+            "logo": "/assets/brands/timken.png",
+            "productCount": 3,
+            "origin": "USA"
+        },
+        {
+            "id": 4,
+            "name": "NTN",
+            "logo": "/assets/brands/ntn.png",
+            "productCount": 3,
+            "origin": "Japan"
+        },
+        {
+            "id": 5,
+            "name": "NSK",
+            "logo": "/assets/brands/nsk.png",
+            "productCount": 2,
+            "origin": "Japan"
+        },
+        {
+            "id": 6,
+            "name": "FAG",
+            "logo": "/assets/brands/fag.png",
+            "productCount": 2,
+            "origin": "Germany"
+        },
+        {
+            "id": 7,
+            "name": "IKO",
+            "logo": "/assets/brands/iko.png",
+            "productCount": 1,
+            "origin": "Japan"
+        },
+        {
+            "id": 8,
+            "name": "INA",
+            "logo": "/assets/brands/ina.png",
+            "productCount": 1,
+            "origin": "Germany"
+        },
+        {
+            "id": 9,
+            "name": "THK",
+            "logo": "/assets/brands/thk.png",
+            "productCount": 1,
+            "origin": "Japan"
+        }
+    ],
+    "filters": {
+        "priceRanges": [
+            {
+                "min": 0,
+                "max": 50,
+                "label": "Under $50"
+            },
+            {
+                "min": 50,
+                "max": 100,
+                "label": "$50 - $100"
+            },
+            {
+                "min": 100,
+                "max": 200,
+                "label": "$100 - $200"
+            },
+            {
+                "min": 200,
+                "max": 500,
+                "label": "$200 - $500"
+            },
+            {
+                "min": 500,
+                "max": null,
+                "label": "Over $500"
+            }
+        ],
+        "availability": [
+            {
+                "value": "inStock",
+                "label": "In Stock"
+            },
+            {
+                "value": "outOfStock",
+                "label": "Out of Stock"
+            },
+            {
+                "value": "preOrder",
+                "label": "Pre-Order"
+            }
+        ]
+    }
+}

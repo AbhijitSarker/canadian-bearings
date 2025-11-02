@@ -1,5 +1,6 @@
-import React from "react";
-import ProductCard from "../ui/product-card";
+import React, { useMemo } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import SearchLineIcon from "@/assets/icons/serachLine";
 import { SlidersHorizontal, ChevronDown, Check, Layout, List } from "lucide-react";
 import {
@@ -8,10 +9,49 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "../ui/dropdown-menu";
+import searchData from "@/data/search-data.json";
 
-const SearchResults = ({ products = [], query, setQuery, sort, setSort, view = "grid", setView }) => {
-    // products here are already filtered/paginated by parent
-    const results = products || [];
+const SearchResults = ({ query = "", setQuery, sort, setSort, view = "grid", setView }) => {
+    // Filter and sort products based on search query
+    const sortedProducts = useMemo(() => {
+        const searchQuery = query.toLowerCase().trim();
+        
+        // If no search query, show empty results
+        if (!searchQuery) return [];
+        
+        // Filter products
+        const results = searchData.products.filter(product => {
+            const searchFields = [
+                product.name,
+                product.description,
+                product.category,
+                product.brand,
+                product.itemNumber
+            ].map(field => (field || "").toLowerCase());
+
+            return searchFields.some(field => field.includes(searchQuery));
+        });
+
+        // Apply sorting
+        return [...results].sort((a, b) => {
+            switch (sort) {
+                case 'price-asc':
+                    return a.price - b.price;
+                case 'price-desc':
+                    return b.price - a.price;
+                case 'name-asc':
+                    return a.name.localeCompare(b.name);
+                case 'name-desc':
+                    return b.name.localeCompare(a.name);
+                default:
+                    // For relevance, prioritize matches in name and item number
+                    const aNameMatch = a.name.toLowerCase().includes(searchQuery);
+                    const bNameMatch = b.name.toLowerCase().includes(searchQuery);
+                    if (aNameMatch !== bNameMatch) return bNameMatch - aNameMatch;
+                    return a.name.localeCompare(b.name);
+            }
+        });
+    }, [query, sort]);
 
     return (
         <div>
@@ -72,11 +112,46 @@ const SearchResults = ({ products = [], query, setQuery, sort, setSort, view = "
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-                {results.map((p) => (
-                    <ProductCard key={p.id} product={p} />
+            <div className={`grid gap-6 p-4 ${view === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'}`}>
+                {sortedProducts.length === 0 ? (
+                    <div className="col-span-full text-center py-8">
+                        <p className="text-neutral-500">No products found matching your search criteria.</p>
+                    </div>
+                ) : sortedProducts.map((product) => (
+                    <Link
+                        key={product.id}
+                        href={`/products/${product.id}`}
+                        className="group rounded-lg border border-neutral-200 bg-white p-4 transition-shadow hover:shadow-lg"
+                    >
+                        <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-neutral-50">
+                            <Image
+                                src={product.image}
+                                alt={product.name}
+                                fill
+                                className="object-contain"
+                            />
+                        </div>
+                        <div className="mt-4">
+                            <h3 className="font-medium text-neutral-900">{product.name}</h3>
+                            <p className="mt-1 text-sm text-neutral-500">{product.description}</p>
+                            <p className="mt-1 text-sm text-neutral-400">Item #{product.itemNumber}</p>
+                            <div className="mt-2 flex items-center justify-between">
+                                <span className="text-lg font-medium text-neutral-900">
+                                    ${product.price}
+                                </span>
+                                <span className="text-sm text-neutral-500">{product.brand}</span>
+                            </div>
+                        </div>
+                    </Link>
                 ))}
             </div>
+            {sortedProducts.length > 0 && (
+                <div className="border-t p-4">
+                    <p className="text-sm text-neutral-500">
+                        Found {sortedProducts.length} products matching your search
+                    </p>
+                </div>
+            )}
         </div>
     );
 };

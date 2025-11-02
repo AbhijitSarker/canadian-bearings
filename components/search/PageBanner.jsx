@@ -1,9 +1,13 @@
 import React from "react";
 import greenBanner from "@/assets/greenBanner.svg";
 
-const PageBanner = ({ title = 'Showing search result...', subtitle }) => {
+const PageBanner = ({ query, subtitle }) => {
   // Imported assets can be either a URL string or an object (e.g. { src, height, width })
   const bgUrl = typeof greenBanner === "string" ? greenBanner : (greenBanner?.src ?? greenBanner?.default ?? null);
+  
+  const title = query 
+    ? `Search results for "${query}"`
+    : 'Search our products';
 
   return (
     <header
