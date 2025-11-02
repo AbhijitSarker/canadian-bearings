@@ -4,12 +4,14 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import SearchLineIcon from "@/assets/icons/serachLine";
 import SearchSuggestions from "./SearchSuggestions";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function SearchBar() {
     const [query, setQuery] = useState("");
     const [showSuggestions, setShowSuggestions] = useState(false);
     const searchRef = useRef(null);
     const router = useRouter();
+    const { isAuthenticated } = useAuth();
 
     // Close suggestions when clicking outside
     useEffect(() => {
@@ -74,9 +76,10 @@ export default function SearchBar() {
                         type="text"
                         value={query}
                         onChange={handleInputChange}
-                        onFocus={() => query.length > 0 && setShowSuggestions(true)}
-                        placeholder="Search products..."
-                        className="flex-1 ml-5 text-sm md:text-base bg-transparent outline-none truncate min-w-0 pr-2 h-11 md:h-[44px]"
+                        onFocus={() => isAuthenticated && query.length > 0 && setShowSuggestions(true)}
+                        placeholder={isAuthenticated ? "Search products..." : "Please sign in to search"}
+                        disabled={!isAuthenticated}
+                        className={`flex-1 ml-5 text-sm md:text-base bg-transparent outline-none truncate min-w-0 pr-2 h-11 md:h-[44px] ${!isAuthenticated ? 'cursor-not-allowed text-neutral-400' : ''}`}
                     />
                     <button
                         type="submit"

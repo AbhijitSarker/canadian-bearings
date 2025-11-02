@@ -4,6 +4,7 @@ import site_logo from "@/assets/site_logo.svg"
 import Image from "next/image";
 import ListUnorderedIcon from "@/assets/icons/listUnordered";
 import MapPinLineIcon from "@/assets/icons/mapPinLine";
+import LowerNavbar from "./LowerNavbar";
 import Heart3LineIcon from "@/assets/icons/heart3Line";
 import UserLineIcon from "@/assets/icons/userLine";
 import ShoppingCart2LineIcon from "@/assets/icons/shoppingCart2Line";
@@ -23,6 +24,7 @@ export default function Navbar() {
     };
 
     return (
+        <>
         <section className="bg-green-50 py-[10px]">
             <div className="container mx-auto px-4">
                 {/* Desktop & Tablet Layout */}
@@ -168,5 +170,7 @@ export default function Navbar() {
                 </div>
             </div>
         </section>
+        {isAuthenticated && <LowerNavbar />}
+        </>
     )
 }

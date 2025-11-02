@@ -6,6 +6,7 @@ import TopHeader from "@/components/common/topHeader";
 import Footer from "@/components/home/footer";
 import BreadcrumbBar from "@/components/common/BreadcrumbBar";
 import { AuthProvider } from "@/contexts/AuthContext";
+import LowerNavbar from "@/components/common/LowerNavbar";
 
 const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
 
