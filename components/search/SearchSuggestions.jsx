@@ -55,10 +55,10 @@ export default function SearchSuggestions({ query = "", onSuggestionClick = () =
     };
 
     return (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-neutral-200 rounded-2xl shadow-2xl z-50 overflow-hidden max-w-full max-h-[600px]">
-            <div className="grid grid-cols-12 h-full">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-neutral-200 rounded-2xl shadow-2xl z-50 overflow-hidden max-w-full max-h-[80vh] md:max-h-[600px]">
+            <div className="grid grid-cols-1 md:grid-cols-12 h-full">
                 {/* Left Column - Suggestions */}
-                <div className="col-span-4 border-r border-neutral-200 py-4 overflow-y-auto max-h-[600px]">
+                <div className="md:col-span-4 border-b md:border-b-0 md:border-r border-neutral-200 py-4 overflow-y-auto max-h-[40vh] md:max-h-[600px]">
                     {/* Search Suggestions */}
                     {filteredSuggestions.length > 0 && (
                         <div className="border-b border-neutral-200 pb-3">
@@ -134,9 +134,9 @@ export default function SearchSuggestions({ query = "", onSuggestionClick = () =
                 </div>
 
                 {/* Right Column - Recommended Products */}
-                <div className="col-span-8 p-6 overflow-y-auto max-h-[600px]">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-[15px] font-normal text-neutral-950">
+                <div className="md:col-span-8 p-4 md:p-6 overflow-y-auto max-h-[40vh] md:max-h-[600px]">
+                    <div className="flex items-center justify-between mb-4 md:mb-6">
+                        <h3 className="text-[14px] md:text-[15px] font-normal text-neutral-950">
                             Recommended Products for "<span className="font-semibold">{query}</span>"
                         </h3>
                         <button
@@ -148,7 +148,7 @@ export default function SearchSuggestions({ query = "", onSuggestionClick = () =
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                         {filteredProducts.map((product) => (
                             <div key={product.id} onClick={() => onSuggestionClick(product.name)}>
                                 <ProductCard 
