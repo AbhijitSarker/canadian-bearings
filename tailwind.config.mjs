@@ -6,6 +6,9 @@ export default {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  plugins: [
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
   theme: {
   	extend: {
   		colors: {
