@@ -117,7 +117,7 @@
             "itemNumber": "I01531234",
             "price": 165.99,
             "brand": "DODGE",
-            "image": "/assets/products/dodge-p4b.jpg",
+            "image": "/assets/categories/category7.svg",
             "inStock": true,
             "specifications": {
                 "bore": "2-7/16 inch",

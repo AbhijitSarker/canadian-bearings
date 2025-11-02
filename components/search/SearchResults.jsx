@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SearchLineIcon from "@/assets/icons/serachLine";
 import { SlidersHorizontal, ChevronDown, Check, Layout, List } from "lucide-react";
+import ProductCard from "@/components/ui/product-card";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -117,31 +118,14 @@ const SearchResults = ({ query = "", setQuery, sort, setSort, view = "grid", set
                         <p className="text-neutral-500">No products found matching your search criteria.</p>
                     </div>
                 ) : sortedProducts.map((product) => (
-                    <Link
-                        key={product.id}
-                        href={`/products/${product.id}`}
-                        className="group rounded-lg border border-neutral-200 bg-white p-4 transition-shadow hover:shadow-lg"
-                    >
-                        <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-neutral-50">
-                            <Image
-                                src={product.image}
-                                alt={product.name}
-                                fill
-                                className="object-contain"
-                            />
-                        </div>
-                        <div className="mt-4">
-                            <h3 className="font-medium text-neutral-900">{product.name}</h3>
-                            <p className="mt-1 text-sm text-neutral-500">{product.description}</p>
-                            <p className="mt-1 text-sm text-neutral-400">Item #{product.itemNumber}</p>
-                            <div className="mt-2 flex items-center justify-between">
-                                <span className="text-lg font-medium text-neutral-900">
-                                    ${product.price}
-                                </span>
-                                <span className="text-sm text-neutral-500">{product.brand}</span>
-                            </div>
-                        </div>
-                    </Link>
+                    <div key={product.id}>
+                        <ProductCard 
+                            product={{
+                                ...product,
+                                image: `/assets/categories/${product.categoryImage || 'category1.png'}`
+                            }}
+                        />
+                    </div>
                 ))}
             </div>
             {sortedProducts.length > 0 && (

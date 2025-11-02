@@ -3,8 +3,9 @@
 import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Heart } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import searchData from "@/data/search-data.json";
+import ProductCard from "@/components/ui/product-card";
 
 export default function SearchSuggestions({ query = "", onSuggestionClick = () => { } }) {
     // Filter suggestions based on query
@@ -149,72 +150,13 @@ export default function SearchSuggestions({ query = "", onSuggestionClick = () =
 
                     <div className="grid grid-cols-2 gap-4">
                         {filteredProducts.map((product) => (
-                            <div
-                                key={product.id}
-                                className="bg-white rounded-xl border border-neutral-200 p-4 hover:border-green-500 hover:shadow-lg transition-all cursor-pointer group relative"
-                                onClick={() => onSuggestionClick(query)}
-                            >
-                                {/* Favorite Icon */}
-                                <button
-                                    className="absolute top-4 right-4 z-10 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-shadow"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        // Handle favorite toggle
+                            <div key={product.id} onClick={() => onSuggestionClick(product.name)}>
+                                <ProductCard 
+                                    product={{
+                                        ...product,
+                                        image: `/assets/categories/${product.categoryImage || 'category1.png'}`
                                     }}
-                                >
-                                    <Heart size={18} className="text-neutral-400 hover:text-red-500 transition-colors" />
-                                </button>
-
-                                {/* Product Image */}
-                                <div className="bg-neutral-50 rounded-lg mb-4 h-36 flex items-center justify-center overflow-hidden">
-                                    <img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="w-full h-full object-contain p-3"
-                                    />
-                                </div>
-
-                                {/* Category */}
-                                <p className="text-xs text-neutral-600 mb-2">{product.category}</p>
-
-                                {/* Product Name */}
-                                <h4 className="text-base font-medium text-neutral-950 mb-2 line-clamp-1">
-                                    {product.name}
-                                </h4>
-
-                                {/* Description */}
-                                <p className="text-xs text-neutral-600 mb-3 line-clamp-2 leading-relaxed">
-                                    {product.description}
-                                </p>
-
-                                {/* Item Number */}
-                                <p className="text-xs text-neutral-500 mb-4">
-                                    Item #{product.itemNumber}
-                                </p>
-
-                                {/* Price and Add to Cart */}
-                                <div className="flex items-center justify-between pt-3 border-t border-neutral-200">
-                                    <div className="flex items-baseline gap-0.5">
-                                        <span className="text-lg font-semibold text-neutral-950">
-                                            ${product.price}
-                                        </span>
-                                        <span className="text-xs text-neutral-600">/each</span>
-                                    </div>
-                                    <button
-                                        className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors flex items-center gap-1.5"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            // Handle add to cart
-                                        }}
-                                    >
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <path d="M9 2L7 6H3L6 12L3 18H7L9 22H15L17 18H21L18 12L21 6H17L15 2H9Z" />
-                                            <circle cx="9" cy="21" r="1" />
-                                            <circle cx="20" cy="21" r="1" />
-                                        </svg>
-                                        Add to cart
-                                    </button>
-                                </div>
+                                />
                             </div>
                         ))}
                     </div>
