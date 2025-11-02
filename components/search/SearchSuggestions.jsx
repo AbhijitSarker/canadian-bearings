@@ -2,76 +2,15 @@
 
 import { useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight, Heart } from "lucide-react";
+import searchData from "@/data/search-data.json";
 
-// Placeholder images - replace with your actual images
-const headphoneImg = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop";
-const macbookImg = "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200&h=200&fit=crop";
-const playstationImg = "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=200&h=200&fit=crop";
-
-// Dummy data
-const suggestionsList = [
-    "2 bolt flange bearing",
-    "linear bearing",
-    "needle roller bearing",
-    "4 bolt flange bearing",
-    "dodge pillow block bearing",
-];
-
-const categoriesList = [
-    { id: 1, name: "2 bolt flange bearing", path: "Bearings > Mounted Bearings" },
-    { id: 2, name: "2 bolt flange bearing", path: "Bearings > Mounted Bearings > Pillow Block Bearings" },
-    { id: 3, name: "2 bolt flange bearing", path: "Bearings > Mounted Bearings > Flange Bearings" },
-];
-
-const brandsList = [
-    { id: 1, name: "2 bolt flange bearing", brand: "Dodge" },
-    { id: 2, name: "2 bolt flange bearing", brand: "SKF" },
-];
-
-const recommendedProducts = [
-    {
-        id: 1,
-        category: "Ball Bearings",
-        name: "SKF 6203 2ZJEM",
-        description: "6203 2ZJEM | Single Row Cylindrical Bore Deep Groove Ball Bearing",
-        itemNumber: "I01525229",
-        price: 31.89,
-        image: headphoneImg,
-    },
-    {
-        id: 2,
-        category: "Ball Bearings",
-        name: "SKF 6203 2ZJEM",
-        description: "6203 2ZJEM | Single Row Cylindrical Bore Deep Groove Ball Bearing",
-        itemNumber: "I01525229",
-        price: 31.89,
-        image: macbookImg,
-    },
-    {
-        id: 3,
-        category: "Ball Bearings",
-        name: "SKF 6203 2ZJEM",
-        description: "6203 2ZJEM | Single Row Cylindrical Bore Deep Groove Ball Bearing",
-        itemNumber: "I01525229",
-        price: 31.89,
-        image: playstationImg,
-    },
-    {
-        id: 4,
-        category: "Ball Bearings",
-        name: "SKF 6203 2ZJEM",
-        description: "6203 2ZJEM | Single Row Cylindrical Bore Deep Groove Ball Bearing",
-        itemNumber: "I01525229",
-        price: 31.89,
-        image: headphoneImg,
-    },
-];
-
-export default function SearchSuggestions({ query = "bearing", onSuggestionClick = () => { } }) {
+export default function SearchSuggestions({ query = "", onSuggestionClick = () => { } }) {
     // Filter suggestions based on query
     const filteredSuggestions = useMemo(() => {
-        return suggestionsList
+        if (!query) return [];
+        return searchData.suggestions
             .filter((suggestion) =>
                 suggestion.toLowerCase().includes(query.toLowerCase())
             )
@@ -79,19 +18,25 @@ export default function SearchSuggestions({ query = "bearing", onSuggestionClick
     }, [query]);
 
     const filteredCategories = useMemo(() => {
-        return categoriesList
+        if (!query) return [];
+        return searchData.categories
             .filter((category) =>
-                category.name.toLowerCase().includes(query.toLowerCase())
+                category.name.toLowerCase().includes(query.toLowerCase()) ||
+                category.path.toLowerCase().includes(query.toLowerCase())
             )
             .slice(0, 3);
     }, [query]);
 
-    const filteredBrands = useMemo(() => {
-        return brandsList
-            .filter((brand) =>
-                brand.name.toLowerCase().includes(query.toLowerCase())
+    const filteredProducts = useMemo(() => {
+        if (!query) return [];
+        return searchData.products
+            .filter((product) =>
+                product.name.toLowerCase().includes(query.toLowerCase()) ||
+                product.description.toLowerCase().includes(query.toLowerCase()) ||
+                product.brand.toLowerCase().includes(query.toLowerCase()) ||
+                product.itemNumber.toLowerCase().includes(query.toLowerCase())
             )
-            .slice(0, 2);
+            .slice(0, 4);
     }, [query]);
 
     // Highlight matching text
@@ -160,24 +105,24 @@ export default function SearchSuggestions({ query = "bearing", onSuggestionClick
                         </div>
                     )}
 
-                    {/* Brands */}
-                    {filteredBrands.length > 0 && (
+                    {/* Products */}
+                    {filteredProducts.length > 0 && (
                         <div className="py-3">
                             <h3 className="text-xs font-normal text-neutral-400 uppercase tracking-wide mb-2 px-4">
-                                BRANDS
+                                PRODUCTS
                             </h3>
                             <ul className="space-y-0">
-                                {filteredBrands.map((brand) => (
-                                    <li key={brand.id}>
+                                {filteredProducts.map((product) => (
+                                    <li key={product.id}>
                                         <button
-                                            onClick={() => onSuggestionClick(brand.name)}
+                                            onClick={() => onSuggestionClick(product.name)}
                                             className="w-full text-left px-4 py-2 hover:bg-neutral-50 transition-colors"
                                         >
                                             <div className="text-[15px]">
-                                                {highlightMatch(brand.name, query)}
+                                                {highlightMatch(product.name, query)}
                                             </div>
                                             <div className="text-[13px] text-neutral-500 mt-0.5">
-                                                in {brand.brand}
+                                                in {product.category}
                                             </div>
                                         </button>
                                     </li>
@@ -203,7 +148,7 @@ export default function SearchSuggestions({ query = "bearing", onSuggestionClick
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        {recommendedProducts.map((product) => (
+                        {filteredProducts.map((product) => (
                             <div
                                 key={product.id}
                                 className="bg-white rounded-xl border border-neutral-200 p-4 hover:border-green-500 hover:shadow-lg transition-all cursor-pointer group relative"

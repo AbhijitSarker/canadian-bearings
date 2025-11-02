@@ -44,13 +44,32 @@ const SearchShell = ({ initialQuery = "" }) => {
   }, [filters]);
 
   const filteredProducts = useMemo(() => {
-    return searchData.products.filter((p) => {
+    // First apply filters
+    let results = searchData.products.filter((p) => {
       if (selectedLabels.categories?.length > 0 && !selectedLabels.categories.includes(p.category)) return false;
       if (selectedLabels.brands?.length > 0 && !selectedLabels.brands.includes(p.brand)) return false;
       if (selectedLabels.types?.length > 0 && !selectedLabels.types.includes(p.type)) return false;
       return true;
     });
-  }, [selectedLabels]);
+
+    // Then apply search query if exists
+    if (query?.trim()) {
+      const searchQuery = query.toLowerCase().trim();
+      results = results.filter(product => {
+        const searchFields = [
+          product.name,
+          product.description,
+          product.category,
+          product.brand,
+          product.itemNumber
+        ].map(field => (field || "").toLowerCase());
+
+        return searchFields.some(field => field.includes(searchQuery));
+      });
+    }
+
+    return results;
+  }, [selectedLabels, query]);
 
   // apply query and sort, then paginate
   const searchedAndSorted = useMemo(() => {

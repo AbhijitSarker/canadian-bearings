@@ -14,12 +14,11 @@ import searchData from "@/data/search-data.json";
 const SearchResults = ({ query = "", setQuery, sort, setSort, view = "grid", setView }) => {
     // Filter and sort products based on search query
     const sortedProducts = useMemo(() => {
+        // If no search query, show all products
+        if (!query?.trim()) return searchData.products;
+        
+        // Filter products based on search query
         const searchQuery = query.toLowerCase().trim();
-        
-        // If no search query, show empty results
-        if (!searchQuery) return [];
-        
-        // Filter products
         const results = searchData.products.filter(product => {
             const searchFields = [
                 product.name,
