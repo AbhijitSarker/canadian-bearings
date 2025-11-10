@@ -10,6 +10,12 @@ import SidebarNav from "@/components/account/SidebarNav";
 import PersonalDetails from "@/components/account/PersonalDetails";
 import ShoppingAddress from "@/components/account/ShoppingAddress";
 import AccountPageBanner from "@/components/account/PageBanner";
+import MyAccountTab from "@/components/account/MyAccountTab";
+import OrderHistoryTab from "@/components/account/OrderHistoryTab";
+import PasswordSecurityTab from "@/components/account/PasswordSecurityTab";
+import QuoteTab from "@/components/account/QuoteTab";
+import KnowledgeCenterTab from "@/components/account/KnowledgeCenterTab";
+import CustomerSupportTab from "@/components/account/CustomerSupportTab";
 
 export default function MyAccountPage() {
   const { user } = useAuth();
@@ -78,55 +84,25 @@ export default function MyAccountPage() {
             {/* Main Content Area */}
             <div className="lg:col-span-9">
               {activeTab === "my-account" && (
-                <div className="space-y-6">
-                  <PersonalDetails
-                    personalDetails={personalDetails}
-                    setPersonalDetails={setPersonalDetails}
-                    onSave={handlePersonalDetailsSave}
-                  />
-
-                  <ShoppingAddress
-                    shoppingAddress={shoppingAddress}
-                    setShoppingAddress={setShoppingAddress}
-                    onSave={handleAddressSave}
-                  />
-                </div>
+                <MyAccountTab
+                  personalDetails={personalDetails}
+                  setPersonalDetails={setPersonalDetails}
+                  onSavePersonal={handlePersonalDetailsSave}
+                  shoppingAddress={shoppingAddress}
+                  setShoppingAddress={setShoppingAddress}
+                  onSaveAddress={handleAddressSave}
+                />
               )}
 
-              {activeTab === "order-history" && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h2 className="text-2xl font-medium text-gray-900 mb-4">Order History</h2>
-                  <p className="text-gray-600">Your order history will appear here.</p>
-                </div>
-              )}
+              {activeTab === "order-history" && <OrderHistoryTab />}
 
-              {activeTab === "password-security" && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h2 className="text-2xl font-medium text-gray-900 mb-4">Password and Security</h2>
-                  <p className="text-gray-600">Update your password and security settings.</p>
-                </div>
-              )}
+              {activeTab === "password-security" && <PasswordSecurityTab />}
 
-              {activeTab === "quote" && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h2 className="text-2xl font-medium text-gray-900 mb-4">Quote</h2>
-                  <p className="text-gray-600">Request and manage your quotes here.</p>
-                </div>
-              )}
+              {activeTab === "quote" && <QuoteTab />}
 
-              {activeTab === "knowledge-center" && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h2 className="text-2xl font-medium text-gray-900 mb-4">Knowledge Center</h2>
-                  <p className="text-gray-600">Browse our knowledge base and resources.</p>
-                </div>
-              )}
+              {activeTab === "knowledge-center" && <KnowledgeCenterTab />}
 
-              {activeTab === "customer-support" && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h2 className="text-2xl font-medium text-gray-900 mb-4">Customer Support</h2>
-                  <p className="text-gray-600">Get help and support for your account.</p>
-                </div>
-              )}
+              {activeTab === "customer-support" && <CustomerSupportTab />}
             </div>
           </div>
         </div>
