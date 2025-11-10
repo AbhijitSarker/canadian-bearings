@@ -1,75 +1,144 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { EyeIcon, EyeOffIcon, Lock } from "lucide-react";
+import { useState } from "react";
+// import { EyeIcon, EyeOffIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 
-export default function PasswordSecurityTab() {
-  const [oldPassword, setOldPassword] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [rules, setRules] = useState({
-    length: false,
-    containsName: false,
-    numberOrSymbol: false,
+export default function PasswordAndSecurity() {
+  const [showPassword, setShowPassword] = useState({
+    old: false,
+    new: false,
+    confirm: false,
   });
 
-  useEffect(() => {
-    setRules({
-      length: password.length >= 8,
-      containsName: !(password.toLowerCase().includes("admin") || password.toLowerCase().includes("example")),
-      numberOrSymbol: /[0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password),
-    });
-  }, [password]);
-
-  const handleSave = (e) => {
-    e.preventDefault();
-    if (!password || password !== confirm) {
-      toast.error("Passwords must match and not be empty.");
-      return;
-    }
-    if (!rules.length || !rules.numberOrSymbol) {
-      toast.error("Password does not meet the requirements.");
-      return;
-    }
-    toast.success("Password updated successfully");
-    setOldPassword("");
-    setPassword("");
-    setConfirm("");
-  };
-
   return (
-    <form className="bg-white rounded-lg shadow-sm border border-gray-200 p-6" onSubmit={handleSave}>
-      <h2 className="text-2xl font-medium text-gray-900 mb-4">Password and Security</h2>
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mx-auto">
+      {/* Header */}
+      <h2 className="text-2xl font-semibold text-gray-900 mb-8">
+        Password and Security
+      </h2>
 
-      <div className="grid grid-cols-1 gap-4 mb-4">
+      {/* Form */}
+      <form className="space-y-6">
+        {/* Old Password */}
         <div>
-          <label className="text-sm text-gray-700">Old Password <span className="text-green-500 float-right text-xs">Forget Password?</span></label>
-          <input type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} className="mt-1 block w-full rounded-md border border-gray-200 px-3 py-2 text-sm" />
+          <div className="flex justify-between items-center mb-1">
+            <label className="text-sm font-medium text-gray-700">Old Password</label>
+            <button
+              type="button"
+              className="text-sm text-green-600 hover:underline font-medium"
+            >
+              Forget Password?
+            </button>
+          </div>
+          <div className="relative">
+            <Lock className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
+            <input
+              type={showPassword.old ? "text" : "password"}
+              placeholder="••••••••••"
+              className="w-full border border-gray-300 rounded-lg pl-10 pr-10 py-2.5 text-sm focus:ring-1 focus:ring-green-500 focus:border-green-500 outline-none"
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setShowPassword((prev) => ({ ...prev, old: !prev.old }))
+              }
+              className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+            >
+              {showPassword.old ? (
+                <EyeOffIcon className="w-5 h-5" />
+              ) : (
+                <EyeIcon className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
 
+        {/* New Password */}
         <div>
-          <label className="text-sm text-gray-700">Password</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1 block w-full rounded-md border border-gray-200 px-3 py-2 text-sm" />
+          <label className="text-sm font-medium text-gray-700 mb-1 block">
+            Password
+          </label>
+          <div className="relative">
+            <Lock className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
+            <input
+              type={showPassword.new ? "text" : "password"}
+              placeholder="••••••••••"
+              className="w-full border border-gray-300 rounded-lg pl-10 pr-10 py-2.5 text-sm focus:ring-1 focus:ring-green-500 focus:border-green-500 outline-none"
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setShowPassword((prev) => ({ ...prev, new: !prev.new }))
+              }
+              className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+            >
+              {showPassword.new ? (
+                <EyeOffIcon className="w-5 h-5" />
+              ) : (
+                <EyeIcon className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
 
+        {/* Confirm Password */}
         <div>
-          <label className="text-sm text-gray-700">Confirm Password</label>
-          <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className="mt-1 block w-full rounded-md border border-gray-200 px-3 py-2 text-sm" />
+          <label className="text-sm font-medium text-gray-700 mb-1 block">
+            Confirm Password
+          </label>
+          <div className="relative">
+            <Lock className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
+            <input
+              type={showPassword.confirm ? "text" : "password"}
+              placeholder="••••••••••"
+              className="w-full border border-gray-300 rounded-lg pl-10 pr-10 py-2.5 text-sm focus:ring-1 focus:ring-green-500 focus:border-green-500 outline-none"
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setShowPassword((prev) => ({ ...prev, confirm: !prev.confirm }))
+              }
+              className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+            >
+              {showPassword.confirm ? (
+                <EyeOffIcon className="w-5 h-5" />
+              ) : (
+                <EyeIcon className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div className="mb-4 text-sm text-gray-700">
-        <ul className="space-y-2">
-          <li className={`${rules.length ? 'text-green-600' : 'text-gray-400'}`}>✓ At least 8 characters</li>
-          <li className={`${rules.containsName ? 'text-green-600' : 'text-gray-400'}`}>✓ Cannot contain your name or email address</li>
-          <li className={`${rules.numberOrSymbol ? 'text-green-600' : 'text-gray-400'}`}>✓ Contains a number or symbol</li>
-        </ul>
-      </div>
+        {/* Password rules */}
+        <div className="text-sm text-gray-600 space-y-1">
+          <p>
+            <span className="text-gray-800 font-medium">Password Strength:</span>{" "}
+            Weak
+          </p>
+          <ul className="space-y-0.5">
+            <li>✓ Cannot contain your name or email address</li>
+            <li>✓ At least 8 characters</li>
+            <li>✓ Contains a number or symbol</li>
+          </ul>
+        </div>
 
-      <div className="flex items-center gap-4">
-        <button type="button" className="px-6 py-2 rounded-md border border-gray-200">Back</button>
-        <button type="submit" className="ml-auto bg-green-600 text-white px-6 py-2 rounded-md">Save</button>
-      </div>
-    </form>
+        {/* Buttons */}
+        <div className="flex justify-end gap-4 pt-4">
+          <button
+            type="button"
+            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className="px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

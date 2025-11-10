@@ -3,8 +3,8 @@
 export default function SidebarNav({ activeTab, setActiveTab }) {
   const items = [
     { id: "my-account", label: "My Account" },
-    { id: "order-history", label: "Order History" },
     { id: "password-security", label: "Password and Security" },
+    { id: "order-history", label: "Order History" },
     { id: "quote", label: "Quote" },
     { id: "knowledge-center", label: "Knowledge Center" },
     { id: "customer-support", label: "Customer Support" },
