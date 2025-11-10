@@ -9,6 +9,7 @@ import HeaderBanner from "@/components/account/HeaderBanner";
 import SidebarNav from "@/components/account/SidebarNav";
 import PersonalDetails from "@/components/account/PersonalDetails";
 import ShoppingAddress from "@/components/account/ShoppingAddress";
+import AccountPageBanner from "@/components/account/PageBanner";
 
 export default function MyAccountPage() {
   const { user } = useAuth();
@@ -58,15 +59,14 @@ export default function MyAccountPage() {
 
   return (
     <ProtectedRoute>
-      <div className="bg-gray-50 min-h-screen">
+      <div className="min-h-screen">
         {/* Header Banner */}
-        <HeaderBanner
-          title="My Account"
-          subtitle={`We have over 430 Service Centers conveniently located across North America. Please use the search form below to find the Canadian Service Center near you.`}
+        <AccountPageBanner 
+          title="My Account" 
+          subtitle="We have over 430 Service Centers conveniently located across North America. Please use the search form below to find the Canadian Service Center near you." 
           onPrint={handlePrint}
           onExport={handleExport}
         />
-
         {/* Main Content */}
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

@@ -13,7 +13,7 @@ const PageBanner = ({ query, subtitle }) => {
     <header
       className="relative container mx-auto p-4 bg-cover bg-no-repeat rounded-3xl"
     >
-      <div className="p-8 container mx-auto "
+      <div className="p-8 container mx-auto rounded-xl"
         style={{
           backgroundImage: bgUrl ? `url(${bgUrl})` : undefined,
           backgroundPosition: 'center',
