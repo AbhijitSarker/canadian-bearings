@@ -62,7 +62,7 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <aside className="md:col-span-1 bg-white border rounded p-4">
             <nav className="space-y-2 text-sm">
-              <Link href="/profile" className="block px-3 py-2 rounded bg-green-50 text-green-700 font-medium">My Account</Link>
+              <Link href="/account" className="block px-3 py-2 rounded bg-green-50 text-green-700 font-medium">My Account</Link>
               <a className="block px-3 py-2 rounded hover:bg-gray-50">Order History</a>
               <a className="block px-3 py-2 rounded hover:bg-gray-50">Password and Security</a>
               <a className="block px-3 py-2 rounded hover:bg-gray-50">Quote</a>

@@ -61,7 +61,7 @@ export default function Navbar() {
                                             <p className="text-xs text-neutral-600">{user?.email}</p>
                                         </div>
                                         <Link
-                                            href="/profile"
+                                            href="/account"
                                             className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50"
                                             onClick={() => setUserMenuOpen(false)}
                                         >
@@ -144,7 +144,7 @@ export default function Navbar() {
                                         <p className="text-sm font-medium text-neutral-950 mb-1">{user?.firstName} {user?.lastName}</p>
                                         <p className="text-xs text-neutral-600 mb-3">{user?.email}</p>
                                     </div>
-                                    <Link href="/profile" className="flex items-center gap-x-[5px] text-[14px] text-neutral-950 font-[400] py-2">
+                                    <Link href="/account" className="flex items-center gap-x-[5px] text-[14px] text-neutral-950 font-[400] py-2">
                                         <UserLineIcon />
                                         My Profile
                                     </Link>
