@@ -4,11 +4,7 @@ import { useState } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
-
-import HeaderBanner from "@/components/account/HeaderBanner";
 import SidebarNav from "@/components/account/SidebarNav";
-import PersonalDetails from "@/components/account/PersonalDetails";
-import ShoppingAddress from "@/components/account/ShoppingAddress";
 import AccountPageBanner from "@/components/account/PageBanner";
 import MyAccountTab from "@/components/account/MyAccountTab";
 import OrderHistoryTab from "@/components/account/OrderHistoryTab";

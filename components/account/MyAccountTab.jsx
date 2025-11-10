@@ -1,7 +1,8 @@
 "use client";
 
-import PersonalDetails from "@/components/account/PersonalDetails";
-import ShoppingAddress from "@/components/account/ShoppingAddress";
+import { useState } from "react";
+import AccountInfoView from "@/components/account/AccountInfoView";
+import AccountInfoForm from "@/components/account/AccountInfoForm";
 
 export default function MyAccountTab({
   personalDetails,
@@ -11,19 +12,32 @@ export default function MyAccountTab({
   setShoppingAddress,
   onSaveAddress,
 }) {
-  return (
-    <div className="space-y-6">
-      <PersonalDetails
-        personalDetails={personalDetails}
-        setPersonalDetails={setPersonalDetails}
-        onSave={onSavePersonal}
-      />
+  const [isEditMode, setIsEditMode] = useState(false);
 
-      <ShoppingAddress
+  const handleCancel = () => {
+    setIsEditMode(false);
+  };
+
+  if (!isEditMode) {
+    return (
+      <AccountInfoView
+        personalDetails={personalDetails}
         shoppingAddress={shoppingAddress}
-        setShoppingAddress={setShoppingAddress}
-        onSave={onSaveAddress}
+        onEdit={() => setIsEditMode(true)}
       />
-    </div>
+    );
+  }
+
+  return (
+    <AccountInfoForm
+      personalDetails={personalDetails}
+      setPersonalDetails={setPersonalDetails}
+      shoppingAddress={shoppingAddress}
+      setShoppingAddress={setShoppingAddress}
+      onSavePersonal={onSavePersonal}
+      onSaveAddress={onSaveAddress}
+      onCancel={handleCancel}
+    />
   );
 }
+
