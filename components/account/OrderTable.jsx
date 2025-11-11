@@ -49,33 +49,33 @@ export default function OrderTable({ orders }) {
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden">
+    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
     <Table>
       <TableHeader className="">
         <TableRow className="border-b hover:bg-transparent">
-          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7]">Order Number</TableHead>
-          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7]">Customer PO</TableHead>
-          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7]">Ship To</TableHead>
-          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7]">Order Date</TableHead>
-          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7]">Payment</TableHead>
-          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7]">Taken By</TableHead>
-          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7]">Status</TableHead>
-          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7] text-right">Amount</TableHead>
+          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7] px-4">Order Number</TableHead>
+          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7] px-4">Customer PO</TableHead>
+          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7] px-4">Ship To</TableHead>
+          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7] px-4">Order Date</TableHead>
+          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7] px-4">Payment</TableHead>
+          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7] px-4">Taken By</TableHead>
+          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7] px-4">Status</TableHead>
+          <TableHead className="font-medium text-gray-600 bg-[#F7F7F7] text-right px-4">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {orders.map((order) => (
           <TableRow key={order.id} className="border-b hover:bg-white">
-            <TableCell className="text-[#171717] font-medium">{order.orderNumber}</TableCell>
-            <TableCell className="text-[#171717]">{order.customerPO}</TableCell>
-            <TableCell className="text-[#171717]">{order.shipTo}</TableCell>
-            <TableCell className="text-[#171717]">{order.orderDate}</TableCell>
-            <TableCell className="text-[#171717]">{order.payment}</TableCell>
-            <TableCell className="text-[#171717]">{order.takenBy}</TableCell>
-            <TableCell>
+            <TableCell className="text-[#171717] font-medium py-3 px-4 align-middle">{order.orderNumber}</TableCell>
+            <TableCell className="text-[#171717] py-3 px-4 align-middle">{order.customerPO}</TableCell>
+            <TableCell className="text-[#171717] py-3 px-4 align-middle">{order.shipTo}</TableCell>
+            <TableCell className="text-[#171717] py-3 px-4 align-middle">{order.orderDate}</TableCell>
+            <TableCell className="text-[#171717] py-3 px-4 align-middle">{order.payment}</TableCell>
+            <TableCell className="text-[#171717] py-3 px-4 align-middle">{order.takenBy}</TableCell>
+            <TableCell className="py-3 px-4 align-middle">
               <StatusBadge status={order.status} />
             </TableCell>
-            <TableCell className="text-right font-medium text-gray-900">{order.amount}</TableCell>
+            <TableCell className="text-right font-semibold text-gray-900 py-3 px-4 align-middle">{order.amount}</TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -11,7 +11,7 @@ export default function SidebarNav({ activeTab, setActiveTab }) {
   ];
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div className="bg-white rounded-lg shadow-sm border border-[#EBEBEB]">
       <nav className="p-3">
         {items.map((item) => (
           <button
