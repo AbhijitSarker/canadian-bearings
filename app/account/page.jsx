@@ -98,7 +98,7 @@ export default function MyAccountPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen container mx-auto">
         {/* Header Banner */}
         <AccountPageBanner 
           title="My Account" 
