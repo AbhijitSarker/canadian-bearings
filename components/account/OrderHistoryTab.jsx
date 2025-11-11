@@ -69,7 +69,7 @@ export default function OrderHistoryTab() {
 
   return (
     <div className="w-full border bg-white p-6 rounded-lg shadow-sm border-[#EBEBEB]">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-semibold text-gray-900">Order History</h2>
         <button 
           onClick={handleExport} 

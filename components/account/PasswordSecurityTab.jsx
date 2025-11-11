@@ -14,7 +14,7 @@ export default function PasswordAndSecurity() {
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mx-auto">
       {/* Header */}
-      <h2 className="text-2xl font-semibold text-gray-900 mb-8">
+      <h2 className="text-2xl font-semibold text-gray-900 mb-6">
         Password and Security
       </h2>
 

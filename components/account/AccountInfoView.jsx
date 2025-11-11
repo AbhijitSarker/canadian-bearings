@@ -6,7 +6,7 @@ export default function AccountInfoView({ personalDetails, shoppingAddress, onEd
             {/* Header */}
             <div className="flex justify-between items-start mb-6">
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Personal Details</h2>
+                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Personal Details</h2>
                     <p className="text-base font-medium text-gray-500">
                         Your profile is visible to your connected users.
                     </p>

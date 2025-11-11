@@ -18,13 +18,13 @@ export default function AccountInfoForm({
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <h2 className="text-2xl font-medium text-gray-900 mb-2">Account Information</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 mb-2">Account Information</h2>
       <p className="text-sm text-gray-600 mb-6">Manage your personal details and shipping address.</p>
 
       <form onSubmit={handleSubmit}>
         {/* Personal Details Section */}
         <div className="mb-8 pb-8 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-800 mb-4">Personal Details</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Personal Details</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
