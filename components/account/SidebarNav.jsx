@@ -12,15 +12,15 @@ export default function SidebarNav({ activeTab, setActiveTab }) {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-      <nav className="p-2">
+      <nav className="p-3">
         {items.map((item) => (
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id)}
             className={`w-full text-left px-4 py-3 rounded-lg mb-1 transition ${
               activeTab === item.id
-                ? "bg-green-50 text-green-700 font-medium"
-                : "text-gray-700 hover:bg-gray-50"
+              ? "bg-[#EDF5ED] text-[#171717] font-semibold"
+              : "text-[#464646] hover:bg-[#EDF5ED] font-medium"
             }`}
           >
             {item.label}

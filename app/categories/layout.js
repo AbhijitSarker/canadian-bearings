@@ -1,7 +1,6 @@
-import PageBanner from "@/components/search/PageBanner";
-import { Outfit } from "next/font/google";
+import { Urbanist } from "next/font/google";
 
-const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
+const urbanist = Urbanist({ subsets: ['latin'], weight: ["300", "400", "500", "600", "700"] })
 
 export const metadata = {
   title: "Categories | Canadian Bearings",
@@ -11,7 +10,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
       <html lang="en">
-        <body className={`${outfit.className} antialiased text-gray-700`} >
+      <body className={[urbanist.className, "antialiased", "text-gray-700"].join(" ")} >
             {children}
         </body>
       </html>

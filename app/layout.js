@@ -1,4 +1,4 @@
-import { Outfit } from "next/font/google";
+import { Urbanist } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/common/navbar";
@@ -6,9 +6,8 @@ import TopHeader from "@/components/common/topHeader";
 import Footer from "@/components/home/footer";
 import BreadcrumbBar from "@/components/common/BreadcrumbBar";
 import { AuthProvider } from "@/contexts/AuthContext";
-import LowerNavbar from "@/components/common/LowerNavbar";
 
-const outfit = Outfit({ subsets: ['latin'], weight: ["300", "400", "500"] })
+const urbanist = Urbanist({ subsets: ['latin'], weight: ["300", "400", "500", "600", "700"] })
 
 export const metadata = {
   title: "Canadian Bearings",
@@ -18,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={[outfit.className, "antialiased", "text-gray-700"].join(" ")} >
+      <body className={[urbanist.className, "antialiased", "text-gray-700"].join(" ")} >
         <AuthProvider>
           <Toaster position="top-right" />
           <TopHeader />

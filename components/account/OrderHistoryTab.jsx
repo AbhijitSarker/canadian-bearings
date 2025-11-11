@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import OrderTable from "./OrderTable";
+import { ChevronDown, Search, Filter, Download } from "lucide-react";
 
 const mockOrders = Array.from({ length: 8 }).map((_, i) => ({
   id: i + 1,
@@ -14,17 +16,6 @@ const mockOrders = Array.from({ length: 8 }).map((_, i) => ({
   status: ["Billed", "Partially Fulfilled", "Pending Fulfillment"][i % 3],
   amount: "$ 34.99",
 }));
-
-function StatusBadge({ status }) {
-  const map = {
-    "Billed": "bg-green-100 text-green-700",
-    "Partially Fulfilled": "bg-blue-100 text-blue-700",
-    "Pending Fulfillment": "bg-amber-100 text-amber-700",
-  };
-  return (
-    <span className={`${map[status] || "bg-gray-100 text-gray-700"} text-xs px-2 py-1 rounded-full`}>{status}</span>
-  );
-}
 
 export default function OrderHistoryTab() {
   const [query, setQuery] = useState("");
@@ -46,74 +37,131 @@ export default function OrderHistoryTab() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-medium text-gray-900">Order History</h2>
-        <div className="flex items-center gap-2">
-          <button onClick={handleExport} className="px-4 py-2 rounded-md border border-gray-200 text-sm">Export to CSV</button>
-        </div>
+    <div className="w-full">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-semibold text-gray-900">Order History</h2>
+        <button 
+          onClick={handleExport} 
+          className="flex items-center gap-2 text-gray-700 hover:text-gray-900 text-sm font-medium"
+        >
+          <Download size={18} />
+          Export to CSV
+        </button>
       </div>
 
-      <div className="flex items-center gap-4 mb-4">
-        <div className="relative flex-1">
+      <div className="flex items-center justify-between mb-6 gap-4">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
           <input
-            className="w-full rounded-md border border-gray-200 px-4 py-2 text-sm"
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Search..."
             value={query}
             onChange={(e) => { setQuery(e.target.value); setPage(1); }}
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <button className="px-3 py-2 rounded-md border border-gray-200 text-sm">Filter</button>
-          <select className="rounded-md border border-gray-200 px-3 py-2 text-sm" value={perPage} onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}>
+        <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50">
+          <Filter size={18} />
+          Filter
+        </button>
+
+        <div className="relative">
+          <select 
+            className="appearance-none pl-4 pr-10 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={perPage} 
+            onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}
+          >
             <option value={7}>7 / page</option>
             <option value={10}>10 / page</option>
             <option value={20}>20 / page</option>
           </select>
+          <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700 pointer-events-none" size={18} />
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="p-3 text-left">Order Number</th>
-              <th className="p-3 text-left">Customer PO</th>
-              <th className="p-3 text-left">Ship To</th>
-              <th className="p-3 text-left">Order Date</th>
-              <th className="p-3 text-left">Payment</th>
-              <th className="p-3 text-left">Taken By</th>
-              <th className="p-3 text-left">Status</th>
-              <th className="p-3 text-right">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pageItems.map((o) => (
-              <tr key={o.id} className="border-t">
-                <td className="p-3">{o.orderNumber}</td>
-                <td className="p-3">{o.customerPO}</td>
-                <td className="p-3">{o.shipTo}</td>
-                <td className="p-3">{o.orderDate}</td>
-                <td className="p-3">{o.payment}</td>
-                <td className="p-3">{o.takenBy}</td>
-                <td className="p-3"><StatusBadge status={o.status} /></td>
-                <td className="p-3 text-right">{o.amount}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="border-b border-gray-200 mb-6">
+        <OrderTable orders={pageItems} />
       </div>
 
-      <div className="flex items-center justify-between mt-4">
-        <div className="text-sm text-gray-500">Page {page} of {pageCount}</div>
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-gray-600">Page {page} of {pageCount}</div>
 
-        <div className="flex items-center gap-2">
-          <button onClick={() => setPage((p) => Math.max(1, p - 1))} className="px-2 py-1 rounded-md border border-gray-200">◀</button>
-          {Array.from({ length: pageCount }).map((_, i) => (
-            <button key={i} onClick={() => setPage(i + 1)} className={`w-8 h-8 rounded-full ${page === i + 1 ? 'bg-gray-800 text-white' : 'bg-white border border-gray-200'}`}>{i + 1}</button>
-          ))}
-          <button onClick={() => setPage((p) => Math.min(pageCount, p + 1))} className="px-2 py-1 rounded-md border border-gray-200">▶</button>
+        <div className="flex items-center gap-1">
+          <button 
+            onClick={() => setPage((p) => Math.max(1, p - 1))} 
+            disabled={page === 1}
+            className="p-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            ◀
+          </button>
+          
+          {/* Page numbers with ellipsis */}
+          {pageCount <= 5 ? (
+            // Show all pages if 5 or fewer
+            Array.from({ length: pageCount }).map((_, i) => (
+              <button 
+                key={i} 
+                onClick={() => setPage(i + 1)} 
+                className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium ${
+                  page === i + 1 
+                    ? 'bg-gray-800 text-white' 
+                    : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))
+          ) : (
+            // Show first, middle, last with ellipsis
+            <>
+              <button 
+                onClick={() => setPage(1)} 
+                className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium ${
+                  page === 1 
+                    ? 'bg-gray-800 text-white' 
+                    : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                1
+              </button>
+              
+              {page > 3 && (
+                <span className="text-gray-500 text-sm">...</span>
+              )}
+              
+              {page > 2 && page < pageCount - 1 && (
+                <button 
+                  onClick={() => setPage(page)} 
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium bg-gray-800 text-white"
+                >
+                  {page}
+                </button>
+              )}
+              
+              {page < pageCount - 2 && (
+                <span className="text-gray-500 text-sm">...</span>
+              )}
+              
+              <button 
+                onClick={() => setPage(pageCount)} 
+                className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-medium ${
+                  page === pageCount 
+                    ? 'bg-gray-800 text-white' 
+                    : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                {pageCount}
+              </button>
+            </>
+          )}
+          
+          <button 
+            onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+            disabled={page === pageCount}
+            className="p-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            ▶
+          </button>
         </div>
       </div>
     </div>
