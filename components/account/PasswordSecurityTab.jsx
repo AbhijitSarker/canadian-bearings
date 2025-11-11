@@ -1,8 +1,7 @@
 "use client";
 
 import { EyeIcon, EyeOffIcon, Lock } from "lucide-react";
-import { useState } from "react";
-// import { EyeIcon, EyeOffIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+import { useState, useMemo } from "react";
 
 export default function PasswordAndSecurity() {
   const [showPassword, setShowPassword] = useState({
@@ -10,6 +9,60 @@ export default function PasswordAndSecurity() {
     new: false,
     confirm: false,
   });
+
+  const [passwords, setPasswords] = useState({
+    old: "",
+    new: "",
+    confirm: "",
+  });
+
+  // Password strength calculation
+  const calculateStrength = (password) => {
+    if (!password) return { strength: "Weak", color: "text-red-600", score: 0 };
+
+    let score = 0;
+    const rules = {
+      hasLength: password.length >= 8,
+      hasNumber: /[0-9]/.test(password),
+      hasSymbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+      noNameEmail: true, // In a real app, check against user name/email
+    };
+
+    if (rules.hasLength) score++;
+    if (rules.hasNumber || rules.hasSymbol) score++;
+    if (password.length >= 12) score++;
+    if ((rules.hasNumber || rules.hasSymbol) && rules.hasLength && password.length >= 12) score++;
+
+    let strength = "Weak";
+    let color = "text-red-600";
+
+    if (score >= 2 && score < 3) {
+      strength = "Fair";
+      color = "text-orange-600";
+    } else if (score >= 3) {
+      strength = "Strong";
+      color = "text-green-600";
+    }
+
+    return { strength, color, rules, score };
+  };
+
+  const passwordStrength = calculateStrength(passwords.new);
+
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswords((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Password change submitted");
+  };
+
+  // Helper to get input classes based on password visibility
+  const getInputClasses = (isVisible) => {
+    return "w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-400 outline-none";
+  };
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mx-auto">
@@ -19,7 +72,7 @@ export default function PasswordAndSecurity() {
       </h2>
 
       {/* Form */}
-      <form className="space-y-6">
+      <form className="space-y-6" onSubmit={handleSubmit}>
         {/* Old Password */}
         <div>
           <div className="flex justify-between items-center mb-1">
@@ -35,15 +88,19 @@ export default function PasswordAndSecurity() {
             <Lock className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
             <input
               type={showPassword.old ? "text" : "password"}
-              placeholder="••••••••••"
-              className="w-full border border-gray-300 rounded-lg pl-10 pr-10 py-2.5 text-sm focus:ring-1 focus:ring-green-500 focus:border-green-500 outline-none"
+              name="old"
+              value={passwords.old}
+              onChange={handlePasswordChange}
+              placeholder="**********"
+              className={getInputClasses(showPassword.old)}
             />
             <button
               type="button"
               onClick={() =>
                 setShowPassword((prev) => ({ ...prev, old: !prev.old }))
               }
-              className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-3 text-gray-400"
+              disabled={false}
             >
               {showPassword.old ? (
                 <EyeOffIcon className="w-5 h-5" />
@@ -63,15 +120,19 @@ export default function PasswordAndSecurity() {
             <Lock className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
             <input
               type={showPassword.new ? "text" : "password"}
-              placeholder="••••••••••"
-              className="w-full border border-gray-300 rounded-lg pl-10 pr-10 py-2.5 text-sm focus:ring-1 focus:ring-green-500 focus:border-green-500 outline-none"
+              name="new"
+              value={passwords.new}
+              onChange={handlePasswordChange}
+              placeholder="**********"
+              className={getInputClasses(showPassword.new)}
             />
             <button
               type="button"
               onClick={() =>
                 setShowPassword((prev) => ({ ...prev, new: !prev.new }))
               }
-              className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-3 text-gray-400"
+              disabled={false}
             >
               {showPassword.new ? (
                 <EyeOffIcon className="w-5 h-5" />
@@ -91,15 +152,19 @@ export default function PasswordAndSecurity() {
             <Lock className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
             <input
               type={showPassword.confirm ? "text" : "password"}
-              placeholder="••••••••••"
-              className="w-full border border-gray-300 rounded-lg pl-10 pr-10 py-2.5 text-sm focus:ring-1 focus:ring-green-500 focus:border-green-500 outline-none"
+              name="confirm"
+              value={passwords.confirm}
+              onChange={handlePasswordChange}
+              placeholder="**********"
+              className={getInputClasses(showPassword.confirm)}
             />
             <button
               type="button"
               onClick={() =>
                 setShowPassword((prev) => ({ ...prev, confirm: !prev.confirm }))
               }
-              className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-3 text-gray-400"
+              disabled={false}
             >
               {showPassword.confirm ? (
                 <EyeOffIcon className="w-5 h-5" />
@@ -113,13 +178,19 @@ export default function PasswordAndSecurity() {
         {/* Password rules */}
         <div className="text-sm text-gray-600 space-y-1">
           <p>
-            <span className="text-gray-800 font-medium">Password Strength:</span>{" "}
-            Weak
+            <span className={`font-medium ${passwordStrength.color}`}>Password Strength:</span>{" "}
+            <span className={passwordStrength.color}>{passwordStrength.strength}</span>
           </p>
           <ul className="space-y-0.5">
-            <li>✓ Cannot contain your name or email address</li>
-            <li>✓ At least 8 characters</li>
-            <li>✓ Contains a number or symbol</li>
+            <li className={passwordStrength.rules?.noNameEmail ? "text-green-600" : "text-gray-400"}>
+              ✓ Cannot contain your name or email address
+            </li>
+            <li className={passwordStrength.rules?.hasLength ? "text-green-600 font-medium" : "text-gray-400"}>
+              ✓ At least 8 characters
+            </li>
+            <li className={passwordStrength.rules?.hasNumber || passwordStrength.rules?.hasSymbol ? "text-green-600 font-medium" : "text-gray-400"}>
+              ✓ Contains a number or symbol
+            </li>
           </ul>
         </div>
 

@@ -80,10 +80,10 @@ export default function TopHeader({ bgColor = "bg-green-50", textColor = "text-n
                         <div className="relative">
                             <button
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                className="border border-neutral-300 bg-green-50 rounded-md py-2 px-4 text-sm hover:bg-neutral-50 transition-colors min-w-[140px] flex items-center justify-between gap-3 shadow-sm"
+                                className="border border-neutral-300 bg-green-50 rounded-md py-1.5 px-3 text-sm hover:bg-neutral-50 transition-colors min-w-[140px] flex items-center justify-between gap-3 shadow-sm"
                             >
                                 <div className="flex items-center gap-2">
-                                    <span className="text-2xl leading-none">{selectedLanguage.flag}</span>
+                                    <span className="leading-none">{selectedLanguage.flag}</span>
                                     <span className="font-medium">{selectedLanguage.name}</span>
                                 </div>
                                 <svg
@@ -191,7 +191,7 @@ export default function TopHeader({ bgColor = "bg-green-50", textColor = "text-n
                                 <span className="text-lg leading-none">{selectedLanguage.flag}</span>
                                 <span className="font-medium">{selectedLanguage.code}</span>
                                 <svg
-                                    className={`w-4 h-4 transition-transform text-neutral-400 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                                    className={`w-2 h-4 transition-transform text-neutral-400 ${isDropdownOpen ? 'rotate-180' : ''}`}
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"

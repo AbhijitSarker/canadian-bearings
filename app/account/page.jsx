@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
@@ -36,6 +36,19 @@ export default function MyAccountPage() {
     phoneNumber: "(555) 000-0000",
     phoneCountryCode: "+1",
   });
+
+  // Update personal details when user data changes
+  useEffect(() => {
+    if (user) {
+      setPersonalDetails((prev) => ({
+        ...prev,
+        firstName: user?.firstName || "",
+        lastName: user?.lastName || "",
+        companyName: user?.company || "",
+        email: user?.email || "",
+      }));
+    }
+  }, [user]);
 
   const handlePersonalDetailsSave = (e) => {
     e.preventDefault();

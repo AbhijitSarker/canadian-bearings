@@ -40,7 +40,7 @@ export default function AccountInfoView({ personalDetails, shoppingAddress, onEd
                 <div className="flex flex-wrap gap-x-2">
                     <span className="text-gray-600 w-40 font-medium">Name</span>
                     <span className="text-gray-900 font-semibold">
-                        Tajinder Sarao{personalDetails?.firstName} {personalDetails?.lastName}
+                        {personalDetails?.firstName} {personalDetails?.lastName}
                     </span>
                 </div>
 
@@ -53,7 +53,7 @@ export default function AccountInfoView({ personalDetails, shoppingAddress, onEd
 
                 <div className="flex flex-wrap gap-x-2">
                     <span className="text-gray-600 w-40 font-medium">Email</span>
-                    <span className="text-gray-900 font-semibold">tsarao@gmail.com{personalDetails?.email}</span>
+                    <span className="text-gray-900 font-semibold">{personalDetails?.email}</span>
                 </div>
 
                 <div className="flex flex-wrap gap-x-2">
