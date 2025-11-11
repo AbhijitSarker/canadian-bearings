@@ -61,31 +61,31 @@ export default function PasswordAndSecurity() {
 
   // Helper to get input classes based on password visibility
   const getInputClasses = (isVisible) => {
-    return "w-full border border-gray-300 rounded-lg p-3 pl-10 focus:ring-2 focus:ring-green-400 outline-none";
+    return "w-full border border-gray-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 pl-9 sm:pl-10 focus:ring-2 focus:ring-green-400 outline-none text-sm";
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 mx-auto">
+    <div className="bg-white rounded-lg sm:rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 mx-auto">
       {/* Header */}
-      <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+      <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-4 sm:mb-6">
         Password and Security
       </h2>
 
       {/* Form */}
-      <form className="space-y-6" onSubmit={handleSubmit}>
+      <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
         {/* Old Password */}
         <div>
-          <div className="flex justify-between items-center mb-1">
-            <label className="text-sm font-medium text-gray-700">Old Password</label>
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 mb-1 sm:mb-2">
+            <label className="text-xs sm:text-sm font-medium text-gray-700">Old Password</label>
             <button
               type="button"
-              className="text-sm text-green-600 hover:underline font-medium"
+              className="text-xs sm:text-sm text-green-600 hover:underline font-medium text-left sm:text-right"
             >
               Forget Password?
             </button>
           </div>
           <div className="relative">
-            <Lock className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
+            <Lock className="w-4 h-4 sm:w-5 sm:h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type={showPassword.old ? "text" : "password"}
               name="old"
@@ -99,13 +99,13 @@ export default function PasswordAndSecurity() {
               onClick={() =>
                 setShowPassword((prev) => ({ ...prev, old: !prev.old }))
               }
-              className="absolute right-3 top-3 text-gray-400"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               disabled={false}
             >
               {showPassword.old ? (
-                <EyeOffIcon className="w-5 h-5" />
+                <EyeOffIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               ) : (
-                <EyeIcon className="w-5 h-5" />
+                <EyeIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               )}
             </button>
           </div>
@@ -113,11 +113,11 @@ export default function PasswordAndSecurity() {
 
         {/* New Password */}
         <div>
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
+          <label className="text-xs sm:text-sm font-medium text-gray-700 mb-1 block">
             Password
           </label>
           <div className="relative">
-            <Lock className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
+            <Lock className="w-4 h-4 sm:w-5 sm:h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type={showPassword.new ? "text" : "password"}
               name="new"
@@ -131,13 +131,13 @@ export default function PasswordAndSecurity() {
               onClick={() =>
                 setShowPassword((prev) => ({ ...prev, new: !prev.new }))
               }
-              className="absolute right-3 top-3 text-gray-400"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               disabled={false}
             >
               {showPassword.new ? (
-                <EyeOffIcon className="w-5 h-5" />
+                <EyeOffIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               ) : (
-                <EyeIcon className="w-5 h-5" />
+                <EyeIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               )}
             </button>
           </div>
@@ -145,11 +145,11 @@ export default function PasswordAndSecurity() {
 
         {/* Confirm Password */}
         <div>
-          <label className="text-sm font-medium text-gray-700 mb-1 block">
+          <label className="text-xs sm:text-sm font-medium text-gray-700 mb-1 block">
             Confirm Password
           </label>
           <div className="relative">
-            <Lock className="w-5 h-5 absolute left-3 top-3.5 text-gray-400" />
+            <Lock className="w-4 h-4 sm:w-5 sm:h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type={showPassword.confirm ? "text" : "password"}
               name="confirm"
@@ -163,25 +163,25 @@ export default function PasswordAndSecurity() {
               onClick={() =>
                 setShowPassword((prev) => ({ ...prev, confirm: !prev.confirm }))
               }
-              className="absolute right-3 top-3 text-gray-400"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               disabled={false}
             >
               {showPassword.confirm ? (
-                <EyeOffIcon className="w-5 h-5" />
+                <EyeOffIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               ) : (
-                <EyeIcon className="w-5 h-5" />
+                <EyeIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               )}
             </button>
           </div>
         </div>
 
         {/* Password rules */}
-        <div className="text-sm text-gray-600 space-y-1">
+        <div className="text-xs sm:text-sm text-gray-600 space-y-1 mt-4 sm:mt-6">
           <p>
             <span className={`font-medium ${passwordStrength.color}`}>Password Strength:</span>{" "}
             <span className={passwordStrength.color}>{passwordStrength.strength}</span>
           </p>
-          <ul className="space-y-0.5">
+          <ul className="space-y-0.5 text-xs sm:text-sm">
             <li className={passwordStrength.rules?.noNameEmail ? "text-green-600" : "text-gray-400"}>
               ✓ Cannot contain your name or email address
             </li>
@@ -195,16 +195,16 @@ export default function PasswordAndSecurity() {
         </div>
 
         {/* Buttons */}
-        <div className="flex justify-end gap-4 pt-4">
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-4 pt-3 sm:pt-6">
           <button
             type="button"
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+            className="w-full sm:w-auto px-4 sm:px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm"
           >
             Back
           </button>
           <button
             type="submit"
-            className="px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+            className="w-full sm:w-auto px-4 sm:px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
           >
             Save
           </button>

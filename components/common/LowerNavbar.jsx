@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu } from "lucide-react";
 import ListUnorderedIcon from "@/assets/icons/listUnordered";
@@ -7,6 +7,29 @@ import MapPinLineIcon from "@/assets/icons/mapPinLine";
 
 export default function LowerNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        menuRef.current &&
+        buttonRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setMobileOpen(false);
+      }
+    };
+
+    if (mobileOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [mobileOpen]);
 
   return (
     <nav className="bg-[#324a50] text-neutral-0" role="navigation" aria-label="Lower navigation">
@@ -80,6 +103,7 @@ export default function LowerNavbar() {
 
             <div className="flex items-center gap-3">
               <button
+                ref={buttonRef}
                 onClick={() => setMobileOpen(!mobileOpen)}
                 className="px-2"
                 aria-label="Toggle menu"
@@ -94,20 +118,20 @@ export default function LowerNavbar() {
           </div>
           {/* Mobile Menu (drawer-like) */}
           {mobileOpen && (
-            <div className="mt-3  bg-white rounded-lg shadow-lg p-4 space-y-3 text-neutral-950">
+            <div ref={menuRef} className="mt-3  bg-white rounded-lg shadow-lg p-4 space-y-3 text-neutral-950">
               <div className="flex flex-col">
-                <Link href="#" className="py-2">Product</Link>
-                <Link href="#" className="py-2">Brands</Link>
-                <Link href="#" className="py-2">Services</Link>
-                <Link href="#" className="py-2">Resource</Link>
-                <Link href="#" className="py-2">Industries</Link>
+                <Link href="#" className="py-2" onClick={() => setMobileOpen(false)}>Product</Link>
+                <Link href="#" className="py-2" onClick={() => setMobileOpen(false)}>Brands</Link>
+                <Link href="#" className="py-2" onClick={() => setMobileOpen(false)}>Services</Link>
+                <Link href="#" className="py-2" onClick={() => setMobileOpen(false)}>Resource</Link>
+                <Link href="#" className="py-2" onClick={() => setMobileOpen(false)}>Industries</Link>
               </div>
               <div className="border-t pt-3 flex flex-col gap-2">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
                   <ListUnorderedIcon />
                   Quick Order
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2" onClick={() => setMobileOpen(false)}>
                   <MapPinLineIcon />
                   Location
                 </div>

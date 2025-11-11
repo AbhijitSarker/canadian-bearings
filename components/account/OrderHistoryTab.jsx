@@ -68,115 +68,115 @@ export default function OrderHistoryTab() {
   };
 
   return (
-    <div className="w-full border bg-white p-6 rounded-lg shadow-sm border-[#EBEBEB]">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold text-gray-900">Order History</h2>
+    <div className="w-full border bg-white rounded-lg shadow-sm border-[#EBEBEB] p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Order History</h2>
         <button 
           onClick={handleExport} 
-          className="flex border px-4 py-2 rounded-lg items-center gap-2 text-gray-700 hover:text-gray-900 text-sm font-medium"
+          className="w-full sm:w-auto flex border px-3 sm:px-4 py-2 rounded-lg items-center justify-center sm:justify-start gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 text-xs sm:text-sm font-medium transition"
         >
-          <Download size={18} />
-          Export to CSV
+          <Download size={16} className="sm:w-[18px] sm:h-[18px]" />
+          <span>Export to CSV</span>
         </button>
       </div>
 
-      <div className="flex items-center justify-between mb-4 gap-4">
-        <div className="flex-1 relative ">
-          <Search className="absolute  left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-          <input
-            className="w-full pl-10 shadow-sm pr-4 py-2 rounded-lg border border-[#EBEBEB] text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-            placeholder="Search..."
-            value={query}
-            onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-          />
-        </div>
+      <div className="flex flex-col gap-3 sm:gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+          <div className="w-full sm:flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+            <input
+              className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 rounded-lg border border-[#EBEBEB] text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm"
+              placeholder="Search..."
+              value={query}
+              onChange={(e) => { setQuery(e.target.value); setPage(1); }}
+            />
+          </div>
 
+          <div className="relative w-full sm:w-auto">
+            <button 
+              onClick={() => setShowFilterMenu(!showFilterMenu)}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-xs sm:text-sm font-medium hover:bg-green-50 transition"
+            >
+              <Filter size={16} className="sm:w-[18px] sm:h-[18px]" />
+              <span>Filter</span>
+            </button>
 
-
-        <div className="relative">
-          <button 
-            onClick={() => setShowFilterMenu(!showFilterMenu)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-sm font-medium hover:bg-green-50"
-          >
-            <Filter size={18} />
-            Filter
-          </button>
-
-          {showFilterMenu && (
-            <div className="absolute right-0 mt-2 w-64 bg-white border border-[#EBEBEB] rounded-lg shadow-lg z-10">
-              <div className="p-4 space-y-4">
-                {/* Status Filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                  <div className="space-y-2">
-                    {["Billed", "Partially Fulfilled", "Pending Fulfillment"].map((status) => (
-                      <label key={status} className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={filters.status === status}
-                          onChange={(e) => {
-                            setFilters({
-                              ...filters,
-                              status: e.target.checked ? status : null,
-                            });
-                            setPage(1);
-                          }}
-                          className="rounded border-[#EBEBEB]"
-                        />
-                        <span className="text-sm text-gray-700">{status}</span>
-                      </label>
-                    ))}
+            {showFilterMenu && (
+              <div className="absolute right-0 mt-2 w-full sm:w-64 bg-white border border-[#EBEBEB] rounded-lg shadow-lg z-10 max-h-96 overflow-y-auto">
+                <div className="p-3 sm:p-4 space-y-4">
+                  {/* Status Filter */}
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <div className="space-y-2">
+                      {["Billed", "Partially Fulfilled", "Pending Fulfillment"].map((status) => (
+                        <label key={status} className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={filters.status === status}
+                            onChange={(e) => {
+                              setFilters({
+                                ...filters,
+                                status: e.target.checked ? status : null,
+                              });
+                              setPage(1);
+                            }}
+                            className="rounded border-[#EBEBEB]"
+                          />
+                          <span className="text-xs sm:text-sm text-gray-700">{status}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Payment Filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Payment</label>
-                  <div className="space-y-2">
-                    {["Cash", "Card", "Check", "Other"].map((payment) => (
-                      <label key={payment} className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={filters.payment === payment}
-                          onChange={(e) => {
-                            setFilters({
-                              ...filters,
-                              payment: e.target.checked ? payment : null,
-                            });
-                            setPage(1);
-                          }}
-                          className="rounded border-gray-300"
-                        />
-                        <span className="text-sm text-gray-700">{payment}</span>
-                      </label>
-                    ))}
+                  {/* Payment Filter */}
+                  <div>
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Payment</label>
+                    <div className="space-y-2">
+                      {["Cash", "Card", "Check", "Other"].map((payment) => (
+                        <label key={payment} className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={filters.payment === payment}
+                            onChange={(e) => {
+                              setFilters({
+                                ...filters,
+                                payment: e.target.checked ? payment : null,
+                              });
+                              setPage(1);
+                            }}
+                            className="rounded border-gray-300"
+                          />
+                          <span className="text-xs sm:text-sm text-gray-700">{payment}</span>
+                        </label>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Clear and Apply buttons */}
-                <div className="flex gap-2 pt-2 border-t">
-                  <button
-                    onClick={() => {
-                      setFilters({ status: null, payment: null, dateRange: "all" });
-                      setPage(1);
-                    }}
-                    className="flex-1 px-3 py-1.5 text-sm border border-gray-300 text-gray-700 rounded hover:bg-gray-50"
-                  >
-                    Clear
-                  </button>
-                  <button
-                    onClick={() => setShowFilterMenu(false)}
-                    className="flex-1 px-3 py-1.5 text-sm bg-green-500 text-white rounded hover:bg-green-600"
-                  >
-                    Apply
-                  </button>
+                  {/* Clear and Apply buttons */}
+                  <div className="flex gap-2 pt-2 border-t">
+                    <button
+                      onClick={() => {
+                        setFilters({ status: null, payment: null, dateRange: "all" });
+                        setPage(1);
+                      }}
+                      className="flex-1 px-2 sm:px-3 py-1.5 text-xs sm:text-sm border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      onClick={() => setShowFilterMenu(false)}
+                      className="flex-1 px-2 sm:px-3 py-1.5 text-xs sm:text-sm bg-green-500 text-white rounded hover:bg-green-600 transition"
+                    >
+                      Apply
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <select
             value={filters.dateRange}
             onChange={(e) => {
@@ -186,111 +186,138 @@ export default function OrderHistoryTab() {
               });
               setPage(1);
             }}
-            className="appearance-none pl-4 pr-10 py-2 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 font-medium hover:bg-green-50"
+            className="w-full appearance-none pl-3 sm:pl-4 pr-8 sm:pr-10 py-2 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-xs sm:text-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 font-medium hover:bg-green-50 transition"
           >
             <option value="all">All Time</option>
             <option value="last-week">Last Week</option>
             <option value="last-month">Last Month</option>
             <option value="last-year">Last Year</option>
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+          <ChevronDown className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4 sm:w-[18px] sm:h-[18px]" />
         </div>
       </div>
 
-      <div className="mb-6">
+      <div className="overflow-x-auto mb-6">
         <OrderTable orders={pageItems} />
       </div>
 
-      <div className="flex items-center justify-between gap-6">
-        <div className="text-sm text-gray-600 min-w-fit">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-6 text-xs sm:text-sm">
+        <div className="text-gray-600 min-w-fit order-2 sm:order-1">
           Page {page} of {pageCount}
         </div>
 
-        <Pagination className="flex-1 justify-center">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious 
-                onClick={() => setPage((p) => Math.max(1, p - 1))} 
-                disabled={page === 1}
-                className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
-              />
-            </PaginationItem>
+        <div className="overflow-x-auto order-1 sm:order-2 flex-1">
+          <Pagination className="flex justify-center">
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={() => setPage((p) => Math.max(1, p - 1))} 
+                  disabled={page === 1}
+                  className={page === 1 ? "pointer-events-none opacity-50 text-xs sm:text-sm" : "cursor-pointer text-xs sm:text-sm"}
+                />
+              </PaginationItem>
 
-            {pageCount <= 5 ? (
-              // Show all pages if 5 or fewer
-              Array.from({ length: pageCount }).map((_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink 
-                    onClick={() => setPage(i + 1)} 
-                    isActive={page === i + 1}
-                    className="cursor-pointer"
-                  >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))
-            ) : (
-              // Show first, middle, last with ellipsis
-              <>
-                <PaginationItem>
-                  <PaginationLink 
-                    onClick={() => setPage(1)} 
-                    isActive={page === 1}
-                    className="cursor-pointer"
-                  >
-                    1
-                  </PaginationLink>
-                </PaginationItem>
-
-                {page > 3 && (
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                )}
-
-                {page > 2 && page < pageCount - 1 && (
-                  <PaginationItem>
+              {pageCount <= 5 ? (
+                // Show all pages if 5 or fewer
+                Array.from({ length: pageCount }).map((_, i) => (
+                  <PaginationItem key={i}>
                     <PaginationLink 
-                      onClick={() => setPage(page)} 
-                      isActive={true}
-                      className="cursor-pointer"
+                      onClick={() => setPage(i + 1)} 
+                      isActive={page === i + 1}
+                      className="cursor-pointer text-xs sm:text-sm"
                     >
-                      {page}
+                      {i + 1}
                     </PaginationLink>
                   </PaginationItem>
-                )}
-
-                {page < pageCount - 2 && (
+                ))
+              ) : (
+                <>
+                  {/* First page */}
                   <PaginationItem>
-                    <PaginationEllipsis />
+                    <PaginationLink 
+                      onClick={() => setPage(1)} 
+                      isActive={page === 1}
+                      className="cursor-pointer text-xs sm:text-sm"
+                    >
+                      1
+                    </PaginationLink>
                   </PaginationItem>
-                )}
 
-                <PaginationItem>
-                  <PaginationLink 
-                    onClick={() => setPage(pageCount)} 
-                    isActive={page === pageCount}
-                    className="cursor-pointer"
-                  >
-                    {pageCount}
-                  </PaginationLink>
-                </PaginationItem>
-              </>
-            )}
+                  {/* Ellipsis if needed */}
+                  {page > 3 && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
 
-            <PaginationItem>
-              <PaginationNext 
-                onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
-                disabled={page === pageCount}
-                className={page === pageCount ? "pointer-events-none opacity-50" : "cursor-pointer"}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+                  {/* Current page and nearby */}
+                  {page > 2 && (
+                    <PaginationItem>
+                      <PaginationLink 
+                        onClick={() => setPage(page - 1)} 
+                        className="cursor-pointer text-xs sm:text-sm"
+                      >
+                        {page - 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )}
 
-        <div className="relative min-w-fit">
+                  {page !== 1 && page !== pageCount && (
+                    <PaginationItem>
+                      <PaginationLink 
+                        isActive={true}
+                        className="text-xs sm:text-sm"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )}
+
+                  {page < pageCount - 1 && (
+                    <PaginationItem>
+                      <PaginationLink 
+                        onClick={() => setPage(page + 1)} 
+                        className="cursor-pointer text-xs sm:text-sm"
+                      >
+                        {page + 1}
+                      </PaginationLink>
+                    </PaginationItem>
+                  )}
+
+                  {/* Ellipsis if needed */}
+                  {page < pageCount - 2 && (
+                    <PaginationItem>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  )}
+
+                  {/* Last page */}
+                  <PaginationItem>
+                    <PaginationLink 
+                      onClick={() => setPage(pageCount)} 
+                      isActive={page === pageCount}
+                      className="cursor-pointer text-xs sm:text-sm"
+                    >
+                      {pageCount}
+                    </PaginationLink>
+                  </PaginationItem>
+                </>
+              )}
+
+              <PaginationItem>
+                <PaginationNext 
+                  onClick={() => setPage((p) => Math.min(pageCount, p + 1))} 
+                  disabled={page === pageCount}
+                  className={page === pageCount ? "pointer-events-none opacity-50 text-xs sm:text-sm" : "cursor-pointer text-xs sm:text-sm"}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+
+        <div className="relative min-w-fit order-3 sm:order-3">
           <select 
-            className="appearance-none pl-4 pr-10 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 font-medium"
+            className="appearance-none pl-3 sm:pl-4 pr-8 sm:pr-10 py-2 rounded-lg border border-gray-300 text-gray-700 text-xs sm:text-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 font-medium"
             value={perPage}
             onChange={(e) => { setPerPage(Number(e.target.value)); setPage(1); }}
           >
@@ -300,7 +327,7 @@ export default function OrderHistoryTab() {
             <option value={20}>20 / page</option>
             <option value={50}>50 / page</option>
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+          <ChevronDown className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4 sm:w-[18px] sm:h-[18px]" />
         </div>
       </div>
     </div>

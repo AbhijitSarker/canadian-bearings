@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
@@ -16,6 +16,9 @@ import CustomerSupportTab from "@/components/account/CustomerSupportTab";
 export default function MyAccountPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("my-account");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const sidebarRef = useRef(null);
+  const toggleRef = useRef(null);
   
   // Personal Details State
   const [personalDetails, setPersonalDetails] = useState({
@@ -50,6 +53,27 @@ export default function MyAccountPage() {
     }
   }, [user]);
 
+  // Close sidebar when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        sidebarRef.current &&
+        toggleRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        !toggleRef.current.contains(event.target)
+      ) {
+        setSidebarOpen(false);
+      }
+    };
+
+    if (sidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [sidebarOpen]);
+
   const handlePersonalDetailsSave = (e) => {
     e.preventDefault();
     // TODO: Implement API call to save personal details
@@ -74,7 +98,7 @@ export default function MyAccountPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-gray-50">
         {/* Header Banner */}
         <AccountPageBanner 
           title="My Account" 
@@ -83,10 +107,23 @@ export default function MyAccountPage() {
           onExport={handleExport}
         />
         {/* Main Content */}
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
+          {/* Mobile Sidebar Toggle */}
+          <div className="lg:hidden mb-4 flex gap-2" ref={toggleRef}>
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 text-sm font-medium transition"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              {sidebarOpen ? "Hide" : "Show"} Menu
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
             {/* Sidebar Navigation */}
-            <div className="lg:col-span-3">
+            <div ref={sidebarRef} className={`lg:col-span-3 ${sidebarOpen ? "block" : "hidden"} lg:block`}>
               <SidebarNav activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
 

@@ -2,18 +2,18 @@
 
 export default function AccountInfoView({ personalDetails, shoppingAddress, onEdit }) {
     return (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6">
             {/* Header */}
-            <div className="flex justify-between items-start mb-6">
-                <div>
-                    <h2 className="text-2xl font-semibold text-gray-900 mb-4">Personal Details</h2>
-                    <p className="text-base font-medium text-gray-500">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-3 sm:gap-4 mb-6">
+                <div className="flex-1">
+                    <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2 sm:mb-4">Personal Details</h2>
+                    <p className="text-sm sm:text-base font-medium text-gray-500">
                         Your profile is visible to your connected users.
                     </p>
                 </div>
                 <button
                     onClick={onEdit}
-                    className="flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition"
+                    className="w-full sm:w-auto flex items-center justify-center sm:justify-start gap-2 px-3 py-2 text-sm font-semibold text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition whitespace-nowrap"
                 >
                     <svg
                         className="w-4 h-4"
@@ -37,28 +37,30 @@ export default function AccountInfoView({ personalDetails, shoppingAddress, onEd
             {/* Info Section */}
             <div className="space-y-4">
                 {/* Row */}
-                <div className="flex flex-wrap gap-x-2">
-                    <span className="text-gray-600 w-40 font-medium">Name</span>
-                    <span className="text-gray-900 font-semibold">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                    <span className="text-gray-600 font-medium text-sm sm:w-40">Name</span>
+                    <span className="text-gray-900 font-semibold text-sm sm:text-base break-words">
                         {personalDetails?.firstName} {personalDetails?.lastName}
                     </span>
                 </div>
 
-                <div className="flex flex-wrap gap-x-2">
-                    <span className="text-gray-600 w-40 font-medium">Phone</span>
-                    <span className="text-gray-900 font-semibold">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                    <span className="text-gray-600 font-medium text-sm sm:w-40">Phone</span>
+                    <span className="text-gray-900 font-semibold text-sm sm:text-base">
                         {shoppingAddress?.phoneCountryCode} {shoppingAddress?.phoneNumber}
                     </span>
                 </div>
 
-                <div className="flex flex-wrap gap-x-2">
-                    <span className="text-gray-600 w-40 font-medium">Email</span>
-                    <span className="text-gray-900 font-semibold">{personalDetails?.email}</span>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                    <span className="text-gray-600 font-medium text-sm sm:w-40">Email</span>
+                    <span className="text-gray-900 font-semibold text-sm sm:text-base break-words">
+                        {personalDetails?.email}
+                    </span>
                 </div>
 
-                <div className="flex flex-wrap gap-x-2">
-                    <span className="text-gray-600 w-40 font-medium">Shopping Address</span>
-                    <span className="text-gray-900 font-semibold">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 py-2">
+                    <span className="text-gray-600 font-medium text-sm sm:w-40 flex-shrink-0">Shopping Address</span>
+                    <span className="text-gray-900 font-semibold text-sm sm:text-base break-words">
                         {shoppingAddress?.address && `${shoppingAddress.address}, `}
                         {shoppingAddress?.street && `${shoppingAddress.street}, `}
                         {shoppingAddress?.city}, {shoppingAddress?.state} {shoppingAddress?.zipCode}
