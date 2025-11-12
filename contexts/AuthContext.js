@@ -7,7 +7,6 @@ import {
   logout as authLogout, 
   getUser, 
   isAuthenticated as checkAuth,
-  refreshAccessToken 
 } from '@/lib/auth';
 
 const AuthContext = createContext({});
@@ -51,27 +50,10 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, []);
 
-  // Setup token refresh interval
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    // Refresh token every 50 minutes (tokens typically expire in 60 minutes)
-    const refreshInterval = setInterval(async () => {
-      try {
-        await refreshAccessToken();
-      } catch (error) {
-        console.error('Token refresh failed:', error);
-        logout();
-      }
-    }, 50 * 60 * 1000);
-
-    return () => clearInterval(refreshInterval);
-  }, [isAuthenticated]);
-
-  const login = async (username, password) => {
+  const login = async (email, password) => {
     try {
       setLoading(true);
-      const result = await authLogin(username, password);
+      const result = await authLogin(email, password);
       
       if (result.success) {
         const userData = {
@@ -98,10 +80,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    authLogout();
-    setUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      await authLogout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   const value = {
