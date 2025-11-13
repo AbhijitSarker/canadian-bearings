@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
+import { getAccountDetails, updateAccount } from '@/lib/api/services/account';
 import toast from "react-hot-toast";
 import SidebarNav from "@/components/account/SidebarNav";
 import AccountPageBanner from "@/components/account/PageBanner";
@@ -25,8 +26,15 @@ export default function MyAccountPage() {
   const [personalDetails, setPersonalDetails] = useState({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
-    companyName: user?.company || "",
     email: user?.email || "",
+    jobTitle: user?.jobTitle || "",
+    department: user?.department || "",
+    primaryPhone: user?.primaryPhone || "",
+    primaryPhoneExtension: user?.primaryPhoneExtension || "",
+    cellPhone: user?.cellPhone || "",
+    languageId: user?.languageId || 1,
+    lastLoginDate: user?.lastLoginDate || null,
+    loginCount: user?.loginCount || 0,
   });
 
   // Shopping Address State
@@ -38,6 +46,7 @@ export default function MyAccountPage() {
     zipCode: "L8R 2L2",
     country: "Canada",
     phoneNumber: "(555) 000-0000",
+    phoneExtension: '',
     phoneCountryCode: "+1",
   });
 
@@ -48,11 +57,55 @@ export default function MyAccountPage() {
         ...prev,
         firstName: user?.firstName || "",
         lastName: user?.lastName || "",
-        companyName: user?.company || "",
         email: user?.email || "",
       }));
     }
   }, [user]);
+
+  // Fetch account details from backend on mount
+  useEffect(() => {
+    let mounted = true;
+    const fetchAccount = async () => {
+      try {
+        const res = await getAccountDetails();
+        if (!mounted) return;
+        if (res.success && res.data) {
+          const d = res.data;
+          setPersonalDetails((prev) => ({
+            ...prev,
+            firstName: d.firstName || prev.firstName,
+            lastName: d.lastName || prev.lastName,
+            jobTitle: d.jobTitle || prev.jobTitle,
+            department: d.department || prev.department,
+            primaryPhone: d.primaryPhone || prev.primaryPhone,
+            primaryPhoneExtension: d.primaryPhoneExtension || prev.primaryPhoneExtension,
+            cellPhone: d.cellPhone || prev.cellPhone,
+            email: d.email || prev.email,
+            languageId: d.languageId || prev.languageId,
+            lastLoginDate: d.lastLoginDate || prev.lastLoginDate,
+            loginCount: d.loginCount ?? prev.loginCount,
+          }));
+
+          setShoppingAddress((prev) => ({
+            ...prev,
+            address: d.address1 || prev.address,
+            street: d.address2 || prev.street,
+            city: d.city || prev.city,
+            state: d.province ?? prev.state,
+            zipCode: d.postalCode || prev.zipCode,
+            country: d.country ?? prev.country,
+            phoneNumber: d.primaryPhone || prev.phoneNumber,
+            phoneExtension: d.primaryPhoneExtension || prev.phoneExtension,
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching account details:', error);
+      }
+    };
+
+    fetchAccount();
+    return () => { mounted = false; };
+  }, []);
 
   // Close sidebar when clicking outside
   useEffect(() => {
@@ -77,16 +130,66 @@ export default function MyAccountPage() {
 
   const handlePersonalDetailsSave = (e) => {
     e.preventDefault();
-    // TODO: Implement API call to save personal details
-    toast.success("Personal details saved successfully!");
-    console.log("Saving personal details:", personalDetails);
+    (async () => {
+      try {
+        const payload = {
+          firstName: personalDetails.firstName,
+          lastName: personalDetails.lastName,
+          jobTitle: personalDetails.jobTitle || '',
+          department: personalDetails.department || '',
+          primaryPhone: shoppingAddress.phoneNumber || '',
+          primaryPhoneExtension: shoppingAddress.phoneExtension || '',
+          cellPhone: personalDetails.cellPhone || '',
+          address1: shoppingAddress.address || '',
+          address2: shoppingAddress.street || '',
+          city: shoppingAddress.city || '',
+          province: shoppingAddress.state || shoppingAddress.province || '',
+          postalCode: shoppingAddress.zipCode || '',
+          country: shoppingAddress.country || '',
+          languageId: personalDetails.languageId || 1,
+        };
+
+        const res = await updateAccount(payload);
+        if (res.success) {
+          toast.success('Personal details saved successfully!');
+        } else {
+          toast.error(res.error || 'Failed to save personal details');
+        }
+      } catch (err) {
+        console.error('Save personal details error:', err);
+        toast.error('An unexpected error occurred while saving personal details');
+      }
+    })();
   };
 
   const handleAddressSave = (e) => {
     e.preventDefault();
-    // TODO: Implement API call to save address
-    toast.success("Shopping address saved successfully!");
-    console.log("Saving address:", shoppingAddress);
+    (async () => {
+      try {
+        const payload = {
+          firstName: personalDetails.firstName,
+          lastName: personalDetails.lastName,
+          address1: shoppingAddress.address || '',
+          address2: shoppingAddress.street || '',
+          city: shoppingAddress.city || '',
+          province: shoppingAddress.state || shoppingAddress.province || '',
+          postalCode: shoppingAddress.zipCode || '',
+          country: shoppingAddress.country || '',
+          primaryPhone: shoppingAddress.phoneNumber || '',
+          primaryPhoneExtension: shoppingAddress.phoneExtension || '',
+        };
+
+        const res = await updateAccount(payload);
+        if (res.success) {
+          toast.success('Shopping address saved successfully!');
+        } else {
+          toast.error(res.error || 'Failed to save shopping address');
+        }
+      } catch (err) {
+        console.error('Save address error:', err);
+        toast.error('An unexpected error occurred while saving address');
+      }
+    })();
   };
 
   const handlePrint = () => {
@@ -99,7 +202,7 @@ export default function MyAccountPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen container mx-auto">
         {/* Header Banner */}
         <AccountPageBanner 
           title="My Account" 

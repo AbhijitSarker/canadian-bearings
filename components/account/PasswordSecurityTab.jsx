@@ -2,6 +2,8 @@
 
 import { EyeIcon, EyeOffIcon, Lock } from "lucide-react";
 import { useState, useMemo } from "react";
+import toast from "react-hot-toast";
+import { changePassword } from '@/lib/api/services/auth';
 
 export default function PasswordAndSecurity() {
   const [showPassword, setShowPassword] = useState({
@@ -54,10 +56,49 @@ export default function PasswordAndSecurity() {
     setPasswords((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Password change submitted");
+
+    // Basic validation
+    if (!passwords.old || !passwords.new || !passwords.confirm) {
+      toast.error('Please fill out all password fields');
+      return;
+    }
+
+    if (passwords.new !== passwords.confirm) {
+      toast.error('New password and confirmation do not match');
+      return;
+    }
+
+    if (passwords.new.length < 8) {
+      toast.error('New password must be at least 8 characters');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await changePassword({
+        currentPassword: passwords.old,
+        newPassword: passwords.new,
+        confirmPassword: passwords.confirm,
+      });
+
+      if (res.success) {
+        toast.success('Password changed successfully');
+        setPasswords({ old: '', new: '', confirm: '' });
+      } else {
+        toast.error(res.error || 'Failed to change password');
+      }
+    } catch (err) {
+      console.error('Change password error:', err);
+      toast.error('An unexpected error occurred while changing password');
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   // Helper to get input classes based on password visibility
   const getInputClasses = (isVisible) => {
@@ -204,7 +245,7 @@ export default function PasswordAndSecurity() {
           </button>
           <button
             type="submit"
-            className="w-full sm:w-auto px-4 sm:px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
+            className={`w-full sm:w-auto px-4 sm:px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium ${loading ? 'opacity-60 pointer-events-none' : ''}`}
           >
             Save
           </button>

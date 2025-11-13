@@ -6,7 +6,7 @@ import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { GrLinkedin } from "react-icons/gr";
 import { FaApple } from "react-icons/fa";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/lib/api/hooks/useAuth";
 import toast from "react-hot-toast";
 
 export default function SignInPage() {
@@ -25,7 +25,6 @@ export default function SignInPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // clear previous error
     setErrorMessage("");
 
     if (!email || !password) {
@@ -75,7 +74,7 @@ export default function SignInPage() {
               {errorMessage}
             </div>
           )}
-          {/* Username */}
+          {/* Email */}
           <div className="relative">
             <MailIcon className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
             <input
@@ -85,7 +84,6 @@ export default function SignInPage() {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                // clear server error when user starts typing
                 if (errorMessage) setErrorMessage("");
               }}
               disabled={isLoading}
@@ -103,7 +101,6 @@ export default function SignInPage() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                // clear server error when user starts typing
                 if (errorMessage) setErrorMessage("");
               }}
               disabled={isLoading}
@@ -177,7 +174,7 @@ export default function SignInPage() {
             </button>
           </div>
 
-          {/* Back + Sign In bottom buttons */}
+          {/* Back button */}
           <div className="flex items-center justify-between mt-6">
             <Link
               href="/"

@@ -53,20 +53,8 @@ export default function AccountInfoForm({
             </div>
           </div>
 
-          <div className="mb-4">
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Company Name</label>
-            <input
-              type="text"
-              value={personalDetails.companyName}
-              onChange={(e) =>
-                setPersonalDetails({ ...personalDetails, companyName: e.target.value })
-              }
-              className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none text-sm"
-              placeholder="Company Name"
-            />
-          </div>
 
-          <div>
+          <div className="mb-4 sm:mb-6">
             <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Email</label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -80,6 +68,41 @@ export default function AccountInfoForm({
                 onChange={(e) => setPersonalDetails({ ...personalDetails, email: e.target.value })}
                 className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none text-sm"
                 placeholder="email@example.com"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4">
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Job Title</label>
+              <input
+                type="text"
+                value={personalDetails.jobTitle}
+                onChange={(e) => setPersonalDetails({ ...personalDetails, jobTitle: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none text-sm"
+                placeholder="Job Title"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Department</label>
+              <input
+                type="text"
+                value={personalDetails.department}
+                onChange={(e) => setPersonalDetails({ ...personalDetails, department: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none text-sm"
+                placeholder="Department"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">Cell Phone</label>
+              <input
+                type="tel"
+                value={personalDetails.cellPhone}
+                onChange={(e) => setPersonalDetails({ ...personalDetails, cellPhone: e.target.value })}
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-transparent outline-none text-sm"
+                placeholder="(555) 000-0000"
               />
             </div>
           </div>

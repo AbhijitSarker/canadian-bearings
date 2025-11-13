@@ -1,16 +1,19 @@
-// contexts/AuthContext.jsx
-"use client";
+// contexts/AuthContext.js
+'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  login as authLogin, 
-  logout as authLogout, 
-  getUser, 
-  isAuthenticated as checkAuth,
-} from '@/lib/auth';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import {
+  authLogin,
+  authLogout,
+  authRefresh,
+  getStoredUser,
+  isUserAuthenticated,
+} from '@/lib/api/services/auth';
 
-const AuthContext = createContext({});
+export const AuthContext = createContext({});
 
+// Backwards-compatible hook: many components import `useAuth` from this module.
+// Provide the same API as the previous implementation.
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -26,14 +29,26 @@ export const AuthProvider = ({ children }) => {
 
   // Initialize auth state on mount
   useEffect(() => {
-    const initAuth = () => {
+    const initializeAuth = async () => {
       try {
-        const authenticated = checkAuth();
-        const userData = getUser();
-        
+        // Check if user is already authenticated
+        const authenticated = isUserAuthenticated();
+        const userData = getStoredUser();
+
         if (authenticated && userData) {
           setUser(userData);
           setIsAuthenticated(true);
+
+          // Attempt to refresh token silently
+          try {
+            const refreshResult = await authRefresh();
+            if (refreshResult.success && refreshResult.data) {
+              setUser(refreshResult.data);
+            }
+          } catch (error) {
+            console.error('Silent token refresh failed:', error);
+            // Continue with existing auth, don't log out
+          }
         } else {
           setUser(null);
           setIsAuthenticated(false);
@@ -47,26 +62,16 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
-    initAuth();
+    initializeAuth();
   }, []);
 
   const login = async (email, password) => {
     try {
       setLoading(true);
       const result = await authLogin(email, password);
-      
+
       if (result.success) {
-        const userData = {
-          id: result.data.id,
-          username: result.data.username,
-          email: result.data.email,
-          firstName: result.data.firstName,
-          lastName: result.data.lastName,
-          company: result.data.company,
-          lastLogin: result.data.lastLogin,
-        };
-        
-        setUser(userData);
+        setUser(result.data);
         setIsAuthenticated(true);
         return { success: true };
       } else {
@@ -74,7 +79,7 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error.message || 'Login failed' };
     } finally {
       setLoading(false);
     }
@@ -82,12 +87,14 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
+      setLoading(true);
       await authLogout();
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
       setUser(null);
       setIsAuthenticated(false);
+      setLoading(false);
     }
   };
 
