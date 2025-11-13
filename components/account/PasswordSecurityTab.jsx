@@ -24,7 +24,7 @@ export default function PasswordAndSecurity() {
 
     let score = 0;
     const rules = {
-      hasLength: password.length >= 8,
+      hasLength: password.length >= 6,
       hasNumber: /[0-9]/.test(password),
       hasSymbol: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
       noNameEmail: true, // In a real app, check against user name/email
@@ -72,8 +72,8 @@ export default function PasswordAndSecurity() {
       return;
     }
 
-    if (passwords.new.length < 8) {
-      toast.error('New password must be at least 8 characters');
+    if (passwords.new.length < 6) {
+      toast.error('New password must be at least 6 characters');
       return;
     }
 
@@ -227,7 +227,7 @@ export default function PasswordAndSecurity() {
               ✓ Cannot contain your name or email address
             </li>
             <li className={passwordStrength.rules?.hasLength ? "text-green-600 font-medium" : "text-gray-400"}>
-              ✓ At least 8 characters
+              ✓ At least 6 characters
             </li>
             <li className={passwordStrength.rules?.hasNumber || passwordStrength.rules?.hasSymbol ? "text-green-600 font-medium" : "text-gray-400"}>
               ✓ Contains a number or symbol
