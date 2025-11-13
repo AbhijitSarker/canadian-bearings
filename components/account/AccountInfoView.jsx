@@ -36,37 +36,100 @@ export default function AccountInfoView({ personalDetails, shoppingAddress, onEd
 
             {/* Info Section */}
             <div className="space-y-4">
-                {/* Row */}
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
-                    <span className="text-gray-600 font-medium text-sm sm:w-40">Name</span>
-                    <span className="text-gray-900 font-semibold text-sm sm:text-base break-words">
-                        {personalDetails?.firstName} {personalDetails?.lastName}
-                    </span>
-                </div>
+                {/* Name */}
+                {(personalDetails?.firstName || personalDetails?.lastName) && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                      <span className="text-gray-600 font-medium text-sm sm:w-40">Name</span>
+                      <span className="text-gray-900 font-semibold text-sm sm:text-base break-words">
+                          {personalDetails?.firstName} {personalDetails?.lastName}
+                      </span>
+                  </div>
+                )}
 
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
-                    <span className="text-gray-600 font-medium text-sm sm:w-40">Phone</span>
-                    <span className="text-gray-900 font-semibold text-sm sm:text-base">
-                        {shoppingAddress?.phoneCountryCode} {shoppingAddress?.phoneNumber}
-                    </span>
-                </div>
+                {/* Phone */}
+                {shoppingAddress?.phoneNumber && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                      <span className="text-gray-600 font-medium text-sm sm:w-40">Phone</span>
+                      <span className="text-gray-900 font-semibold text-sm sm:text-base">
+                          {shoppingAddress?.phoneCountryCode} {shoppingAddress?.phoneNumber}
+                      </span>
+                  </div>
+                )}
 
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
-                    <span className="text-gray-600 font-medium text-sm sm:w-40">Email</span>
-                    <span className="text-gray-900 font-semibold text-sm sm:text-base break-words">
-                        {personalDetails?.email}
-                    </span>
-                </div>
+                {/* Email */}
+                {personalDetails?.email && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                      <span className="text-gray-600 font-medium text-sm sm:w-40">Email</span>
+                      <span className="text-gray-900 font-semibold text-sm sm:text-base break-words">
+                          {personalDetails?.email}
+                      </span>
+                  </div>
+                )}
 
-                <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 py-2">
-                    <span className="text-gray-600 font-medium text-sm sm:w-40 flex-shrink-0">Shopping Address</span>
-                    <span className="text-gray-900 font-semibold text-sm sm:text-base break-words">
-                        {shoppingAddress?.address && `${shoppingAddress.address}, `}
-                        {shoppingAddress?.street && `${shoppingAddress.street}, `}
-                        {shoppingAddress?.city}, {shoppingAddress?.state} {shoppingAddress?.zipCode}
-                        {shoppingAddress?.country && `, ${shoppingAddress.country}`}
-                    </span>
-                </div>
+                {/* Cell Phone */}
+                {personalDetails?.cellPhone && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                      <span className="text-gray-600 font-medium text-sm sm:w-40">Cell Phone</span>
+                      <span className="text-gray-900 font-semibold text-sm sm:text-base">
+                          {personalDetails?.cellPhone}
+                      </span>
+                  </div>
+                )}
+
+                {/* Job Title */}
+                {personalDetails?.jobTitle && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                      <span className="text-gray-600 font-medium text-sm sm:w-40">Job Title</span>
+                      <span className="text-gray-900 font-semibold text-sm sm:text-base">
+                          {personalDetails?.jobTitle}
+                      </span>
+                  </div>
+                )}
+
+                {/* Department */}
+                {personalDetails?.department && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                      <span className="text-gray-600 font-medium text-sm sm:w-40">Department</span>
+                      <span className="text-gray-900 font-semibold text-sm sm:text-base">
+                          {personalDetails?.department}
+                      </span>
+                  </div>
+                )}
+
+                {/* Last Login */}
+                {personalDetails?.lastLoginDate && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                      <span className="text-gray-600 font-medium text-sm sm:w-40">Last Login</span>
+                      <span className="text-gray-900 font-semibold text-sm sm:text-base">
+                          {new Date(personalDetails.lastLoginDate).toLocaleString()}
+                      </span>
+                  </div>
+                )}
+
+                {/* Login Count */}
+                {(personalDetails?.loginCount !== undefined && personalDetails?.loginCount !== null) && (
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 py-2">
+                      <span className="text-gray-600 font-medium text-sm sm:w-40">Login Count</span>
+                      <span className="text-gray-900 font-semibold text-sm sm:text-base">
+                          {personalDetails?.loginCount}
+                      </span>
+                  </div>
+                )}
+
+                {/* Shopping Address */}
+                {(shoppingAddress?.address || shoppingAddress?.street || shoppingAddress?.city || shoppingAddress?.state || shoppingAddress?.zipCode || shoppingAddress?.country) && (
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 py-2">
+                      <span className="text-gray-600 font-medium text-sm sm:w-40 flex-shrink-0">Shopping Address</span>
+                      <span className="text-gray-900 font-semibold text-sm sm:text-base break-words">
+                          {shoppingAddress?.address && `${shoppingAddress.address}, `}
+                          {shoppingAddress?.street && `${shoppingAddress.street}, `}
+                          {shoppingAddress?.city && `${shoppingAddress.city}, `}
+                          {shoppingAddress?.state && `${shoppingAddress.state} `}
+                          {shoppingAddress?.zipCode && `${shoppingAddress.zipCode}`}
+                          {shoppingAddress?.country && `, ${shoppingAddress.country}`}
+                      </span>
+                  </div>
+                )}
             </div>
         </div>
     );

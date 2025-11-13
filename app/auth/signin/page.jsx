@@ -6,12 +6,12 @@ import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { GrLinkedin } from "react-icons/gr";
 import { FaApple } from "react-icons/fa";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/lib/api/hooks/useAuth";
 import toast from "react-hot-toast";
 
 export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,11 +25,10 @@ export default function SignInPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // clear previous error
     setErrorMessage("");
 
-    if (!username || !password) {
-      const msg = "Please enter both username and password";
+    if (!email || !password) {
+      const msg = "Please enter both email and password";
       setErrorMessage(msg);
       return;
     }
@@ -37,7 +36,7 @@ export default function SignInPage() {
     setIsLoading(true);
 
     try {
-      const result = await login(username, password);
+      const result = await login(email, password);
 
       if (result.success) {
         toast.success("Login successful!");
@@ -75,17 +74,16 @@ export default function SignInPage() {
               {errorMessage}
             </div>
           )}
-          {/* Username */}
+          {/* Email */}
           <div className="relative">
             <MailIcon className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
             <input
-              type="text"
+              type="email"
               required
-              placeholder="Username"
-              value={username}
+              placeholder="Email"
+              value={email}
               onChange={(e) => {
-                setUsername(e.target.value);
-                // clear server error when user starts typing
+                setEmail(e.target.value);
                 if (errorMessage) setErrorMessage("");
               }}
               disabled={isLoading}
@@ -103,7 +101,6 @@ export default function SignInPage() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                // clear server error when user starts typing
                 if (errorMessage) setErrorMessage("");
               }}
               disabled={isLoading}
@@ -177,7 +174,7 @@ export default function SignInPage() {
             </button>
           </div>
 
-          {/* Back + Sign In bottom buttons */}
+          {/* Back button */}
           <div className="flex items-center justify-between mt-6">
             <Link
               href="/"

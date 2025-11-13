@@ -7,6 +7,7 @@ export default function SidebarNav({ activeTab, setActiveTab }) {
     { id: "order-history", label: "Order History" },
     { id: "quote", label: "Quote" },
     { id: "knowledge-center", label: "Knowledge Center" },
+    { id: "users", label: "Users" },
     { id: "customer-support", label: "Customer Support" },
   ];
 
