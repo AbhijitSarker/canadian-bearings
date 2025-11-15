@@ -73,7 +73,8 @@ export const AuthProvider = ({ children }) => {
       if (result.success) {
         setUser(result.data);
         setIsAuthenticated(true);
-        return { success: true };
+        // Return the data so callers (pages) can react to multi-customer users
+        return { success: true, data: result.data };
       } else {
         return { success: false, error: result.error };
       }

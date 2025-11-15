@@ -40,7 +40,18 @@ export default function SignInPage() {
 
       if (result.success) {
         toast.success("Login successful!");
-        router.push(returnUrl);
+
+        // If the login response contained multiple customers, send user to account selection
+        const userData = result.data;
+        if (
+          userData &&
+          Array.isArray(userData.customers) &&
+          userData.customers.length > 0
+        ) {
+          router.push('/auth/select/account');
+        } else {
+          router.push(returnUrl);
+        }
       } else {
         const msg = result.error || "Login failed. Please check your credentials.";
         setErrorMessage(msg);
