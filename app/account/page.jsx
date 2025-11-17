@@ -40,14 +40,14 @@ export default function MyAccountPage() {
   // Shopping Address State
   const [shoppingAddress, setShoppingAddress] = useState({
     address: "",
-    street: "201 James St N",
-    city: "Hamilton",
-    state: "Ontario",
-    zipCode: "L8R 2L2",
-    country: "Canada",
-    phoneNumber: "(555) 000-0000",
+    street: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+    phoneNumber: "",
     phoneExtension: '',
-    phoneCountryCode: "+1",
+    phoneCountryCode: "",
   });
 
   // Update personal details when user data changes

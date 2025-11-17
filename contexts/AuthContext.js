@@ -8,6 +8,8 @@ import {
   authRefresh,
   getStoredUser,
   isUserAuthenticated,
+  hasSelectedCustomer,
+  getSelectedCustomer,
 } from '@/lib/api/services/auth';
 
 export const AuthContext = createContext({});
@@ -26,6 +28,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   // Initialize auth state on mount
   useEffect(() => {
@@ -34,10 +37,12 @@ export const AuthProvider = ({ children }) => {
         // Check if user is already authenticated
         const authenticated = isUserAuthenticated();
         const userData = getStoredUser();
+        const selectedCust = getSelectedCustomer();
 
         if (authenticated && userData) {
           setUser(userData);
           setIsAuthenticated(true);
+          setSelectedCustomer(selectedCust);
 
           // Attempt to refresh token silently
           try {
@@ -52,11 +57,13 @@ export const AuthProvider = ({ children }) => {
         } else {
           setUser(null);
           setIsAuthenticated(false);
+          setSelectedCustomer(null);
         }
       } catch (error) {
         console.error('Auth initialization error:', error);
         setUser(null);
         setIsAuthenticated(false);
+        setSelectedCustomer(null);
       } finally {
         setLoading(false);
       }
@@ -95,16 +102,23 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setUser(null);
       setIsAuthenticated(false);
+      setSelectedCustomer(null);
       setLoading(false);
     }
+  };
+
+  const setCustomerSelected = (customerId) => {
+    setSelectedCustomer(customerId);
   };
 
   const value = {
     user,
     isAuthenticated,
     loading,
+    selectedCustomer,
     login,
     logout,
+    setCustomerSelected,
   };
 
   return (

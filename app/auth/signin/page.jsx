@@ -46,10 +46,19 @@ export default function SignInPage() {
         if (
           userData &&
           Array.isArray(userData.customers) &&
-          userData.customers.length > 0
+          userData.customers.length > 1
         ) {
-          router.push('/auth/select/account');
+          // Multiple customers: go to select-account
+          router.push('/auth/select-account');
+        } else if (
+          userData &&
+          Array.isArray(userData.customers) &&
+          userData.customers.length === 1
+        ) {
+          // Single customer: auto-select and go to account
+          router.push('/account');
         } else {
+          // No customers or fallback
           router.push(returnUrl);
         }
       } else {

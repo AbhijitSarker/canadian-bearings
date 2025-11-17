@@ -3,10 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { apiClient } from '@/lib/api/client';
+import { storeSelectedCustomer } from '@/lib/api/services/auth';
 
 export default function SelectAccountPage() {
   const router = useRouter();
+  const { setCustomerSelected } = useAuth();
   const [customers, setCustomers] = useState([]);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -51,7 +54,6 @@ export default function SelectAccountPage() {
     };
 
     fetchCustomers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submitSelection = async (customerIdArg) => {
@@ -66,6 +68,10 @@ export default function SelectAccountPage() {
       if (!resp || !resp.success) {
         throw new Error((resp && resp.message) || 'Failed to select account');
       }
+
+      // Store selected customer in localStorage and update context
+      storeSelectedCustomer(customerId);
+      setCustomerSelected(customerId);
 
       // Success: navigate to account page
       toast.success('Account selected');
@@ -131,7 +137,7 @@ export default function SelectAccountPage() {
                 {submitting ? 'Selecting...' : 'Select Account'}
               </button>
 
-              <Link href="/" className="border border-green-600 text-green-600 rounded-lg px-6 py-2 hover:bg-green-50 transition">
+              <Link href="/auth/signin" className="border border-green-600 text-green-600 rounded-lg px-6 py-2 hover:bg-green-50 transition">
                 ← Back
               </Link>
             </div>
