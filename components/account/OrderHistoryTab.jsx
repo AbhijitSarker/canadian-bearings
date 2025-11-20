@@ -23,7 +23,12 @@ export default function OrderHistoryTab() {
   const [filters, setFilters] = useState({
     status: null,
     payment: null,
-    dateRange: "all", // all, last-week, last-month, last-year
+    dateRange: "all", // all, last-week, last-month, last-year, custom
+    startDate: null,
+    endDate: null,
+    shipTo: "",
+    custPo: "",
+    orderNo: "",
   });
   const [orders, setOrders] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
@@ -55,7 +60,31 @@ export default function OrderHistoryTab() {
       setLoading(true);
       setError(null);
       try {
-        const res = await getOrders(page, perPage, 'orderId', 'asc', filters.status);
+        // Calculate date range based on preset or custom
+        let start = filters.startDate;
+        let end = filters.endDate;
+
+        if (filters.dateRange !== 'custom' && filters.dateRange !== 'all') {
+          const now = new Date();
+          end = now.toISOString();
+          
+          const d = new Date();
+          if (filters.dateRange === 'last-week') d.setDate(d.getDate() - 7);
+          if (filters.dateRange === 'last-month') d.setMonth(d.getMonth() - 1);
+          if (filters.dateRange === 'last-year') d.setFullYear(d.getFullYear() - 1);
+          start = d.toISOString();
+        }
+
+        const apiFilters = {
+          status: filters.status,
+          startDate: start,
+          endDate: end,
+          shipTo: filters.shipTo,
+          custPo: filters.custPo,
+          orderNo: filters.orderNo,
+        };
+
+        const res = await getOrders(page, perPage, 'orderId', 'asc', apiFilters);
 
         if (res.success && res.data) {
           const items = res.data.items || [];
@@ -90,7 +119,7 @@ export default function OrderHistoryTab() {
     };
 
     fetchOrders();
-  }, [page, perPage, filters.status]);
+  }, [page, perPage, filters.status, filters.dateRange, filters.startDate, filters.endDate, filters.shipTo, filters.custPo, filters.orderNo]);
 
   // Filter orders locally by search query
   const filtered = useMemo(() => {
@@ -128,7 +157,31 @@ export default function OrderHistoryTab() {
           const pageSizeForExport = Math.max(perPage, 100);
           let pageNum = 1;
           while (true) {
-            const res = await getOrders(pageNum, pageSizeForExport, 'orderId', 'asc', filters.status);
+            // Calculate date range for export same as fetch
+            let start = filters.startDate;
+            let end = filters.endDate;
+
+            if (filters.dateRange !== 'custom' && filters.dateRange !== 'all') {
+              const now = new Date();
+              end = now.toISOString();
+              
+              const d = new Date();
+              if (filters.dateRange === 'last-week') d.setDate(d.getDate() - 7);
+              if (filters.dateRange === 'last-month') d.setMonth(d.getMonth() - 1);
+              if (filters.dateRange === 'last-year') d.setFullYear(d.getFullYear() - 1);
+              start = d.toISOString();
+            }
+
+            const apiFilters = {
+              status: filters.status,
+              startDate: start,
+              endDate: end,
+              shipTo: filters.shipTo,
+              custPo: filters.custPo,
+              orderNo: filters.orderNo,
+            };
+
+            const res = await getOrders(pageNum, pageSizeForExport, 'orderId', 'asc', apiFilters);
             if (!res.success || !res.data) {
               throw new Error(res.error || 'Failed to retrieve orders for export');
             }
@@ -262,8 +315,66 @@ export default function OrderHistoryTab() {
             </button>
 
             {showFilterMenu && (
-              <div className="absolute right-0 mt-2 w-full sm:w-64 bg-white border border-[#EBEBEB] rounded-lg shadow-lg z-10 max-h-96 overflow-y-auto">
+              <div className="absolute right-0 mt-2 w-full sm:w-80 bg-white border border-[#EBEBEB] rounded-lg shadow-lg z-10 max-h-[500px] overflow-y-auto">
                 <div className="p-3 sm:p-4 space-y-4">
+                  {/* Text Filters */}
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Order #</label>
+                      <input
+                        type="text"
+                        value={filters.orderNo}
+                        onChange={(e) => setFilters({ ...filters, orderNo: e.target.value })}
+                        className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="SO-..."
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">PO #</label>
+                      <input
+                        type="text"
+                        value={filters.custPo}
+                        onChange={(e) => setFilters({ ...filters, custPo: e.target.value })}
+                        className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Enter PO number"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Ship To</label>
+                      <input
+                        type="text"
+                        value={filters.shipTo}
+                        onChange={(e) => setFilters({ ...filters, shipTo: e.target.value })}
+                        className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                        placeholder="Enter Ship To"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Date Range Custom Inputs */}
+                  {filters.dateRange === 'custom' && (
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                        <input
+                          type="date"
+                          value={filters.startDate ? filters.startDate.split('T')[0] : ''}
+                          onChange={(e) => setFilters({ ...filters, startDate: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                          className="w-full px-2 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">End Date</label>
+                        <input
+                          type="date"
+                          value={filters.endDate ? filters.endDate.split('T')[0] : ''}
+                          onChange={(e) => setFilters({ ...filters, endDate: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                          className="w-full px-2 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   {/* Status Filter */}
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Status</label>
@@ -316,7 +427,16 @@ export default function OrderHistoryTab() {
                   <div className="flex gap-2 pt-2 border-t">
                     <button
                       onClick={() => {
-                        setFilters({ status: null, payment: null, dateRange: "all" });
+                        setFilters({ 
+                          status: null, 
+                          payment: null, 
+                          dateRange: "all",
+                          startDate: null,
+                          endDate: null,
+                          shipTo: "",
+                          custPo: "",
+                          orderNo: ""
+                        });
                         setPage(1);
                       }}
                       className="flex-1 px-2 sm:px-3 py-1.5 text-xs sm:text-sm border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition"
@@ -351,6 +471,7 @@ export default function OrderHistoryTab() {
               <option value="last-week">Last Week</option>
               <option value="last-month">Last Month</option>
               <option value="last-year">Last Year</option>
+              <option value="custom">Custom Range</option>
             </select>
             <ChevronDown className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4 sm:w-[18px] sm:h-[18px]" />
           </div>
