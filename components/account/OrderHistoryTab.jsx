@@ -102,6 +102,7 @@ export default function OrderHistoryTab() {
             takenBy: order.placedByName || '-',
             status: order.status,
             amount: order.orderLines?.reduce((sum, line) => sum + (line.netAmount || 0), 0).toFixed(2) || '0.00',
+            orderLines: order.orderLines || [],
           }));
 
           setOrders(transformedOrders);
