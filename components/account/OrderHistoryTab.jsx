@@ -37,11 +37,6 @@ export default function OrderHistoryTab() {
   const [error, setError] = useState(null);
   const [exporting, setExporting] = useState(false);
   const filterMenuRef = useRef(null);
-  
-  // Custom Date Range Picker State
-  const [showDateRangePicker, setShowDateRangePicker] = useState(false);
-  const [tempDateRange, setTempDateRange] = useState({ start: null, end: null });
-  const dateRangePickerRef = useRef(null);
 
   // Close filter menu when clicking outside
   useEffect(() => {
@@ -59,27 +54,7 @@ export default function OrderHistoryTab() {
     }
   }, [showFilterMenu]);
 
-  // Close date range picker when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dateRangePickerRef.current && !dateRangePickerRef.current.contains(event.target)) {
-        setShowDateRangePicker(false);
-        // If we close without applying, revert to previous valid state if needed, 
-        // but for now just closing is fine, the select value might stay 'custom' 
-        // but no dates applied if they weren't set.
-        if (filters.dateRange === 'custom' && (!filters.startDate || !filters.endDate)) {
-             setFilters(prev => ({ ...prev, dateRange: 'all' }));
-        }
-      }
-    };
 
-    if (showDateRangePicker) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-      };
-    }
-  }, [showDateRangePicker, filters.dateRange, filters.startDate, filters.endDate]);
 
   // Fetch orders when page, perPage, or filters change
   useEffect(() => {
@@ -171,9 +146,33 @@ export default function OrderHistoryTab() {
       try {
         let allItems = [];
 
+        // Calculate date range based on preset or custom
+        let start = filters.startDate;
+        let end = filters.endDate;
+
+        if (filters.dateRange !== 'custom' && filters.dateRange !== 'all') {
+          const now = new Date();
+          end = now.toISOString();
+          
+          const d = new Date();
+          if (filters.dateRange === 'last-week') d.setDate(d.getDate() - 7);
+          if (filters.dateRange === 'last-month') d.setMonth(d.getMonth() - 1);
+          if (filters.dateRange === 'last-year') d.setFullYear(d.getFullYear() - 1);
+          start = d.toISOString();
+        }
+
+        const apiFilters = {
+          status: filters.status,
+          startDate: start,
+          endDate: end,
+          shipTo: filters.shipTo,
+          custPo: filters.custPo,
+          orderNo: filters.orderNo,
+        };
+
         // If we already know totalRecords, request all in a single call
         if (totalRecords && totalRecords > 0) {
-          const res = await getOrders(1, totalRecords, 'orderId', 'asc', filters.status);
+          const res = await getOrders(1, totalRecords, 'orderId', 'asc', apiFilters);
           if (res.success && res.data) {
             allItems = res.data.items || [];
           } else {
@@ -184,30 +183,6 @@ export default function OrderHistoryTab() {
           const pageSizeForExport = Math.max(perPage, 100);
           let pageNum = 1;
           while (true) {
-            // Calculate date range for export same as fetch
-            let start = filters.startDate;
-            let end = filters.endDate;
-
-            if (filters.dateRange !== 'custom' && filters.dateRange !== 'all') {
-              const now = new Date();
-              end = now.toISOString();
-              
-              const d = new Date();
-              if (filters.dateRange === 'last-week') d.setDate(d.getDate() - 7);
-              if (filters.dateRange === 'last-month') d.setMonth(d.getMonth() - 1);
-              if (filters.dateRange === 'last-year') d.setFullYear(d.getFullYear() - 1);
-              start = d.toISOString();
-            }
-
-            const apiFilters = {
-              status: filters.status,
-              startDate: start,
-              endDate: end,
-              shipTo: filters.shipTo,
-              custPo: filters.custPo,
-              orderNo: filters.orderNo,
-            };
-
             const res = await getOrders(pageNum, pageSizeForExport, 'orderId', 'asc', apiFilters);
             if (!res.success || !res.data) {
               throw new Error(res.error || 'Failed to retrieve orders for export');
@@ -294,13 +269,13 @@ export default function OrderHistoryTab() {
 
   return (
     <div className="w-full border bg-white rounded-lg shadow-sm border-[#EBEBEB] p-4 sm:p-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Order History</h2>
         <button
           onClick={handleExport}
           disabled={exporting}
           aria-busy={exporting}
-          className={`w-full sm:w-auto flex border px-3 sm:px-4 py-2 rounded-lg items-center justify-center sm:justify-start gap-2 text-gray-700 text-xs sm:text-sm font-medium transition ${exporting ? 'opacity-60 pointer-events-none' : 'hover:text-gray-900 hover:bg-gray-50'}`}
+          className={`w-full sm:w-auto flex border px-4 py-2.5 sm:py-2 rounded-lg items-center justify-center gap-2 text-gray-700 text-sm font-medium transition bg-white hover:bg-gray-50 ${exporting ? 'opacity-60 pointer-events-none' : ''}`}
         >
           {exporting ? (
             <>
@@ -309,226 +284,156 @@ export default function OrderHistoryTab() {
             </>
           ) : (
             <>
-              <Download size={16} className="sm:w-[18px] sm:h-[18px]" />
+              <Download size={18} />
               <span>Export to CSV</span>
             </>
           )}
         </button>
       </div>
 
-      <div className="flex flex-col gap-3 sm:gap-4 mb-4">
-        <div className="flex flex-row flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-4">
-          <div className="flex-1 min-w-0 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+      <div className="flex flex-col gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
-              className="w-full pl-9 sm:pl-10 pr-12 sm:pr-14 py-2 rounded-lg border border-[#EBEBEB] text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm min-w-0 bg-white"
-              placeholder="Search..."
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[#EBEBEB] text-sm focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm bg-white"
+              placeholder="Search orders..."
               value={query}
               onChange={(e) => { setQuery(e.target.value); setPage(1); }}
             />
-            {/* keyboard shortcut hint */}
-            <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-500 bg-white border border-[#EBEBEB] rounded px-2 py-0.5 hidden sm:inline-flex items-center justify-center">
-              ⌘1
-            </span>
           </div>
 
-          <div className="relative w-auto" ref={filterMenuRef}>
-            <button
-              onClick={() => setShowFilterMenu(!showFilterMenu)}
-              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-xs sm:text-sm font-medium hover:bg-green-50 transition"
-            >
-              <Filter size={16} className="sm:w-[18px] sm:h-[18px]" />
-              <span>Filter</span>
-            </button>
+          <div className="flex gap-3">
+            <div className="relative" ref={filterMenuRef}>
+              <button
+                onClick={() => setShowFilterMenu(!showFilterMenu)}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-sm font-medium hover:bg-green-50 transition bg-white"
+              >
+                <Filter size={18} />
+                <span>Filter</span>
+              </button>
 
-            {showFilterMenu && (
-              <div className="absolute right-0 mt-2 w-full sm:w-80 bg-white border border-[#EBEBEB] rounded-lg shadow-lg z-10 max-h-[500px] overflow-y-auto">
-                <div className="p-3 sm:p-4 space-y-4">
-                  {/* Text Filters */}
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Order #</label>
-                      <input
-                        type="text"
-                        value={filters.orderNo}
-                        onChange={(e) => setFilters({ ...filters, orderNo: e.target.value })}
-                        className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="SO-..."
-                      />
+              {showFilterMenu && (
+                <div className="absolute left-0 sm:left-auto sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 bg-white border border-[#EBEBEB] rounded-lg shadow-lg z-10 max-h-[500px] overflow-y-auto mx-auto sm:mx-0">
+                  <div className="p-4 space-y-4">
+                    {/* Text Filters */}
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Order #</label>
+                        <input
+                          type="text"
+                          value={filters.orderNo}
+                          onChange={(e) => setFilters({ ...filters, orderNo: e.target.value })}
+                          className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                          placeholder="SO-..."
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">PO #</label>
+                        <input
+                          type="text"
+                          value={filters.custPo}
+                          onChange={(e) => setFilters({ ...filters, custPo: e.target.value })}
+                          className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                          placeholder="Enter PO number"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Ship To</label>
+                        <input
+                          type="text"
+                          value={filters.shipTo}
+                          onChange={(e) => setFilters({ ...filters, shipTo: e.target.value })}
+                          className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                          placeholder="Enter Ship To"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">PO #</label>
-                      <input
-                        type="text"
-                        value={filters.custPo}
-                        onChange={(e) => setFilters({ ...filters, custPo: e.target.value })}
-                        className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Enter PO number"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Ship To</label>
-                      <input
-                        type="text"
-                        value={filters.shipTo}
-                        onChange={(e) => setFilters({ ...filters, shipTo: e.target.value })}
-                        className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                        placeholder="Enter Ship To"
-                      />
-                    </div>
-                  </div>
 
-                  {/* Date Range Custom Inputs */}
-                  {filters.dateRange === 'custom' && (
+                    {/* Date Range Custom Inputs */}
                     <div className="grid grid-cols-2 gap-2">
                       <div>
-                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
                         <input
                           type="date"
                           value={filters.startDate ? filters.startDate.split('T')[0] : ''}
-                          onChange={(e) => setFilters({ ...filters, startDate: e.target.value ? new Date(e.target.value).toISOString() : null })}
-                          className="w-full px-2 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                          onChange={(e) => setFilters({ 
+                            ...filters, 
+                            dateRange: 'custom',
+                            startDate: e.target.value ? new Date(e.target.value).toISOString() : null 
+                          })}
+                          className="w-full px-2 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">End Date</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
                         <input
                           type="date"
                           value={filters.endDate ? filters.endDate.split('T')[0] : ''}
-                          onChange={(e) => setFilters({ ...filters, endDate: e.target.value ? new Date(e.target.value).toISOString() : null })}
-                          className="w-full px-2 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                          onChange={(e) => setFilters({ 
+                            ...filters, 
+                            dateRange: 'custom',
+                            endDate: e.target.value ? new Date(e.target.value).toISOString() : null 
+                          })}
+                          className="w-full px-2 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                       </div>
                     </div>
-                  )}
-                  
-                  {/* Clear and Apply buttons */}
-                  <div className="flex gap-2 pt-2 border-t">
-                    <button
-                      onClick={() => {
-                        setFilters({ 
-                          status: null, 
-                          payment: null, 
-                          dateRange: "all",
-                          startDate: null,
-                          endDate: null,
-                          shipTo: "",
-                          custPo: "",
-                          orderNo: ""
-                        });
-                        setPage(1);
-                      }}
-                      className="flex-1 px-2 sm:px-3 py-1.5 text-xs sm:text-sm border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition"
-                    >
-                      Clear
-                    </button>
-                    <button
-                      onClick={() => setShowFilterMenu(false)}
-                      className="flex-1 px-2 sm:px-3 py-1.5 text-xs sm:text-sm bg-green-500 text-white rounded hover:bg-green-600 transition"
-                    >
-                      Apply
-                    </button>
+                    
+                    {/* Clear and Apply buttons */}
+                    <div className="flex gap-2 pt-2 border-t">
+                      <button
+                        onClick={() => {
+                          setFilters({ 
+                            status: null, 
+                            payment: null, 
+                            dateRange: "all",
+                            startDate: null,
+                            endDate: null,
+                            shipTo: "",
+                            custPo: "",
+                            orderNo: ""
+                          });
+                          setPage(1);
+                        }}
+                        className="flex-1 px-3 py-2 text-sm border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition"
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={() => setShowFilterMenu(false)}
+                        className="flex-1 px-3 py-2 text-sm bg-green-500 text-white rounded hover:bg-green-600 transition"
+                      >
+                        Apply
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
 
-          <div className="relative w-auto ml-auto" ref={dateRangePickerRef}>
-            <select
-              value={filters.dateRange}
-              onChange={(e) => {
-                if (e.target.value === 'custom') {
-                   setTempDateRange({ 
-                     start: filters.startDate ? filters.startDate.split('T')[0] : '', 
-                     end: filters.endDate ? filters.endDate.split('T')[0] : '' 
-                   });
-                   setShowDateRangePicker(true);
-                   // Don't set filters.dateRange to custom yet until applied? 
-                   // Or set it but don't fetch until dates are there?
-                   // Let's set it to custom so the UI reflects it, but handle the fetch logic to wait or use defaults.
-                   setFilters({
-                    ...filters,
-                    dateRange: 'custom',
-                  });
-                } else {
+            <div className="relative flex-1 sm:flex-none">
+              <select
+                value={filters.dateRange}
+                onChange={(e) => {
                   setFilters({
                     ...filters,
                     dateRange: e.target.value,
                     startDate: null,
                     endDate: null,
                   });
-                  setShowDateRangePicker(false);
                   setPage(1);
-                }
-              }}
-              className="w-auto min-w-[140px] appearance-none pl-3 sm:pl-4 pr-8 sm:pr-10 py-2 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-xs sm:text-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 font-medium hover:bg-green-50 transition"
-            >
-              <option value="all">All Time</option>
-              <option value="last-week">Last Week</option>
-              <option value="last-month">Last Month</option>
-              <option value="last-year">Last Year</option>
-              <option value="custom">Custom Range</option>
-            </select>
-            <ChevronDown className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4 sm:w-[18px] sm:h-[18px]" />
-            
-            {showDateRangePicker && (
-              <div className="absolute right-0 mt-2 w-72 bg-white border border-[#EBEBEB] rounded-lg shadow-lg z-20 p-4">
-                <h3 className="text-sm font-semibold text-gray-900 mb-3">Select Date Range</h3>
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Start Date</label>
-                    <input
-                      type="date"
-                      value={tempDateRange.start || ''}
-                      onChange={(e) => setTempDateRange({ ...tempDateRange, start: e.target.value })}
-                      className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">End Date</label>
-                    <input
-                      type="date"
-                      value={tempDateRange.end || ''}
-                      onChange={(e) => setTempDateRange({ ...tempDateRange, end: e.target.value })}
-                      className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-                  <div className="flex gap-2 pt-2">
-                    <button
-                      onClick={() => {
-                        setShowDateRangePicker(false);
-                        if (!filters.startDate || !filters.endDate) {
-                            setFilters(prev => ({ ...prev, dateRange: 'all' }));
-                        }
-                      }}
-                      className="flex-1 px-3 py-2 text-xs sm:text-sm border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (tempDateRange.start && tempDateRange.end) {
-                          setFilters({
-                            ...filters,
-                            dateRange: 'custom',
-                            startDate: new Date(tempDateRange.start).toISOString(),
-                            endDate: new Date(tempDateRange.end).toISOString(),
-                          });
-                          setPage(1);
-                          setShowDateRangePicker(false);
-                        } else {
-                            toast.error("Please select both start and end dates");
-                        }
-                      }}
-                      className="flex-1 px-3 py-2 text-xs sm:text-sm bg-green-500 text-white rounded hover:bg-green-600 transition"
-                    >
-                      Apply
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
+                }}
+                className="w-full sm:w-auto appearance-none pl-4 pr-10 py-2.5 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 font-medium hover:bg-green-50 transition"
+              >
+                <option value="all">All Time</option>
+                <option value="last-week">Last Week</option>
+                <option value="last-month">Last Month</option>
+                <option value="last-year">Last Year</option>
+                {filters.dateRange === 'custom' && <option value="custom">Custom Range</option>}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4" />
+            </div>
           </div>
         </div>
       </div>
