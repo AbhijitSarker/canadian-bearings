@@ -37,6 +37,11 @@ export default function OrderHistoryTab() {
   const [error, setError] = useState(null);
   const [exporting, setExporting] = useState(false);
   const filterMenuRef = useRef(null);
+  
+  // Custom Date Range Picker State
+  const [showDateRangePicker, setShowDateRangePicker] = useState(false);
+  const [tempDateRange, setTempDateRange] = useState({ start: null, end: null });
+  const dateRangePickerRef = useRef(null);
 
   // Close filter menu when clicking outside
   useEffect(() => {
@@ -53,6 +58,28 @@ export default function OrderHistoryTab() {
       };
     }
   }, [showFilterMenu]);
+
+  // Close date range picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dateRangePickerRef.current && !dateRangePickerRef.current.contains(event.target)) {
+        setShowDateRangePicker(false);
+        // If we close without applying, revert to previous valid state if needed, 
+        // but for now just closing is fine, the select value might stay 'custom' 
+        // but no dates applied if they weren't set.
+        if (filters.dateRange === 'custom' && (!filters.startDate || !filters.endDate)) {
+             setFilters(prev => ({ ...prev, dateRange: 'all' }));
+        }
+      }
+    };
+
+    if (showDateRangePicker) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [showDateRangePicker, filters.dateRange, filters.startDate, filters.endDate]);
 
   // Fetch orders when page, perPage, or filters change
   useEffect(() => {
@@ -374,55 +401,7 @@ export default function OrderHistoryTab() {
                       </div>
                     </div>
                   )}
-
-                  {/* Status Filter */}
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <div className="space-y-2">
-                      {["Billed", "Partially Fulfilled", "Pending Fulfillment"].map((status) => (
-                        <label key={status} className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={filters.status === status}
-                            onChange={(e) => {
-                              setFilters({
-                                ...filters,
-                                status: e.target.checked ? status : null,
-                              });
-                              setPage(1);
-                            }}
-                            className="rounded border-[#EBEBEB]"
-                          />
-                          <span className="text-xs sm:text-sm text-gray-700">{status}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Payment Filter */}
-                  <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Payment</label>
-                    <div className="space-y-2">
-                      {["Cash", "Card", "Check", "Other"].map((payment) => (
-                        <label key={payment} className="flex items-center gap-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={filters.payment === payment}
-                            onChange={(e) => {
-                              setFilters({
-                                ...filters,
-                                payment: e.target.checked ? payment : null,
-                              });
-                              setPage(1);
-                            }}
-                            className="rounded border-gray-300"
-                          />
-                          <span className="text-xs sm:text-sm text-gray-700">{payment}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
+                  
                   {/* Clear and Apply buttons */}
                   <div className="flex gap-2 pt-2 border-t">
                     <button
@@ -455,15 +434,33 @@ export default function OrderHistoryTab() {
             )}
           </div>
 
-          <div className="relative w-auto ml-auto">
+          <div className="relative w-auto ml-auto" ref={dateRangePickerRef}>
             <select
               value={filters.dateRange}
               onChange={(e) => {
-                setFilters({
-                  ...filters,
-                  dateRange: e.target.value,
-                });
-                setPage(1);
+                if (e.target.value === 'custom') {
+                   setTempDateRange({ 
+                     start: filters.startDate ? filters.startDate.split('T')[0] : '', 
+                     end: filters.endDate ? filters.endDate.split('T')[0] : '' 
+                   });
+                   setShowDateRangePicker(true);
+                   // Don't set filters.dateRange to custom yet until applied? 
+                   // Or set it but don't fetch until dates are there?
+                   // Let's set it to custom so the UI reflects it, but handle the fetch logic to wait or use defaults.
+                   setFilters({
+                    ...filters,
+                    dateRange: 'custom',
+                  });
+                } else {
+                  setFilters({
+                    ...filters,
+                    dateRange: e.target.value,
+                    startDate: null,
+                    endDate: null,
+                  });
+                  setShowDateRangePicker(false);
+                  setPage(1);
+                }
               }}
               className="w-auto min-w-[140px] appearance-none pl-3 sm:pl-4 pr-8 sm:pr-10 py-2 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-xs sm:text-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 font-medium hover:bg-green-50 transition"
             >
@@ -474,6 +471,64 @@ export default function OrderHistoryTab() {
               <option value="custom">Custom Range</option>
             </select>
             <ChevronDown className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+            
+            {showDateRangePicker && (
+              <div className="absolute right-0 mt-2 w-72 bg-white border border-[#EBEBEB] rounded-lg shadow-lg z-20 p-4">
+                <h3 className="text-sm font-semibold text-gray-900 mb-3">Select Date Range</h3>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Start Date</label>
+                    <input
+                      type="date"
+                      value={tempDateRange.start || ''}
+                      onChange={(e) => setTempDateRange({ ...tempDateRange, start: e.target.value })}
+                      className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">End Date</label>
+                    <input
+                      type="date"
+                      value={tempDateRange.end || ''}
+                      onChange={(e) => setTempDateRange({ ...tempDateRange, end: e.target.value })}
+                      className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <button
+                      onClick={() => {
+                        setShowDateRangePicker(false);
+                        if (!filters.startDate || !filters.endDate) {
+                            setFilters(prev => ({ ...prev, dateRange: 'all' }));
+                        }
+                      }}
+                      className="flex-1 px-3 py-2 text-xs sm:text-sm border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (tempDateRange.start && tempDateRange.end) {
+                          setFilters({
+                            ...filters,
+                            dateRange: 'custom',
+                            startDate: new Date(tempDateRange.start).toISOString(),
+                            endDate: new Date(tempDateRange.end).toISOString(),
+                          });
+                          setPage(1);
+                          setShowDateRangePicker(false);
+                        } else {
+                            toast.error("Please select both start and end dates");
+                        }
+                      }}
+                      className="flex-1 px-3 py-2 text-xs sm:text-sm bg-green-500 text-white rounded hover:bg-green-600 transition"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
