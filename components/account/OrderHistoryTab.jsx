@@ -30,6 +30,7 @@ export default function OrderHistoryTab() {
     custPo: "",
     orderNo: "",
   });
+  const [sort, setSort] = useState({ by: 'dateCreated', direction: 'desc' });
   const [orders, setOrders] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -54,9 +55,7 @@ export default function OrderHistoryTab() {
     }
   }, [showFilterMenu]);
 
-
-
-  // Fetch orders when page, perPage, or filters change
+  // Fetch orders when page, perPage, filters, or sort change
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
@@ -86,7 +85,7 @@ export default function OrderHistoryTab() {
           orderNo: filters.orderNo,
         };
 
-        const res = await getOrders(page, perPage, 'orderId', 'asc', apiFilters);
+        const res = await getOrders(page, perPage, sort.by, sort.direction, apiFilters);
 
         if (res.success && res.data) {
           const items = res.data.items || [];
@@ -122,7 +121,15 @@ export default function OrderHistoryTab() {
     };
 
     fetchOrders();
-  }, [page, perPage, filters.status, filters.dateRange, filters.startDate, filters.endDate, filters.shipTo, filters.custPo, filters.orderNo]);
+  }, [page, perPage, filters.status, filters.dateRange, filters.startDate, filters.endDate, filters.shipTo, filters.custPo, filters.orderNo, sort]);
+
+  const handleSort = (column) => {
+    setSort(prev => ({
+      by: column,
+      direction: prev.by === column && prev.direction === 'asc' ? 'desc' : 'asc'
+    }));
+    setPage(1);
+  };
 
   // Filter orders locally by search query
   const filtered = useMemo(() => {
@@ -441,18 +448,13 @@ export default function OrderHistoryTab() {
 
       {/* table data */}
       <div className="overflow-x-auto mb-6">
-        {loading ? (
-          <div className="flex items-center justify-center py-12 min-h-[600px]">
-            <Loader className="w-6 h-6 animate-spin text-green-500" />
-            <span className="ml-2 text-gray-600">Loading orders...</span>
-          </div>
-        ) : error ? (
-          <div className="text-center py-12 text-red-600">
-            {error}
-          </div>
-        ) : (
-          <OrderTable orders={pageItems} />
-        )}
+          <OrderTable 
+            orders={filtered} 
+            sort={sort} 
+            onSort={handleSort} 
+            loading={loading} 
+            error={error} 
+          />
       </div>
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-6 text-xs sm:text-sm">
