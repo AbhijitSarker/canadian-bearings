@@ -45,8 +45,21 @@ export default function SupportCaseSidebar({ caseId, onClose, onUpdate }) {
     const res = await addMessageToCase(caseDetails.uniqueId, messageText);
     if (res.success) {
       setMessageText("");
-      // Refresh details to show new message
-      await fetchDetails();
+      
+      // Append new message to the list immediately
+      if (res.data) {
+        setCaseDetails(prev => ({
+          ...prev,
+          messages: [...(prev.messages || []), res.data]
+        }));
+      } else {
+        // Fallback if no data returned, fetch silently
+        const detailsRes = await getSupportCaseDetails(caseId);
+        if (detailsRes.success) {
+          setCaseDetails(detailsRes.data);
+        }
+      }
+
       if (onUpdate) onUpdate();
     } else {
       toast.error(res.error);
@@ -103,40 +116,42 @@ export default function SupportCaseSidebar({ caseId, onClose, onUpdate }) {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
-              {caseDetails.messages && caseDetails.messages.length > 0 ? (
-                caseDetails.messages.map((msg) => (
-                  <div 
-                    key={msg.id} 
-                    className={`flex ${msg.isFromSupport ? 'justify-start' : 'justify-end'}`}
-                  >
-                    <div className={`flex max-w-[85%] ${msg.isFromSupport ? 'flex-row' : 'flex-row-reverse'} gap-2`}>
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.isFromSupport ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'}`}>
-                        {msg.isFromSupport ? <Headphones size={14} /> : <User size={14} />}
-                      </div>
-                      <div>
-                        <div 
-                          className={`p-3 rounded-lg text-sm ${
-                            msg.isFromSupport 
-                              ? 'bg-gray-100 text-gray-800 rounded-tl-none' 
-                              : 'bg-green-50 text-gray-800 rounded-tr-none border border-green-100'
-                          }`}
-                        >
-                          {msg.messageText}
+            <div className="flex-1 overflow-y-auto bg-white p-4">
+              <div className="flex flex-col justify-end min-h-full space-y-4">
+                {caseDetails.messages && caseDetails.messages.length > 0 ? (
+                  caseDetails.messages.map((msg) => (
+                    <div 
+                      key={msg.id} 
+                      className={`flex ${msg.isFromSupport ? 'justify-start' : 'justify-end'}`}
+                    >
+                      <div className={`flex max-w-[85%] ${msg.isFromSupport ? 'flex-row' : 'flex-row-reverse'} gap-2`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.isFromSupport ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'}`}>
+                          {msg.isFromSupport ? <Headphones size={14} /> : <User size={14} />}
                         </div>
-                        <div className={`text-[10px] text-gray-400 mt-1 ${msg.isFromSupport ? 'text-left' : 'text-right'}`}>
-                          {new Date(msg.sentAt).toLocaleString()}
+                        <div>
+                          <div 
+                            className={`p-3 rounded-lg text-sm ${
+                              msg.isFromSupport 
+                                ? 'bg-gray-100 text-gray-800 rounded-tl-none' 
+                                : 'bg-green-50 text-gray-800 rounded-tr-none border border-green-100'
+                            }`}
+                          >
+                            {msg.messageText}
+                          </div>
+                          <div className={`text-[10px] text-gray-400 mt-1 ${msg.isFromSupport ? 'text-left' : 'text-right'}`}>
+                            {new Date(msg.sentAt).toLocaleString()}
+                          </div>
                         </div>
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-gray-400 text-sm m-auto">
+                    No messages yet. Start the conversation!
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-400 text-sm">
-                  No messages yet. Start the conversation!
-                </div>
-              )}
-              <div ref={messagesEndRef} />
+                )}
+                <div ref={messagesEndRef} />
+              </div>
             </div>
 
             {/* Input Area */}

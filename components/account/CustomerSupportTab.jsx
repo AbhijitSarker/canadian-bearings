@@ -60,8 +60,8 @@ export default function CustomerSupportTab() {
     }
   }, [showFilterMenu]);
 
-  const fetchCases = async () => {
-    setLoading(true);
+  const fetchCases = async (silent = false) => {
+    if (!silent) setLoading(true);
     setError(null);
     try {
       // Calculate date range based on preset or custom
@@ -95,15 +95,19 @@ export default function CustomerSupportTab() {
         setTotalRecords(res.data.totalRecords || 0);
         setTotalPages(res.data.totalPages || 1);
       } else {
-        setError(res.error || 'Failed to fetch cases');
-        toast.error(res.error || 'Failed to fetch cases');
+        if (!silent) {
+          setError(res.error || 'Failed to fetch cases');
+          toast.error(res.error || 'Failed to fetch cases');
+        }
       }
     } catch (err) {
       console.error('Error fetching cases:', err);
-      setError('An error occurred while fetching cases');
-      toast.error('An error occurred while fetching cases');
+      if (!silent) {
+        setError('An error occurred while fetching cases');
+        toast.error('An error occurred while fetching cases');
+      }
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
@@ -165,7 +169,7 @@ export default function CustomerSupportTab() {
                         <select
                           value={filters.statusId || ""}
                           onChange={(e) => setFilters({ ...filters, statusId: e.target.value || null })}
-                          className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
                         >
                           <option value="">All Statuses</option>
                           <option value="1">Open</option>
@@ -179,7 +183,7 @@ export default function CustomerSupportTab() {
                         <select
                           value={filters.priorityId || ""}
                           onChange={(e) => setFilters({ ...filters, priorityId: e.target.value || null })}
-                          className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
                         >
                           <option value="">All Priorities</option>
                           <option value="1">Low</option>
@@ -192,7 +196,7 @@ export default function CustomerSupportTab() {
                         <select
                           value={filters.categoryId || ""}
                           onChange={(e) => setFilters({ ...filters, categoryId: e.target.value || null })}
-                          className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                          className="w-full px-3 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
                         >
                           <option value="">All Categories</option>
                           <option value="1">Order Issues</option>
@@ -275,7 +279,7 @@ export default function CustomerSupportTab() {
                   });
                   setPage(1);
                 }}
-                className="w-full sm:w-auto appearance-none pl-4 pr-10 py-2.5 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 font-medium hover:bg-green-50 transition"
+                className="w-full sm:w-auto appearance-none pl-4 pr-10 py-2.5 rounded-lg shadow-sm border border-[#EBEBEB] text-gray-700 text-sm bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 font-medium transition"
               >
                 <option value="all">All Time</option>
                 <option value="last-week">Last Week</option>
@@ -399,7 +403,7 @@ export default function CustomerSupportTab() {
       <SupportCaseSidebar 
         caseId={selectedCase?.id} 
         onClose={() => setSelectedCase(null)} 
-        onUpdate={fetchCases}
+        onUpdate={() => fetchCases(true)}
       />
 
       {/* Create Case Modal */}
