@@ -200,6 +200,11 @@ export default function MyAccountPage() {
     toast.success("Export functionality coming soon!");
   };
 
+  const handleTabChange = (tabId) => {
+    setActiveTab(tabId);
+    setSidebarOpen(false);
+  };
+
   return (
     <ProtectedRoute>
       <div className="min-h-screen container mx-auto">
@@ -228,7 +233,7 @@ export default function MyAccountPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
             {/* Sidebar Navigation */}
             <div ref={sidebarRef} className={`lg:col-span-3 ${sidebarOpen ? "block" : "hidden"} lg:block`}>
-              <SidebarNav activeTab={activeTab} setActiveTab={setActiveTab} />
+              <SidebarNav activeTab={activeTab} setActiveTab={handleTabChange} />
             </div>
 
             {/* Main Content Area */}
