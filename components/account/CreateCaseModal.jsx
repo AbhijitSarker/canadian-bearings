@@ -102,7 +102,7 @@ export default function CreateCaseModal({ onClose, onSuccess }) {
             </div>
           </div>
 
-          {/* 
+          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea
@@ -113,7 +113,7 @@ export default function CreateCaseModal({ onClose, onSuccess }) {
               placeholder="Provide more details..."
             />
           </div>
-          */}
+         
 
           <div className="pt-2 flex justify-end gap-2">
             <button
