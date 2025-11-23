@@ -11,7 +11,7 @@ const urbanist = Urbanist({ subsets: ['latin'], weight: ["300", "400", "500", "6
 
 export const metadata = {
   title: "Canadian Bearings",
-  description: "E-Commerce with Next.js ",
+  description: "Safety, reliability, efficiency, and sustainability to industrial operations worldwide",
 };
 
 export default function RootLayout({ children }) {
