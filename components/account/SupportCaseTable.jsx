@@ -47,6 +47,15 @@ export default function SupportCaseTable({ cases, sort, onSort, loading, error, 
     return sort.direction === 'asc' ? <ArrowUp size={14} className="ml-1 text-gray-900" /> : <ArrowDown size={14} className="ml-1 text-gray-900" />;
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    try {
+      return new Date(dateString).toISOString().split('T')[0];
+    } catch (e) {
+      return dateString;
+    }
+  };
+
   return (
     <>
       <div className="min-h-[400px]">
@@ -111,7 +120,7 @@ export default function SupportCaseTable({ cases, sort, onSort, loading, error, 
                   >
                     <TableCell className="text-[#171717] font-medium py-3 px-4 align-middle text-sm">{item.caseNo}</TableCell>
                     <TableCell className="text-[#171717] py-3 px-4 align-middle text-sm font-medium">{item.title}</TableCell>
-                    <TableCell className="text-[#171717] py-3 px-4 align-middle text-sm whitespace-nowrap">{item.dateCreated}</TableCell>
+                    <TableCell className="text-[#171717] py-3 px-4 align-middle text-sm whitespace-nowrap">{formatDate(item.dateCreated)}</TableCell>
                     <TableCell className="text-[#171717] py-3 px-4 align-middle text-sm">{item.categoryLabel}</TableCell>
                     <TableCell className="py-3 px-4 align-middle">
                       <PriorityBadge priority={item.priorityLabel} />
@@ -153,7 +162,7 @@ export default function SupportCaseTable({ cases, sort, onSort, loading, error, 
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="font-semibold text-gray-900">{item.caseNo}</div>
-                    <div className="text-xs text-gray-500 mt-1">{item.dateCreated}</div>
+                    <div className="text-xs text-gray-500 mt-1">{formatDate(item.dateCreated)}</div>
                   </div>
                   <StatusBadge status={item.statusLabel} />
                 </div>
