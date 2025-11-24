@@ -139,7 +139,9 @@ export default function Navbar() {
                             )}
 
                             <div className="bg-green-500 w-[40px] h-[40px] overflow-hidden rounded-full flex justify-center items-center flex-shrink-0">
-                                <ShoppingCart2LineIcon />
+                                <Link href="/cart">
+                                    <ShoppingCart2LineIcon />
+                                </Link>
                             </div>
                         </div>
                     </div>
