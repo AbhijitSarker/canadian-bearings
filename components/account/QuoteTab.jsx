@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { ChevronDown, Search, Filter, Plus } from "lucide-react";
+import { ChevronDown, Search, Filter, Plus, Loader } from "lucide-react";
 import QuoteTable from "./QuoteTable";
 import QuoteRequestForm from "./QuoteRequestForm";
+import { getQuotes } from "@/lib/api/services/quotes";
+import toast from "react-hot-toast";
 import {
   Pagination,
   PaginationContent,
@@ -15,49 +17,108 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-const mockQuotes = Array.from({ length: 20 }).map((_, i) => ({
-  id: i + 1,
-  serial: i + 1,
-  quoteNumber: `QU-29-100941${i}`,
-  orderDate: "23-04-25",
-  quotedBy: "Example",
-  reference: "Metelix",
-  action: ["Done", "Pending", "Failed"][i % 3],
-}));
-
 export default function QuoteTab() {
   const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
 
   // Quote history state
   const [query, setQuery] = useState("");
-  const [perPage, setPerPage] = useState(7);
+  const [perPage, setPerPage] = useState(10);
   const [page, setPage] = useState(1);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [filters, setFilters] = useState({
     status: null,
     dateRange: "all",
+    startDate: null,
+    endDate: null,
   });
+  const [sort, setSort] = useState({ by: 'createdDate', direction: 'desc' });
+  const [quotes, setQuotes] = useState([]);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const filterMenuRef = useRef(null);
 
-  // Quote history filtering
-  const filtered = useMemo(() => {
-    let result = mockQuotes;
-    if (query) {
-      result = result.filter((q) =>
-        [q.quoteNumber, q.reference].join(" ").toLowerCase().includes(query.toLowerCase())
-      );
-    }
-    if (filters.status) {
-      result = result.filter((q) => q.action === filters.status);
-    }
-    return result;
-  }, [query, filters]);
+  // Close filter menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filterMenuRef.current && !filterMenuRef.current.contains(event.target)) {
+        setShowFilterMenu(false);
+      }
+    };
 
-  const pageCount = Math.ceil(filtered.length / perPage) || 1;
-  const pageItems = filtered.slice((page - 1) * perPage, page * perPage);
+    if (showFilterMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [showFilterMenu]);
+
+  // Fetch quotes
+  useEffect(() => {
+    const fetchQuotes = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        // Calculate date range based on preset or custom
+        let start = filters.startDate;
+        let end = filters.endDate;
+
+        if (filters.dateRange !== 'custom' && filters.dateRange !== 'all') {
+          const now = new Date();
+          end = now.toISOString();
+          
+          const d = new Date();
+          if (filters.dateRange === 'last-week') d.setDate(d.getDate() - 7);
+          if (filters.dateRange === 'last-month') d.setMonth(d.getMonth() - 1);
+          if (filters.dateRange === 'last-year') d.setFullYear(d.getFullYear() - 1);
+          start = d.toISOString();
+        }
+
+        const apiFilters = {
+          status: filters.status,
+          startDate: start,
+          endDate: end,
+        };
+
+        const res = await getQuotes(page, perPage, sort.by, sort.direction, apiFilters);
+
+        if (res.success && res.data) {
+          setQuotes(res.data.items || []);
+          setTotalRecords(res.data.totalRecords || 0);
+          setTotalPages(res.data.totalPages || 1);
+        } else {
+          setError(res.error || 'Failed to fetch quotes');
+          toast.error(res.error || 'Failed to fetch quotes');
+        }
+      } catch (err) {
+        console.error('Error fetching quotes:', err);
+        setError('An error occurred while fetching quotes');
+        toast.error('An error occurred while fetching quotes');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuotes();
+  }, [page, perPage, filters.status, filters.dateRange, filters.startDate, filters.endDate, sort]);
+
+  const handleSort = (column) => {
+    setSort(prev => ({
+      by: column,
+      direction: prev.by === column && prev.direction === 'asc' ? 'desc' : 'asc'
+    }));
+    setPage(1);
+  };
+
+  const pageCount = totalPages;
 
   const handleFormSubmit = ({ form, lines }) => {
     console.log("Quote submitted from form component", { form, lines });
+    // Ideally refresh the list here
+    // setPage(1); // Trigger refresh
   };
 
   return (
@@ -78,24 +139,22 @@ export default function QuoteTab() {
 
           <div className="flex flex-col gap-2 sm:gap-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-              <div className="w-full sm:flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-[18px] sm:h-[18px]" />
-                <input
-                  className="w-full pl-9 sm:pl-10 pr-3 sm:pr-4 py-2 rounded-lg border border-gray-200 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="Search..."
-                  value={query}
-                  onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-                />
-              </div>
-
-              <div className="w-full sm:w-auto flex gap-2">
-                <div className="relative flex-1 sm:flex-none">
+              {/* Search is currently client-side only or disabled if not supported by API for generic query */}
+              {/* Keeping the UI but disabling functionality or making it clear it might not work as expected without API support */}
+              {/* Actually, user didn't provide search param in body, so I'll hide it or keep it visual only for now? */}
+              {/* I'll keep it but maybe it won't do anything for now as per plan, or I can filter locally if the list is small, but with pagination it's tricky. */}
+              {/* I'll remove the search input for now as it's not in the API specs provided. */}
+              
+              <div className="w-full sm:w-auto flex gap-2 ml-auto">
+                 <div className="relative flex-1 sm:flex-none">
                   <select 
                     value={filters.dateRange}
                     onChange={(e) => {
                       setFilters({
                         ...filters,
                         dateRange: e.target.value,
+                        startDate: null,
+                        endDate: null,
                       });
                       setPage(1);
                     }}
@@ -105,11 +164,12 @@ export default function QuoteTab() {
                     <option value="last-week">Last Week</option>
                     <option value="last-month">Last Month</option>
                     <option value="last-year">Last Year</option>
+                    {filters.dateRange === 'custom' && <option value="custom">Custom Range</option>}
                   </select>
                   <ChevronDown className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none w-4 h-4 sm:w-[18px] sm:h-[18px]" />
                 </div>
 
-                <div className="relative flex-1 sm:flex-none">
+                <div className="relative flex-1 sm:flex-none" ref={filterMenuRef}>
                   <button 
                     onClick={() => setShowFilterMenu(!showFilterMenu)}
                     className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-xs sm:text-sm font-medium hover:bg-gray-50 transition"
@@ -119,15 +179,16 @@ export default function QuoteTab() {
                   </button>
 
                   {showFilterMenu && (
-                    <div className="absolute right-0 mt-2 w-full sm:w-64 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-96 overflow-y-auto">
+                    <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 bg-white border border-gray-300 rounded-lg shadow-lg z-10 max-h-[500px] overflow-y-auto">
                       <div className="p-3 sm:p-4 space-y-4">
                         <div>
                           <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Status</label>
                           <div className="space-y-2">
-                            {["Done", "Pending", "Failed"].map((status) => (
+                            {["Processed", "Pending", "Failed"].map((status) => (
                               <label key={status} className="flex items-center gap-2 cursor-pointer">
                                 <input
-                                  type="checkbox"
+                                  type="radio"
+                                  name="status"
                                   checked={filters.status === status}
                                   onChange={(e) => {
                                     setFilters({
@@ -144,10 +205,45 @@ export default function QuoteTab() {
                           </div>
                         </div>
 
+                         {/* Date Range Custom Inputs */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                            <input
+                              type="date"
+                              value={filters.startDate ? filters.startDate.split('T')[0] : ''}
+                              onChange={(e) => setFilters({ 
+                                ...filters, 
+                                dateRange: 'custom',
+                                startDate: e.target.value ? new Date(e.target.value).toISOString() : null 
+                              })}
+                              className="w-full px-2 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                            <input
+                              type="date"
+                              value={filters.endDate ? filters.endDate.split('T')[0] : ''}
+                              onChange={(e) => setFilters({ 
+                                ...filters, 
+                                dateRange: 'custom',
+                                endDate: e.target.value ? new Date(e.target.value).toISOString() : null 
+                              })}
+                              className="w-full px-2 py-2 border border-[#EBEBEB] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                          </div>
+                        </div>
+
                         <div className="flex gap-2 pt-2 border-t">
                           <button
                             onClick={() => {
-                              setFilters({ status: null, dateRange: "all" });
+                              setFilters({ 
+                                status: null, 
+                                dateRange: "all",
+                                startDate: null,
+                                endDate: null
+                              });
                               setPage(1);
                             }}
                             className="flex-1 px-2 sm:px-3 py-1.5 text-xs sm:text-sm border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition"
@@ -170,12 +266,18 @@ export default function QuoteTab() {
           </div>
 
           <div className="overflow-x-auto mb-6">
-            <QuoteTable quotes={pageItems} />
+            <QuoteTable 
+              quotes={quotes} 
+              sort={sort} 
+              onSort={handleSort} 
+              loading={loading} 
+              error={error}
+            />
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-6 text-xs sm:text-sm">
             <div className="text-gray-600 min-w-fit order-2 sm:order-1">
-              Page {page} of {pageCount}
+              Page {page} of {pageCount} ({totalRecords} total)
             </div>
 
             <div className="overflow-x-auto order-1 sm:order-2 flex-1">
