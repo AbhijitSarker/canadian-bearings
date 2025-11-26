@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ChevronDown, Search, Filter, Plus, Loader } from "lucide-react";
 import QuoteTable from "./QuoteTable";
 import QuoteRequestForm from "./QuoteRequestForm";
-import { getQuotes } from "@/lib/api/services/quotes";
+import { getQuotes, getQuoteStatuses } from "@/lib/api/services/quotes";
 import toast from "react-hot-toast";
 import {
   Pagination,
@@ -34,6 +34,7 @@ export default function QuoteTab() {
   });
   const [sort, setSort] = useState({ by: 'createdDate', direction: 'desc' });
   const [quotes, setQuotes] = useState([]);
+  const [statuses, setStatuses] = useState([]);
   const [totalRecords, setTotalRecords] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -56,6 +57,17 @@ export default function QuoteTab() {
     }
   }, [showFilterMenu]);
 
+  // Fetch statuses on mount
+  useEffect(() => {
+    const fetchStatuses = async () => {
+      const res = await getQuoteStatuses();
+      if (res.success) {
+        setStatuses(res.data || []);
+      }
+    };
+    fetchStatuses();
+  }, []);
+
   // Fetch quotes
   useEffect(() => {
     const fetchQuotes = async () => {
@@ -66,15 +78,28 @@ export default function QuoteTab() {
         let start = filters.startDate;
         let end = filters.endDate;
 
+        const formatDate = (dateInput) => {
+          if (!dateInput) return "";
+          const d = new Date(dateInput);
+          if (isNaN(d.getTime())) return "";
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          const year = d.getFullYear();
+          return `${month}-${day}-${year}`;
+        };
+
         if (filters.dateRange !== 'custom' && filters.dateRange !== 'all') {
           const now = new Date();
-          end = now.toISOString();
+          end = formatDate(now);
           
           const d = new Date();
           if (filters.dateRange === 'last-week') d.setDate(d.getDate() - 7);
           if (filters.dateRange === 'last-month') d.setMonth(d.getMonth() - 1);
           if (filters.dateRange === 'last-year') d.setFullYear(d.getFullYear() - 1);
-          start = d.toISOString();
+          start = formatDate(d);
+        } else if (filters.dateRange === 'custom') {
+           start = formatDate(filters.startDate);
+           end = formatDate(filters.endDate);
         }
 
         const apiFilters = {
@@ -184,22 +209,38 @@ export default function QuoteTab() {
                         <div>
                           <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Status</label>
                           <div className="space-y-2">
-                            {["Processed", "Pending", "Failed"].map((status) => (
-                              <label key={status} className="flex items-center gap-2 cursor-pointer">
+                            <label className="flex items-center gap-2 cursor-pointer">
+                              <input
+                                type="radio"
+                                name="status"
+                                checked={filters.status === null}
+                                onChange={() => {
+                                  setFilters({
+                                    ...filters,
+                                    status: null,
+                                  });
+                                  setPage(1);
+                                }}
+                                className="rounded border-gray-300"
+                              />
+                              <span className="text-xs sm:text-sm text-gray-700">All</span>
+                            </label>
+                            {statuses.map((status) => (
+                              <label key={status.id} className="flex items-center gap-2 cursor-pointer">
                                 <input
                                   type="radio"
                                   name="status"
-                                  checked={filters.status === status}
-                                  onChange={(e) => {
+                                  checked={filters.status === status.name}
+                                  onChange={() => {
                                     setFilters({
                                       ...filters,
-                                      status: e.target.checked ? status : null,
+                                      status: status.name,
                                     });
                                     setPage(1);
                                   }}
                                   className="rounded border-gray-300"
                                 />
-                                <span className="text-xs sm:text-sm text-gray-700">{status}</span>
+                                <span className="text-xs sm:text-sm text-gray-700">{status.name}</span>
                               </label>
                             ))}
                           </div>
