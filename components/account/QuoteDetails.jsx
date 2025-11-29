@@ -83,9 +83,9 @@ export default function QuoteDetails({ quoteNumber, onBack }) {
   const validLines = lines?.filter(line => line.item?.spn) || [];
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen bg-gray-50 pb-12 border border-gray-200 rounded-lg">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10 rounded-t-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -154,61 +154,63 @@ export default function QuoteDetails({ quoteNumber, onBack }) {
             </div>
 
             {/* Line Items */}
-            <div className="bg-white rounded-lg border border-gray-200">
-              <div className="px-5 py-4 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Package size={18} className="text-gray-500" />
-                    <h3 className="font-semibold text-gray-900">Order Items</h3>
-                  </div>
-                  <Badge variant="secondary" className="bg-gray-100 text-gray-700 border-0">
-                    {validLines.length} Items
-                  </Badge>
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
+              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-white rounded-t-lg">
+                <div className="flex items-center gap-2">
+                  <Package size={20} className="text-gray-500" />
+                  <h3 className="font-semibold text-gray-900 text-base">Order Items</h3>
                 </div>
+                <Badge variant="secondary" className="bg-gray-100 text-gray-600 border-0 font-medium px-3">
+                  {validLines.length} Items
+                </Badge>
               </div>
 
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="bg-gray-50 hover:bg-gray-50 border-b border-gray-100">
-                      <TableHead className="w-[50px] font-semibold text-gray-700">#</TableHead>
-                      <TableHead className="font-semibold text-gray-700">Product Details</TableHead>
-                      <TableHead className="text-right font-semibold text-gray-700">Quantity</TableHead>
-                      <TableHead className="text-right font-semibold text-gray-700">Unit Price</TableHead>
-                      <TableHead className="text-right font-semibold text-gray-700">Total</TableHead>
+                    <TableRow className="bg-gray-50/50 hover:bg-gray-50/50 border-b border-gray-100">
+                      <TableHead className="w-[60px] font-semibold text-gray-600 pl-6">#</TableHead>
+                      <TableHead className="font-semibold text-gray-600">Product Details</TableHead>
+                      <TableHead className="text-right font-semibold text-gray-600">Quantity</TableHead>
+                      <TableHead className="text-right font-semibold text-gray-600">Unit Price</TableHead>
+                      <TableHead className="text-right font-semibold text-gray-600 pr-6">Total</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {validLines.map((line) => (
-                      <TableRow key={line.lineNum} className="hover:bg-gray-50/50 border-b border-gray-100">
-                        <TableCell className="font-medium text-gray-500">{line.lineNum}</TableCell>
-                        <TableCell>
-                          <div className="flex gap-3">
-                            {line.item?.imageUrl && (
-                              <div className="flex-shrink-0">
+                      <TableRow key={line.lineNum} className="hover:bg-gray-50/50 border-b border-gray-100 last:border-0">
+                        <TableCell className="font-medium text-gray-500 pl-6 align-top pt-4">{line.lineNum}</TableCell>
+                        <TableCell className="py-4 align-top">
+                          <div className="flex gap-4">
+                            {line.item?.imageUrl ? (
+                              <div className="flex-shrink-0 border border-gray-200 rounded-lg overflow-hidden w-16 h-16 bg-white">
                                 <img
                                   src={line.item.imageUrl}
                                   alt={line.item.spn}
-                                  className="w-16 h-16 object-cover rounded border border-gray-200"
+                                  className="w-full h-full object-contain p-1"
                                 />
                               </div>
+                            ) : (
+                              <div className="flex-shrink-0 border border-gray-200 rounded-lg w-16 h-16 bg-gray-50 flex items-center justify-center text-gray-300">
+                                <Package size={24} />
+                              </div>
                             )}
-                            <div className="flex-1 space-y-1.5">
-                              <div className="font-semibold text-gray-900">{line.item?.spn}</div>
-                              <div className="text-sm text-gray-600 leading-snug">{line.item?.description}</div>
-                              <div className="flex gap-1.5 flex-wrap">
+                            <div className="flex-1 space-y-1">
+                              <div className="font-bold text-gray-900 text-base">{line.item?.spn}</div>
+                              <div className="text-sm text-gray-500 leading-relaxed max-w-xl">{line.item?.description}</div>
+                              <div className="flex gap-2 flex-wrap mt-2">
                                 {line.item?.manufacturer && (
-                                  <Badge className="bg-blue-50 text-blue-700 border-0 text-xs px-2 py-0 h-5 font-normal">
+                                  <Badge className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-0 text-xs px-2.5 py-0.5 font-medium rounded">
                                     {line.item.manufacturer}
                                   </Badge>
                                 )}
                                 {line.item?.itemClass && (
-                                  <Badge variant="outline" className="text-xs px-2 py-0 h-5 font-normal text-gray-600 border-gray-300">
+                                  <Badge variant="outline" className="text-xs px-2.5 py-0.5 font-medium text-gray-600 border-gray-200 rounded bg-white">
                                     {line.item.itemClass}
                                   </Badge>
                                 )}
                                 {line.item?.quantityOnHand > 0 && (
-                                  <Badge className="bg-green-50 text-green-700 border-0 text-xs px-2 py-0 h-5 font-normal">
+                                  <Badge className="bg-green-50 text-green-700 hover:bg-green-100 border-0 text-xs px-2.5 py-0.5 font-medium rounded">
                                     {line.item.quantityOnHand} in stock
                                   </Badge>
                                 )}
@@ -216,22 +218,24 @@ export default function QuoteDetails({ quoteNumber, onBack }) {
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="text-right">
-                          <div className="font-semibold text-gray-900">{line.quantityOrdered}</div>
+                        <TableCell className="text-right py-4 align-top">
+                          <div className="font-bold text-gray-900">{line.quantityOrdered}</div>
                           {line.unitOfMeasure && (
-                            <div className="text-xs text-gray-500">{line.unitOfMeasure}</div>
+                            <div className="text-xs text-gray-500 mt-0.5">{line.unitOfMeasure}</div>
                           )}
                         </TableCell>
-                        <TableCell className="text-right font-medium text-gray-900">${line.price?.toFixed(2)}</TableCell>
-                        <TableCell className="text-right font-semibold text-gray-900">${line.netAmount?.toFixed(2)}</TableCell>
+                        <TableCell className="text-right font-medium text-gray-900 py-4 align-top">${line.price?.toFixed(2)}</TableCell>
+                        <TableCell className="text-right font-bold text-gray-900 pr-6 py-4 align-top">${line.netAmount?.toFixed(2)}</TableCell>
                       </TableRow>
                     ))}
                     {validLines.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={5} className="h-32 text-center">
+                        <TableCell colSpan={5} className="h-48 text-center">
                           <div className="flex flex-col items-center justify-center text-gray-400">
-                            <Package size={40} className="mb-2" />
-                            <p className="text-sm">No items in this quote</p>
+                            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-3">
+                              <Package size={32} className="text-gray-300" />
+                            </div>
+                            <p className="text-gray-500 font-medium">No items in this quote</p>
                           </div>
                         </TableCell>
                       </TableRow>
