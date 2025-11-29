@@ -17,9 +17,12 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+import QuoteDetails from "./QuoteDetails";
+
 export default function QuoteTab() {
   const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
+  const [selectedQuote, setSelectedQuote] = useState(null);
 
   // Quote history state
   const [query, setQuery] = useState("");
@@ -145,6 +148,15 @@ export default function QuoteTab() {
     // Ideally refresh the list here
     // setPage(1); // Trigger refresh
   };
+
+  if (selectedQuote) {
+    return (
+      <QuoteDetails 
+        quoteNumber={selectedQuote.quoteNo} 
+        onBack={() => setSelectedQuote(null)} 
+      />
+    );
+  }
 
   return (
     <div className="w-full space-y-4 sm:space-y-6">
@@ -313,6 +325,7 @@ export default function QuoteTab() {
               onSort={handleSort} 
               loading={loading} 
               error={error}
+              onRowClick={(quote) => setSelectedQuote(quote)}
             />
           </div>
 

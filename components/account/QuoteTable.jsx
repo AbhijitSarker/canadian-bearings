@@ -39,7 +39,7 @@ function ActionBadge({ action }) {
   return <Badge variant="outline" className="border-gray-300 text-gray-700">{action}</Badge>;
 }
 
-export default function QuoteTable({ quotes, sort, onSort, loading, error }) {
+export default function QuoteTable({ quotes, sort, onSort, loading, error, onRowClick }) {
   const SortIcon = ({ column }) => {
     if (!sort || sort.by !== column) return <ArrowUpDown size={14} className="ml-1 text-gray-400" />;
     return sort.direction === 'asc' ? <ArrowUp size={14} className="ml-1 text-gray-900" /> : <ArrowDown size={14} className="ml-1 text-gray-900" />;
@@ -101,7 +101,11 @@ export default function QuoteTable({ quotes, sort, onSort, loading, error }) {
                 </TableRow>
               ) : (
                 quotes.map((quote) => (
-                  <TableRow key={quote.quoteNo} className="border-b hover:bg-white">
+                  <TableRow 
+                    key={quote.quoteNo} 
+                    className="border-b hover:bg-green-50/50 cursor-pointer transition-colors"
+                    onClick={() => onRowClick && onRowClick(quote)}
+                  >
                     <TableCell className="text-[#171717] font-medium py-2 sm:py-3 px-2 sm:px-4 align-middle text-xs sm:text-sm">{quote.rowNumber}</TableCell>
                     <TableCell className="text-[#171717] font-medium py-2 sm:py-3 px-2 sm:px-4 align-middle text-xs sm:text-sm">{quote.quoteNo}</TableCell>
                     <TableCell className="text-[#171717] py-2 sm:py-3 px-2 sm:px-4 align-middle text-xs sm:text-sm whitespace-nowrap">
@@ -136,7 +140,8 @@ export default function QuoteTable({ quotes, sort, onSort, loading, error }) {
             quotes.map((quote) => (
               <div 
                 key={quote.quoteNo} 
-                className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm space-y-3 active:bg-gray-50 transition-colors"
+                className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm space-y-3 active:bg-gray-50 transition-colors cursor-pointer"
+                onClick={() => onRowClick && onRowClick(quote)}
               >
                 <div className="flex justify-between items-start">
                   <div>
