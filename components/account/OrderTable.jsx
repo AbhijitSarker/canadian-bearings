@@ -11,12 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Circle, AlertCircle, X, Heart, ShoppingCart, ArrowUp, ArrowDown, ArrowUpDown, Loader2 } from "lucide-react";
-
-// ... (StatusBadge and OrderDetailsModal remain unchanged, I will skip them in the replacement content if possible, but since I need to change the main component which is at the bottom, I might need to replace a large chunk or use multi-replace if I can target specific blocks.
-// Actually, I'll just replace the main component and the imports.
-
-// Wait, I can't skip lines in ReplacementContent easily if I'm replacing the whole file or large chunks.
-// I will use the existing code for StatusBadge and OrderDetailsModal and just update the imports and the OrderTable component.
+import { useCart } from "@/contexts/CartContext";
 
 function StatusBadge({ status }) {
   if (status === "Billed") {
@@ -47,7 +42,24 @@ function StatusBadge({ status }) {
 }
 
 function OrderDetailsModal({ order, onClose }) {
+  const [addingToCart, setAddingToCart] = useState({});
+  const { addItem } = useCart();
+  
   if (!order) return null;
+
+  const handleAddToCart = async (line, index) => {
+    setAddingToCart(prev => ({ ...prev, [index]: true }));
+    
+    await addItem(
+      line.productId || 0,
+      line.productCode || '',
+      line.qtyOrdered || 1,
+      'order',
+      order.orderNumber
+    );
+    
+    setAddingToCart(prev => ({ ...prev, [index]: false }));
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/50 transition-opacity" onClick={onClose}>
@@ -110,9 +122,17 @@ function OrderDetailsModal({ order, onClose }) {
                   <Heart size={14} />
                   <span>Add to Favorite</span>
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700 transition shadow-sm">
-                  <ShoppingCart size={14} />
-                  <span>Add to Cart</span>
+                <button 
+                  onClick={() => handleAddToCart(line, index)}
+                  disabled={addingToCart[index]}
+                  className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700 transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {addingToCart[index] ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <ShoppingCart size={14} />
+                  )}
+                  <span>{addingToCart[index] ? 'Adding...' : 'Add to Cart'}</span>
                 </button>
               </div>
             </div>
