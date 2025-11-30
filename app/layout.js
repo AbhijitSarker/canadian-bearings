@@ -6,6 +6,9 @@ import TopHeader from "@/components/common/topHeader";
 import Footer from "@/components/home/footer";
 import BreadcrumbBar from "@/components/common/BreadcrumbBar";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
+import FloatingCartButton from "@/components/cart/FloatingCartButton";
+import CartSidebar from "@/components/cart/CartSidebar";
 
 const urbanist = Urbanist({ subsets: ['latin'], weight: ["300", "400", "500", "600", "700"] })
 
@@ -19,12 +22,16 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={[urbanist.className, "antialiased", "text-gray-700"].join(" ")} >
         <AuthProvider>
-          <Toaster position="top-right" />
-          <TopHeader />
-          <Navbar />
-          <BreadcrumbBar />
-          {children}
-          <Footer />
+          <CartProvider>
+            <Toaster position="top-right" />
+            <TopHeader />
+            <Navbar />
+            <BreadcrumbBar />
+            {children}
+            <Footer />
+            <FloatingCartButton />
+            <CartSidebar />
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

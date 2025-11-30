@@ -1,63 +1,56 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Printer } from 'lucide-react';
+import React from 'react';
+import { Printer, Loader2, ShoppingBag } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
 import CartItem from '@/components/cart/CartItem';
 import OrderSummary from '@/components/cart/OrderSummary';
 import EmptyCart from '@/components/cart/EmptyCart';
 import { Button } from '@/components/ui/button';
 
-const INITIAL_ITEMS = [
-  {
-    id: 1,
-    title: "SKF 6203 2ZJEM",
-    brand: "SKF",
-    description: "6203 2ZJEM | Single Row Cylindrical Bore Deep Groove Ball Bearing...",
-    price: 95.67,
-    quantity: 3,
-    image: "/images/product-placeholder.png" // Placeholder, will need a real image or use a placeholder service if local not available
-  },
-  {
-    id: 2,
-    title: "SKF 6203 2ZJEM",
-    brand: "SKF",
-    description: "6203 2ZJEM | Single Row Cylindrical Bore Deep Groove Ball Bearing...",
-    price: 95.67,
-    quantity: 3,
-    image: "/images/product-placeholder.png"
-  },
-  {
-    id: 3,
-    title: "SKF 6203 2ZJEM",
-    brand: "SKF",
-    description: "6203 2ZJEM | Single Row Cylindrical Bore Deep Groove Ball Bearing...",
-    price: 95.67,
-    quantity: 3,
-    image: "/images/product-placeholder.png"
-  }
-];
-
-// Using a placeholder image that likely exists or a generic one
-const PLACEHOLDER_IMAGE = "https://placehold.co/400x400/png"; 
-
 export default function CartPage() {
-  const [items, setItems] = useState(INITIAL_ITEMS.map(item => ({ ...item, image: PLACEHOLDER_IMAGE })));
+  const { cart, loading, updateItem, removeItem } = useCart();
 
-  const handleUpdateQuantity = (id, newQuantity) => {
-    setItems(items.map(item => 
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    ));
+  const handleUpdateQuantity = async (cartItemId, newQuantity) => {
+    await updateItem(cartItemId, newQuantity);
   };
 
-  const handleRemove = (id) => {
-    setItems(items.filter(item => item.id !== id));
+  const handleRemove = async (cartItemId) => {
+    await removeItem(cartItemId);
   };
 
-  const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const savings = 49.20; // Hardcoded for demo as per screenshot
-  const shipping = 0;
-  const taxes = 0;
+  // Calculate totals
+  const items = cart?.items || [];
+  const subtotal = items.reduce((sum, item) => sum + ((item.unitPrice || 0) * item.quantity), 0);
+  const savings = 0; // Can be calculated based on discounts if available
+  const shipping = 0; // Will be calculated during checkout
+  const taxes = 0; // Will be calculated during checkout
   const total = subtotal - savings + shipping + taxes;
+
+  // Transform cart items to match CartItem component props
+  const transformedItems = items.map(item => ({
+    id: item.cartItemId,
+    title: item.cbSku || 'Product',
+    brand: item.sourceType || 'Unknown',
+    description: `Source: ${item.sourceType || item.productSource}${item.sourceReferenceId ? ` - ${item.sourceReferenceId}` : ''}`,
+    price: item.unitPrice || 0,
+    quantity: item.quantity,
+    image: "https://placehold.co/400x400/png", // Placeholder image
+    cartItemId: item.cartItemId,
+  }));
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="flex flex-col items-center justify-center h-96">
+            <Loader2 className="w-12 h-12 animate-spin text-green-600 mb-4" />
+            <p className="text-gray-600">Loading your cart...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -66,9 +59,14 @@ export default function CartPage() {
         {/* Page Header */}
         <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-lg border border-gray-100">
           <h1 className="text-2xl font-semibold text-gray-900">
-            Shopping Cart <span className="text-gray-500 font-normal">({items.length} item)</span>
+            Shopping Cart <span className="text-gray-500 font-normal">({items.length} {items.length === 1 ? 'item' : 'items'})</span>
           </h1>
-          <Button variant="outline" size="sm" className="text-gray-600 border-gray-200 hover:bg-gray-50">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-gray-600 border-gray-200 hover:bg-gray-50"
+            onClick={() => window.print()}
+          >
             <Printer size={16} />
             Print
           </Button>
@@ -77,13 +75,13 @@ export default function CartPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Cart Items List */}
           <div className="flex-1 space-y-4">
-            {items.length > 0 ? (
-              items.map(item => (
+            {transformedItems.length > 0 ? (
+              transformedItems.map(item => (
                 <CartItem 
                   key={item.id} 
                   item={item} 
-                  onUpdateQuantity={handleUpdateQuantity}
-                  onRemove={handleRemove}
+                  onUpdateQuantity={(id, qty) => handleUpdateQuantity(item.cartItemId, qty)}
+                  onRemove={(id) => handleRemove(item.cartItemId)}
                 />
               ))
             ) : (
@@ -92,15 +90,17 @@ export default function CartPage() {
           </div>
 
           {/* Order Summary Sidebar */}
-          <div className="w-full lg:w-[380px] shrink-0">
-            <OrderSummary 
-              subtotal={subtotal}
-              savings={savings}
-              shipping={shipping}
-              taxes={taxes}
-              total={total}
-            />
-          </div>
+          {transformedItems.length > 0 && (
+            <div className="w-full lg:w-[380px] shrink-0">
+              <OrderSummary 
+                subtotal={subtotal}
+                savings={savings}
+                shipping={shipping}
+                taxes={taxes}
+                total={total}
+              />
+            </div>
+          )}
         </div>
 
       </div>

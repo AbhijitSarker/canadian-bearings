@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowLeft, Loader2, MapPin, User, CreditCard, Package, Calendar, Clock, Tag, Mail, Building2 } from "lucide-react";
+import { ArrowLeft, Loader2, MapPin, User, CreditCard, Package, Calendar, Clock, Tag, Mail, Building2, ShoppingCart } from "lucide-react";
 import { getQuoteDetails } from "@/lib/api/services/quotes";
+import { useCart } from "@/contexts/CartContext";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -17,6 +18,8 @@ export default function QuoteDetails({ quoteNumber, onBack }) {
   const [quote, setQuote] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [addingToCart, setAddingToCart] = useState({});
+  const { addItem } = useCart();
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -81,6 +84,20 @@ export default function QuoteDetails({ quoteNumber, onBack }) {
 
   const { header, customer, contact, billing, shipping, lines, mainline, taxes } = quote;
   const validLines = lines?.filter(line => line.item?.spn) || [];
+
+  const handleAddToCart = async (line) => {
+    setAddingToCart(prev => ({ ...prev, [line.lineNum]: true }));
+    
+    await addItem(
+      line.item?.productId || 0,
+      line.item?.spn || '',
+      line.quantityOrdered || 1,
+      'quote',
+      header?.orderno
+    );
+    
+    setAddingToCart(prev => ({ ...prev, [line.lineNum]: false }));
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12 border border-gray-200 rounded-lg">
@@ -173,7 +190,8 @@ export default function QuoteDetails({ quoteNumber, onBack }) {
                       <TableHead className="font-semibold text-gray-600">Product Details</TableHead>
                       <TableHead className="text-right font-semibold text-gray-600">Quantity</TableHead>
                       <TableHead className="text-right font-semibold text-gray-600">Unit Price</TableHead>
-                      <TableHead className="text-right font-semibold text-gray-600 pr-6">Total</TableHead>
+                      <TableHead className="text-right font-semibold text-gray-600">Total</TableHead>
+                      <TableHead className="text-center font-semibold text-gray-600 pr-6 w-[120px]">Action</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -225,12 +243,26 @@ export default function QuoteDetails({ quoteNumber, onBack }) {
                           )}
                         </TableCell>
                         <TableCell className="text-right font-medium text-gray-900 py-4 align-top">${line.price?.toFixed(2)}</TableCell>
-                        <TableCell className="text-right font-bold text-gray-900 pr-6 py-4 align-top">${line.netAmount?.toFixed(2)}</TableCell>
+                        <TableCell className="text-right font-bold text-gray-900 py-4 align-top">${line.netAmount?.toFixed(2)}</TableCell>
+                        <TableCell className="text-center py-4 align-top pr-6">
+                          <button
+                            onClick={() => handleAddToCart(line)}
+                            disabled={addingToCart[line.lineNum]}
+                            className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {addingToCart[line.lineNum] ? (
+                              <Loader2 size={14} className="animate-spin" />
+                            ) : (
+                              <ShoppingCart size={14} />
+                            )}
+                            {addingToCart[line.lineNum] ? 'Adding...' : 'Add'}
+                          </button>
+                        </TableCell>
                       </TableRow>
                     ))}
                     {validLines.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={5} className="h-48 text-center">
+                        <TableCell colSpan={6} className="h-48 text-center">
                           <div className="flex flex-col items-center justify-center text-gray-400">
                             <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-3">
                               <Package size={32} className="text-gray-300" />
