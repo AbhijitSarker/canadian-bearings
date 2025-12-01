@@ -11,6 +11,7 @@ import {
   isUserAuthenticated,
   hasSelectedCustomer,
   getSelectedCustomer,
+  storeSelectedCustomer,
 } from '@/lib/api/services/auth';
 
 export const AuthContext = createContext({});
@@ -81,6 +82,24 @@ export const AuthProvider = ({ children }) => {
       if (result.success) {
         setUser(result.data);
         setIsAuthenticated(true);
+
+        // If user has a specific customerId (single customer), set it as selected
+        if (result.data.customerId) {
+          storeSelectedCustomer(result.data.customerId);
+          setSelectedCustomer(result.data.customerId);
+        } else if (
+          result.data.customers && 
+          Array.isArray(result.data.customers) && 
+          result.data.customers.length === 1
+        ) {
+          // Also handle single customer in array case
+          const singleCustId = result.data.customers[0].customerId || result.data.customers[0].id;
+          if (singleCustId) {
+            storeSelectedCustomer(singleCustId);
+            setSelectedCustomer(singleCustId);
+          }
+        }
+
         // Return the data so callers (pages) can react to multi-customer users
         return { success: true, data: result.data };
       } else {
@@ -102,6 +121,13 @@ export const AuthProvider = ({ children }) => {
       if (result.success) {
         setUser(result.data);
         setIsAuthenticated(true);
+
+        // If user has a specific customerId (single customer), set it as selected
+        if (result.data.customerId) {
+          storeSelectedCustomer(result.data.customerId);
+          setSelectedCustomer(result.data.customerId);
+        }
+
         // Return the data so callers (pages) can react to multi-customer users
         return { success: true, data: result.data };
       } else {

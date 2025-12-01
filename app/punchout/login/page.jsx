@@ -39,8 +39,10 @@ export default function PunchoutLoginPage() {
         if (result.success) {
           const userData = result.data;
           
-          // Handle multi-customer scenario
-          if (
+          // single customer - go directly to account
+          if (userData && userData.customerId) {
+            router.push('/account');
+          } else if (
             userData &&
             Array.isArray(userData.customers) &&
             userData.customers.length > 1
@@ -52,10 +54,10 @@ export default function PunchoutLoginPage() {
             Array.isArray(userData.customers) &&
             userData.customers.length === 1
           ) {
-            // Single customer: auto-select and go to account
+            // Single customer in array: go to account
             router.push('/account');
           } else {
-            // No customers or fallback
+            // No customers or fallback - go to home
             router.push('/');
           }
         } else {
