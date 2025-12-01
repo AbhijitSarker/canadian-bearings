@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { apiClient } from '@/lib/api/client';
 import { storeSelectedCustomer } from '@/lib/api/services/auth';
+import { endpoints } from '@/lib/api/endpoints';
 
 export default function SelectAccountPage() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function SelectAccountPage() {
       setLoading(true);
       setError('');
       try {
-        const resp = await apiClient.get('/user/customers');
+        const resp = await apiClient.get(endpoints.user.customers);
 
         if (!resp || !resp.success) {
           throw new Error((resp && resp.message) || 'Failed to fetch customers');
@@ -63,7 +64,7 @@ export default function SelectAccountPage() {
     setSubmitting(true);
     setError('');
     try {
-      const resp = await apiClient.post('/user/select-customer', { customerId });
+      const resp = await apiClient.post(endpoints.user.selectCustomer, { customerId });
 
       if (!resp || !resp.success) {
         throw new Error((resp && resp.message) || 'Failed to select account');

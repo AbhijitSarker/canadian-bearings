@@ -4,6 +4,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import {
   authLogin,
+  authPunchoutLogin,
   authLogout,
   authRefresh,
   getStoredUser,
@@ -93,6 +94,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const punchoutLogin = async (sid) => {
+    try {
+      setLoading(true);
+      const result = await authPunchoutLogin(sid);
+
+      if (result.success) {
+        setUser(result.data);
+        setIsAuthenticated(true);
+        // Return the data so callers (pages) can react to multi-customer users
+        return { success: true, data: result.data };
+      } else {
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      console.error('Punchout login error:', error);
+      return { success: false, error: error.message || 'Punchout login failed' };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = async () => {
     try {
       setLoading(true);
@@ -117,6 +139,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     selectedCustomer,
     login,
+    punchoutLogin,
     logout,
     setCustomerSelected,
   };
