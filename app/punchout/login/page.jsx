@@ -76,8 +76,8 @@ export default function PunchoutLoginPage() {
   }, [sid]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100 p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8">
         {isLoading ? (
           <div className="text-center">
             <div className="flex justify-center mb-4">
