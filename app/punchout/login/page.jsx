@@ -58,7 +58,7 @@ export default function PunchoutLoginPage() {
             router.push('/account');
           } else {
             // No customers or fallback - go to home
-            router.push('/');
+            router.push('/account');
           }
         } else {
           setError(result.error || "Authentication failed. Invalid session ID.");
