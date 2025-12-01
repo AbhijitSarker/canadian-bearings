@@ -5,10 +5,10 @@ import FloatingCartButton from './FloatingCartButton';
 import CartSidebar from './CartSidebar';
 
 export default function CartUI() {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, selectedCustomer } = useAuth();
 
-  // Don't render cart UI if not authenticated or still loading
-  if (loading || !isAuthenticated) {
+  // Don't render cart UI if not authenticated, still loading, or no customer selected
+  if (loading || !isAuthenticated || !selectedCustomer) {
     return null;
   }
 

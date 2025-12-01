@@ -22,7 +22,7 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading, selectedCustomer } = useAuth();
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(false);
   const [itemCount, setItemCount] = useState(0);
@@ -30,8 +30,8 @@ export const CartProvider = ({ children }) => {
 
   // Fetch cart data
   const fetchCart = useCallback(async (silent = false) => {
-    // Don't fetch if not authenticated
-    if (!isAuthenticated) {
+    // Don't fetch if not authenticated or no customer selected
+    if (!isAuthenticated || !selectedCustomer) {
       setCart(null);
       setItemCount(0);
       setLoading(false);
@@ -58,23 +58,23 @@ export const CartProvider = ({ children }) => {
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, selectedCustomer]);
 
-  // Initialize cart on mount only when authenticated
+  // Initialize cart on mount only when authenticated and customer selected
   useEffect(() => {
     // Wait for auth to finish loading
     if (authLoading) return;
     
-    // Only fetch cart if authenticated
-    if (isAuthenticated) {
+    // Only fetch cart if authenticated AND customer selected
+    if (isAuthenticated && selectedCustomer) {
       fetchCart();
     } else {
-      // Clear cart data if not authenticated
+      // Clear cart data if not authenticated or no customer selected
       setCart(null);
       setItemCount(0);
       setLoading(false);
     }
-  }, [isAuthenticated, authLoading, fetchCart]);
+  }, [isAuthenticated, selectedCustomer, authLoading, fetchCart]);
 
   // Add item to cart
   const addItem = async (productId, sku, quantity, source = 'search', referenceId = null) => {
