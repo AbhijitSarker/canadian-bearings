@@ -19,7 +19,7 @@ export default function SignInPage() {
   const { login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const returnUrl = searchParams.get('returnUrl') || '/';
+  const returnUrl = searchParams.get('returnUrl') || '/account';
 
   const togglePassword = () => setShowPassword(!showPassword);
 
