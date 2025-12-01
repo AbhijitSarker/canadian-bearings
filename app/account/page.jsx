@@ -209,12 +209,10 @@ export default function MyAccountPage() {
     <ProtectedRoute>
       <div className="min-h-screen container mx-auto">
         {/* Header Banner */}
-        <AccountPageBanner 
+        {/* <AccountPageBanner 
           title="My Account" 
-          subtitle="We have over 430 Service Centers conveniently located across North America. Please use the search form below to find the Canadian Service Center near you." 
           onPrint={handlePrint}
-          onExport={handleExport}
-        />
+        /> */}
         {/* Main Content */}
         <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
           {/* Mobile Sidebar Toggle */}
