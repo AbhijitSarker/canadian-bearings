@@ -7,8 +7,7 @@ import Footer from "@/components/home/footer";
 import BreadcrumbBar from "@/components/common/BreadcrumbBar";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
-import FloatingCartButton from "@/components/cart/FloatingCartButton";
-import CartSidebar from "@/components/cart/CartSidebar";
+import CartUI from "@/components/cart/CartUI";
 
 const urbanist = Urbanist({ subsets: ['latin'], weight: ["300", "400", "500", "600", "700"] })
 
@@ -29,8 +28,7 @@ export default function RootLayout({ children }) {
             <BreadcrumbBar />
             {children}
             <Footer />
-            <FloatingCartButton />
-            <CartSidebar />
+            <CartUI />
           </CartProvider>
         </AuthProvider>
       </body>

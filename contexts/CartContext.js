@@ -8,6 +8,7 @@ import {
   removeCartItem as apiRemoveCartItem,
   clearCart as apiClearCart,
 } from '@/lib/api/services/cart';
+import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 export const CartContext = createContext({});
@@ -21,13 +22,22 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const [cart, setCart] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [itemCount, setItemCount] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Fetch cart data
   const fetchCart = useCallback(async (silent = false) => {
+    // Don't fetch if not authenticated
+    if (!isAuthenticated) {
+      setCart(null);
+      setItemCount(0);
+      setLoading(false);
+      return;
+    }
+
     if (!silent) setLoading(true);
     
     try {
@@ -48,12 +58,23 @@ export const CartProvider = ({ children }) => {
     } finally {
       if (!silent) setLoading(false);
     }
-  }, []);
+  }, [isAuthenticated]);
 
-  // Initialize cart on mount
+  // Initialize cart on mount only when authenticated
   useEffect(() => {
-    fetchCart();
-  }, [fetchCart]);
+    // Wait for auth to finish loading
+    if (authLoading) return;
+    
+    // Only fetch cart if authenticated
+    if (isAuthenticated) {
+      fetchCart();
+    } else {
+      // Clear cart data if not authenticated
+      setCart(null);
+      setItemCount(0);
+      setLoading(false);
+    }
+  }, [isAuthenticated, authLoading, fetchCart]);
 
   // Add item to cart
   const addItem = async (productId, sku, quantity, source = 'search', referenceId = null) => {
