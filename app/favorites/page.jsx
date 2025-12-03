@@ -3,16 +3,17 @@
 import { useState, useEffect } from 'react';
 import { useFavorite } from '@/contexts/FavoriteContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Plus, Trash2, Heart, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Search, ChevronDown, Command } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export default function FavoriteListsPage() {
   const { favoriteLists, loading, fetchFavoriteLists, createList, deleteList } = useFavorite();
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
   const [newListName, setNewListName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -43,51 +44,74 @@ export default function FavoriteListsPage() {
     }
   };
 
-  if (authLoading || (loading && favoriteLists.length === 0)) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-red-500" />
-      </div>
-    );
-  }
+  // Filter lists based on search
+  const filteredLists = favoriteLists.filter(list => 
+    list.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (list.description && list.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <Heart className="w-6 h-6 text-red-500 fill-current" />
-          My Favorite Lists
-        </h1>
-        <button
-          onClick={() => setIsCreating(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-        >
-          <Plus size={20} />
-          Create New List
-        </button>
+      {/* Header Controls */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+        {/* Sort By */}
+        <div className="relative">
+          <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg bg-white text-gray-700 hover:bg-gray-50">
+            <span className="text-gray-500">Sort by</span>
+            <ChevronDown size={16} />
+          </button>
+        </div>
+
+        <div className="flex items-center gap-4 w-full md:w-auto">
+          {/* Search */}
+          <div className="relative flex-1 md:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Search.."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-12 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-xs text-gray-500 font-medium">
+              ⌘1
+            </div>
+          </div>
+
+          {/* Create Button */}
+          <button
+            onClick={() => setIsCreating(true)}
+            className="flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium whitespace-nowrap"
+          >
+            <Plus size={18} />
+            Create New List
+          </button>
+        </div>
       </div>
 
+      {/* Create List Modal/Form (Inline for now) */}
       {isCreating && (
-        <div className="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="mb-8 p-6 bg-gray-50 rounded-xl border border-gray-200 animate-in fade-in slide-in-from-top-4">
+          <h3 className="text-lg font-semibold mb-4">Create New List</h3>
           <form onSubmit={handleCreateList} className="flex gap-4">
             <input
               type="text"
               value={newListName}
               onChange={(e) => setNewListName(e.target.value)}
               placeholder="Enter list name..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               autoFocus
             />
             <button
               type="submit"
-              className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition"
+              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium"
             >
               Create
             </button>
             <button
               type="button"
               onClick={() => setIsCreating(false)}
-              className="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg transition"
+              className="px-6 py-2 text-gray-600 hover:bg-gray-200 rounded-lg transition font-medium"
             >
               Cancel
             </button>
@@ -95,53 +119,75 @@ export default function FavoriteListsPage() {
         </div>
       )}
 
-      {favoriteLists.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-          <Heart size={48} className="mx-auto text-gray-300 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No favorite lists yet</h3>
-          <p className="text-gray-500 mb-6">Create your first list to start saving items.</p>
-          <button
-            onClick={() => setIsCreating(true)}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
-          >
-            Create List
-          </button>
+      {/* Table */}
+      <div className="bg-white rounded-lg overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[800px]">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-100">
+                <th className="text-left py-4 px-6 text-sm font-medium text-gray-500 w-1/5">List Name</th>
+                <th className="text-left py-4 px-6 text-sm font-medium text-gray-500 w-2/5">Descriptions</th>
+                <th className="text-left py-4 px-6 text-sm font-medium text-gray-500 w-1/6">Created By</th>
+                <th className="text-left py-4 px-6 text-sm font-medium text-gray-500 w-1/6">Last Modified</th>
+                <th className="text-right py-4 px-6 text-sm font-medium text-gray-500 w-1/12">Item Number</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filteredLists.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="py-12 text-center text-gray-500">
+                    No lists found.
+                  </td>
+                </tr>
+              ) : (
+                filteredLists.map((list) => (
+                  <tr key={list.id} className="hover:bg-gray-50 transition-colors group">
+                    <td className="py-4 px-6">
+                      <Link href={`/favorites/${list.id}`} className="font-semibold text-gray-900 hover:text-green-600">
+                        {list.name}
+                      </Link>
+                    </td>
+                    <td className="py-4 px-6">
+                      <p className="text-sm text-gray-600 line-clamp-2">
+                        {list.description || 'No description provided.'}
+                      </p>
+                    </td>
+                    <td className="py-4 px-6">
+                      <span className="text-sm text-gray-900 font-medium">
+                        {user?.firstName} {user?.lastName}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6">
+                      <span className="text-sm text-gray-500">
+                        {/* Mocking "Today, 3:52 PM" format for now, using actual date */}
+                        {new Date(list.dateUpdated || list.dateCreated).toLocaleDateString(undefined, { 
+                          month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' 
+                        })}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center justify-end gap-4">
+                        <Link 
+                          href={`/favorites/${list.id}`}
+                          className="px-4 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded hover:bg-gray-200 transition"
+                        >
+                          View Item
+                        </Link>
+                        <button 
+                          onClick={() => handleDeleteList(list.id)}
+                          className="text-gray-400 hover:text-red-500 transition"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {favoriteLists.map((list) => (
-            <div key={list.id} className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition p-6">
-              <div className="flex justify-between items-start mb-4">
-                <Link href={`/favorites/${list.id}`} className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 hover:text-red-600 transition mb-1">
-                    {list.name}
-                  </h3>
-                  <p className="text-sm text-gray-500 line-clamp-2">
-                    {list.description || 'No description'}
-                  </p>
-                </Link>
-                <button
-                  onClick={() => handleDeleteList(list.id)}
-                  className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
-                  title="Delete list"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
-              <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t border-gray-100">
-                <span>{list.favoritesCount || 0} items</span>
-                <span>{new Date(list.dateCreated).toLocaleDateString()}</span>
-              </div>
-              <Link
-                href={`/favorites/${list.id}`}
-                className="block mt-4 text-center py-2 px-4 border border-gray-200 rounded-lg hover:bg-gray-50 text-sm font-medium transition"
-              >
-                View Details
-              </Link>
-            </div>
-          ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 }
