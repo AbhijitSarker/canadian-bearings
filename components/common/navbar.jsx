@@ -12,6 +12,7 @@ import SearchBar from '../search/SearchBar';
 import { ChevronDown, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { useFavorite } from "@/contexts/FavoriteContext";
 
 export default function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,6 +22,7 @@ export default function Navbar() {
     const userMenuRef = useRef(null);
     const userButtonRef = useRef(null);
     const { user, isAuthenticated, logout } = useAuth();
+    const { openSidebar } = useFavorite();
 
     const handleLogout = () => {
         logout();
@@ -84,10 +86,13 @@ export default function Navbar() {
                             </div>
                         </div>
                         <div className="flex items-center gap-x-2 justify-end flex-shrink-0">
-                            <div className="flex items-center px-[10px] border-r border-neutral-300 gap-x-[5px] text-[14px] leading-[100%] text-neutral-950 font-[400] whitespace-nowrap">
+                            <button 
+                                onClick={openSidebar}
+                                className="flex items-center px-[10px] border-r border-neutral-300 gap-x-[5px] text-[14px] leading-[100%] text-neutral-950 font-[400] whitespace-nowrap hover:text-red-600 transition-colors"
+                            >
                                 <Heart3LineIcon />
                                 Favourites
-                            </div>
+                            </button>
 
                             {isAuthenticated ? (
                                 <div className="relative">
@@ -138,6 +143,18 @@ export default function Navbar() {
                                 </Link>
                             )}
 
+                            <button 
+                                onClick={openSidebar}
+                                className="w-[40px] h-[40px] rounded-full flex justify-center items-center flex-shrink-0 hover:bg-gray-100 transition-colors mr-2"
+                                aria-label="Open favorites"
+                            >
+                                <Heart3LineIcon className="text-neutral-950" />
+                            </button>
+                            <div className="bg-green-500 w-[40px] h-[40px] overflow-hidden rounded-full flex justify-center items-center flex-shrink-0">
+                                <Link href="/cart">
+                                <Heart3LineIcon className="text-neutral-950" />
+                                </Link>
+                            </div>
                             <div className="bg-green-500 w-[40px] h-[40px] overflow-hidden rounded-full flex justify-center items-center flex-shrink-0">
                                 <Link href="/cart">
                                     <ShoppingCart2LineIcon />
@@ -183,7 +200,7 @@ export default function Navbar() {
                                     <MapPinLineIcon />
                                     Location
                                 </button>
-                                <button onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-x-[5px] text-[14px] text-neutral-950 font-[400] py-2 w-full">
+                                <button onClick={() => { setMobileMenuOpen(false); openSidebar(); }} className="flex items-center gap-x-[5px] text-[14px] text-neutral-950 font-[400] py-2 w-full">
                                     <Heart3LineIcon />
                                     Favourites
                                 </button>

@@ -3,6 +3,9 @@
 import { useState } from "react"
 import Image from "next/image"
 import HeartLike21Icon from '@/assets/icons/heartLike21';
+import { useFavorite } from '@/contexts/FavoriteContext';
+import { useAuth } from '@/contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 import ShoppingCartLineIcon from '@/assets/icons/shoppingCartLine';
 
@@ -10,7 +13,16 @@ export default function ProductCard({
     product
 }) {
     const [quantity, setQuantity] = useState(3);
-    const [isFavorite, setIsFavorite] = useState(false);
+    const { openSidebar, isFavorite } = useFavorite();
+    const { isAuthenticated } = useAuth();
+
+    const handleFavoriteClick = () => {
+        if (!isAuthenticated) {
+            toast.error("Please sign in to add favorites");
+            return;
+        }
+        openSidebar(product);
+    };
 
     const decreaseQty = () => {
         if (quantity > 1) setQuantity(quantity - 1);
@@ -24,11 +36,11 @@ export default function ProductCard({
         <div className={`bg-white rounded-[10px] border border-neutral-300 p-[10px] relative`}>
         {/* Favorite Icon */}
         <button
-            onClick={() => setIsFavorite(!isFavorite)}
+            onClick={handleFavoriteClick}
             className="absolute top-4 right-4 z-10"
         >
-            <div className="w-[36px] h-[36px] bg-white flex items-center justify-center rounded-full">
-                <HeartLike21Icon />
+            <div className={`w-[36px] h-[36px] flex items-center justify-center rounded-full transition-colors ${isFavorite ? 'bg-red-50' : 'bg-white'}`}>
+                <HeartLike21Icon className={isFavorite ? 'text-red-500 fill-current' : ''} />
             </div>
         </button>
 

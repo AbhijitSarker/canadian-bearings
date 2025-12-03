@@ -8,6 +8,8 @@ import BreadcrumbBar from "@/components/common/BreadcrumbBar";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import CartUI from "@/components/cart/CartUI";
+import { FavoriteProvider } from "@/contexts/FavoriteContext";
+import FavoriteUI from "@/components/favorites/FavoriteUI";
 
 const urbanist = Urbanist({ subsets: ['latin'], weight: ["300", "400", "500", "600", "700"] })
 
@@ -21,15 +23,18 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={[urbanist.className, "antialiased", "text-gray-700"].join(" ")} >
         <AuthProvider>
-          <CartProvider>
-            <Toaster position="top-right" />
-            <TopHeader />
-            <Navbar />
-            <BreadcrumbBar />
-            {children}
-            <Footer />
-            <CartUI />
-          </CartProvider>
+          <FavoriteProvider>
+            <CartProvider>
+              <Toaster position="top-right" />
+              <TopHeader />
+              <Navbar />
+              <BreadcrumbBar />
+              {children}
+              <Footer />
+              <CartUI />
+              <FavoriteUI />
+            </CartProvider>
+          </FavoriteProvider>
         </AuthProvider>
       </body>
     </html>
