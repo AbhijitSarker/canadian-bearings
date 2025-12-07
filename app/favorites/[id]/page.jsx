@@ -8,6 +8,16 @@ import { Loader2, Trash2, ShoppingCart, Search, ChevronDown, Plus, Minus } from 
 import Link from 'next/link';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function FavoriteListDetailsPage() {
   const params = useParams();
@@ -18,6 +28,8 @@ export default function FavoriteListDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [removingId, setRemovingId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchDetails = useCallback(async () => {
     try {
@@ -54,16 +66,24 @@ export default function FavoriteListDetailsPage() {
     fetchDetails();
   }, [fetchDetails]);
 
-  const handleRemoveItem = async (itemId) => {
-    if (!confirm('Remove this item from favorites?')) return;
+  const confirmRemoveItem = (itemId) => {
+    setItemToDelete(itemId);
+  };
+
+  const handleRemoveItem = async () => {
+    if (!itemToDelete) return;
     
-    setRemovingId(itemId);
-    const result = await removeFromFavorite(itemId);
+    setIsDeleting(true);
+    const result = await removeFromFavorite(itemToDelete);
     
     if (result.success) {
-      setItems(prev => prev.filter(item => item.id !== itemId));
+      setItems(prev => prev.filter(item => item.id !== itemToDelete));
+      toast.success('Item removed from favorites');
+    } else {
+      toast.error('Failed to remove item');
     }
-    setRemovingId(null);
+    setIsDeleting(false);
+    setItemToDelete(null);
   };
 
   if (loading) {
@@ -179,18 +199,11 @@ export default function FavoriteListDetailsPage() {
                     Add Cart
                   </button>
                   <button
-                    onClick={() => handleRemoveItem(item.id)}
-                    disabled={removingId === item.id}
-                    className="w-full py-2.5 px-4 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition flex items-center justify-center gap-2 font-medium disabled:opacity-50"
+                    onClick={() => confirmRemoveItem(item.id)}
+                    className="w-full py-2.5 px-4 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition flex items-center justify-center gap-2 font-medium"
                   >
-                    {removingId === item.id ? (
-                      <Loader2 size={18} className="animate-spin" />
-                    ) : (
-                      <>
-                        <Trash2 size={18} />
-                        Remove
-                      </>
-                    )}
+                    <Trash2 size={18} />
+                    Remove
                   </button>
                 </div>
               </div>
@@ -198,6 +211,23 @@ export default function FavoriteListDetailsPage() {
           ))
         )}
       </div>
+
+      <AlertDialog open={!!itemToDelete} onOpenChange={(open) => !open && setItemToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove Item?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove this item from the list?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setItemToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRemoveItem} disabled={isDeleting}>
+              {isDeleting ? 'Removing...' : 'Remove'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
