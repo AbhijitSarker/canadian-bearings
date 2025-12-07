@@ -13,6 +13,7 @@ import PasswordSecurityTab from "@/components/account/PasswordSecurityTab";
 import QuoteTab from "@/components/account/QuoteTab";
 import KnowledgeCenterTab from "@/components/account/KnowledgeCenterTab";
 import UsersTab from "@/components/account/UsersTab";
+import GLCodesTab from "@/components/account/GLCodesTab";
 import CustomerSupportTab from "@/components/account/CustomerSupportTab";
 
 export default function MyAccountPage() {
@@ -256,6 +257,8 @@ export default function MyAccountPage() {
               {activeTab === "knowledge-center" && <KnowledgeCenterTab />}
 
               {activeTab === "users" && <UsersTab />}
+
+              {activeTab === "gl-codes" && <GLCodesTab />}
 
               {activeTab === "customer-support" && <CustomerSupportTab />}
             </div>
