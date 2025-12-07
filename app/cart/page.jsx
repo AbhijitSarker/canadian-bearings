@@ -7,12 +7,29 @@ import CartItem from '@/components/cart/CartItem';
 import OrderSummary from '@/components/cart/OrderSummary';
 import EmptyCart from '@/components/cart/EmptyCart';
 import { Button } from '@/components/ui/button';
+import { searchGLCodes } from '@/lib/api/services/glcodes';
+import { useState, useEffect } from 'react';
 
 export default function CartPage() {
   const { cart, loading, updateItem, removeItem } = useCart();
+  const [glCodes, setGlCodes] = useState([]);
 
-  const handleUpdateQuantity = async (cartItemId, newQuantity) => {
-    await updateItem(cartItemId, newQuantity);
+  useEffect(() => {
+    const fetchGLCodes = async () => {
+      try {
+        const res = await searchGLCodes({ pageSize: 100 });
+        if (res.success) {
+          setGlCodes(res.data.items || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch GL codes", error);
+      }
+    };
+    fetchGLCodes();
+  }, []);
+
+  const handleUpdateItem = async (cartItemId, data) => {
+    await updateItem(cartItemId, data);
   };
 
   const handleRemove = async (cartItemId) => {
@@ -21,7 +38,10 @@ export default function CartPage() {
 
   // Calculate totals
   const items = cart?.items || [];
-  const subtotal = items.reduce((sum, item) => sum + ((item.unitPrice || 0) * item.quantity), 0);
+  const subtotal = items.reduce((sum, item) => {
+    const price = item.unitPrice || item.price || 0;
+    return sum + (price * item.quantity);
+  }, 0);
   const savings = 0; // Can be calculated based on discounts if available
   const shipping = 0; // Will be calculated during checkout
   const taxes = 0; // Will be calculated during checkout
@@ -33,10 +53,12 @@ export default function CartPage() {
     title: item.cbSku || 'Product',
     brand: item.sourceType || 'Unknown',
     description: `Source: ${item.sourceType || item.productSource}${item.sourceReferenceId ? ` - ${item.sourceReferenceId}` : ''}`,
-    price: item.unitPrice || 0,
+    price: item.unitPrice || item.price || 0,
     quantity: item.quantity,
     image: "https://placehold.co/400x400/png", // Placeholder image
     cartItemId: item.cartItemId,
+    glCode: item.glCode,
+    comment: item.comment,
   }));
 
   if (loading) {
@@ -80,7 +102,9 @@ export default function CartPage() {
                 <CartItem 
                   key={item.id} 
                   item={item} 
-                  onUpdateQuantity={(id, qty) => handleUpdateQuantity(item.cartItemId, qty)}
+                  glCodes={glCodes}
+                  onUpdateQuantity={(id, qty) => handleUpdateItem(item.cartItemId, { quantity: qty })}
+                  onUpdateItem={handleUpdateItem}
                   onRemove={(id) => handleRemove(item.cartItemId)}
                 />
               ))
@@ -98,6 +122,7 @@ export default function CartPage() {
                 shipping={shipping}
                 taxes={taxes}
                 total={total}
+                itemCount={items.reduce((acc, item) => acc + item.quantity, 0)}
               />
             </div>
           )}

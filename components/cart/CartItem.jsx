@@ -3,7 +3,15 @@ import Image from 'next/image';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
+const CartItem = ({ item, onUpdateQuantity, onRemove, onUpdateItem, glCodes = [] }) => {
+  const handleGlCodeChange = (e) => {
+    onUpdateItem(item.id, { glCode: e.target.value, quantity: item.quantity });
+  };
+
+  const handleCommentChange = (e) => {
+    onUpdateItem(item.id, { comment: e.target.value, quantity: item.quantity });
+  };
+
   return (
     <div className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-lg border border-gray-100">
       {/* Product Image */}
@@ -28,19 +36,30 @@ const CartItem = ({ item, onUpdateQuantity, onRemove }) => {
           <div className="space-y-3">
              <div>
                 <label className="text-xs font-medium text-gray-700 block mb-1.5">G L Code/ Cost Center:</label>
-                <select className="w-full md:w-64 h-10 px-3 bg-white border border-gray-200 rounded-md text-sm text-gray-500 focus:outline-none focus:border-green-500">
-                  <option>Select one</option>
+                <select 
+                  value={item.glCode || ""} 
+                  onChange={handleGlCodeChange}
+                  className="w-full md:w-64 h-10 px-3 bg-white border border-gray-200 rounded-md text-sm text-gray-500 focus:outline-none focus:border-green-500"
+                >
+                  <option value="">Select one</option>
+                  {glCodes.map((code) => (
+                    <option key={code.id} value={code.name}>
+                      {code.name} {code.description ? `- ${code.description}` : ''}
+                    </option>
+                  ))}
                 </select>
              </div>
              <div>
                 <label className="text-xs font-medium text-gray-700 block mb-1.5">Comment</label>
                 <input 
                   type="text" 
-                  placeholder="Placeholder text.."
+                  value={item.comment || ""}
+                  onChange={handleCommentChange}
+                  placeholder="Add a comment..."
                   className="w-full md:w-64 h-10 px-3 bg-white border border-gray-200 rounded-md text-sm placeholder:text-gray-400 focus:outline-none focus:border-green-500"
                 />
              </div>
-          </div>
+           </div>
         </div>
       </div>
 

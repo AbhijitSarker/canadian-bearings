@@ -96,10 +96,10 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // Update cart item quantity
-  const updateItem = async (cartItemId, quantity) => {
+  // Update cart item
+  const updateItem = async (cartItemId, data) => {
     try {
-      const result = await apiUpdateCartItem(cartItemId, quantity);
+      const result = await apiUpdateCartItem(cartItemId, data);
       
       if (result.success) {
         await fetchCart(true); // Refresh cart silently

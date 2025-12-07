@@ -4,7 +4,7 @@ import { Ticket } from 'lucide-react';
 import { FaPaypal, FaCcVisa, FaCcAmex, FaCcMastercard } from "react-icons/fa";
 
 
-const OrderSummary = ({ subtotal, savings, shipping, taxes, total }) => {
+const OrderSummary = ({ subtotal, savings, shipping, taxes, total, itemCount }) => {
   return (
     <div className="space-y-8">
         <div className="bg-white rounded-lg border border-gray-100 p-6">
@@ -12,7 +12,7 @@ const OrderSummary = ({ subtotal, savings, shipping, taxes, total }) => {
         
         <div className="space-y-4 mb-6">
             <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Sub Total (4 item)</span>
+            <span className="text-gray-500">Sub Total ({itemCount} items)</span>
             <span className="font-semibold text-gray-900">${subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm">
