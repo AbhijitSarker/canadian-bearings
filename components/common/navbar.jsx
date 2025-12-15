@@ -12,6 +12,7 @@ import { ChevronDown, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorite } from "@/contexts/FavoriteContext";
+import CategoryDropdown from "./CategoryDropdown";
 
 export default function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -82,19 +83,7 @@ export default function Navbar() {
                             </Link>
 
                              {isAuthenticated && (
-                                <button
-                                    className="flex items-center gap-2 bg-[#324a50] hover:bg-[#2a3e43] text-white px-3 py-2 rounded-md text-sm transition-colors flex-shrink-0"
-                                    aria-label="All Products"
-                                >
-                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                                        <rect x="3" y="3" width="7" height="7" rx="1" />
-                                        <rect x="14" y="3" width="7" height="7" rx="1" />
-                                        <rect x="3" y="14" width="7" height="7" rx="1" />
-                                        <rect x="14" y="14" width="7" height="7" rx="1" />
-                                    </svg>
-                                    <span className="whitespace-nowrap font-medium">All Product</span>
-                                    <ChevronDown className="w-4 h-4" />
-                                </button>
+                                <CategoryDropdown />
                             )}
 
                             <div className="flex-1 min-w-0 max-w-xl">
