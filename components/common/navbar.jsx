@@ -180,88 +180,171 @@ export default function Navbar() {
 
                     {/* Mobile Layout */}
                     <div className="md:hidden">
-                        {/* Top Row */}
-                        <div className="flex items-center justify-between mb-3">
-                            <Link href="/">
-                                <Image src={site_logo} alt={'Logo'} className="flex-shrink-0 h-8 w-auto" />
+                        {/* Top Row - Logo, Menu, Cart */}
+                        <div className="flex items-center justify-between mb-2">
+                            <button
+                                ref={mobileButtonRef}
+                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                                className="p-2 hover:bg-neutral-100 rounded-md transition-colors -ml-2"
+                                aria-label="Toggle menu"
+                            >
+                                <ListUnorderedIcon />
+                            </button>
+                            
+                            <Link href="/" className="absolute left-1/2 -translate-x-1/2">
+                                <Image src={site_logo} alt={'Logo'} className="h-8 w-auto" />
                             </Link>
-                            <div className="flex items-center gap-x-3">
-                                <button
-                                    ref={mobileButtonRef}
-                                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                    className="p-2 hover:bg-neutral-100 rounded-md transition-colors"
-                                    aria-label="Toggle menu"
-                                >
-                                    <ListUnorderedIcon />
-                                </button>
-                                <div className="bg-green-500 w-[40px] h-[40px] rounded-full flex justify-center items-center shadow-sm">
-                                    <ShoppingCart2LineIcon className="text-white" />
+                            
+                            <Link href="/cart" className="bg-green-500 w-[40px] h-[40px] rounded-full flex justify-center items-center shadow-sm hover:bg-green-600 transition-colors">
+                                <ShoppingCart2LineIcon className="text-white" />
+                            </Link>
+                        </div>
+
+                        {/* Second Row - Category & Search */}
+                        {isAuthenticated && (
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="flex-shrink-0">
+                                    <CategoryDropdown />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <SearchBar />
                                 </div>
                             </div>
-                        </div>
-                        {/* Search Row */}
-                        <div className="flex items-center gap-x-2 mb-3 relative z-[99] -mx-4 px-4">
-                            <SearchBar />
-                        </div>
+                        )}
 
-                        {/* Mobile Menu */}
-                        {mobileMenuOpen && (
-                            <div ref={mobileMenuRef} className="mt-3 bg-white rounded-lg shadow-lg p-4 space-y-3 border border-neutral-100">
-                                {isAuthenticated && (
-                                    <div className="pb-3 border-b border-neutral-100 space-y-2">
-                                        <Link href="#" className="block py-2 text-sm font-medium text-neutral-700" onClick={() => setMobileMenuOpen(false)}>All Product</Link>
-                                        <Link href="#" className="block py-2 text-sm font-medium text-neutral-700" onClick={() => setMobileMenuOpen(false)}>Product</Link>
-                                        <Link href="#" className="block py-2 text-sm font-medium text-neutral-700" onClick={() => setMobileMenuOpen(false)}>Brands</Link>
-                                        <Link href="#" className="block py-2 text-sm font-medium text-neutral-700" onClick={() => setMobileMenuOpen(false)}>Services</Link>
-                                        <Link href="#" className="block py-2 text-sm font-medium text-neutral-700" onClick={() => setMobileMenuOpen(false)}>Resource</Link>
-                                        <Link href="#" className="block py-2 text-sm font-medium text-neutral-700" onClick={() => setMobileMenuOpen(false)}>Industries</Link>
-                                    </div>
-                                )}
-
-                                <button onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-x-[10px] text-[14px] text-neutral-950 font-[400] py-2 w-full hover:bg-neutral-50 rounded-md px-2">
-                                    <ListUnorderedIcon />
-                                    Quick Order
-                                </button>
-                                <button onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-x-[10px] text-[14px] text-neutral-950 font-[400] py-2 w-full hover:bg-neutral-50 rounded-md px-2">
-                                    <MapPinLineIcon />
-                                    Location
-                                </button>
-                                <Link href="/favorites" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-x-[10px] text-[14px] text-neutral-950 font-[400] py-2 w-full hover:bg-neutral-50 rounded-md px-2">
-                                    <Heart3LineIcon />
-                                    Favourites
-                                </Link>
-
-                                {isAuthenticated ? (
-                                    <>
-                                        <div className="border-t pt-3 mt-2">
-                                            <p className="text-sm font-medium text-neutral-950 mb-1 px-2">{user?.firstName} {user?.lastName}</p>
-                                            <p className="text-xs text-neutral-600 mb-3 px-2">{user?.email}</p>
-                                        </div>
-                                        <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-x-[10px] text-[14px] text-neutral-950 font-[400] py-2 hover:bg-neutral-50 rounded-md px-2">
-                                            <UserLineIcon />
-                                            My Profile
-                                        </Link>
-                                        <Link href="/orders" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-x-[10px] text-[14px] text-neutral-950 font-[400] py-2 hover:bg-neutral-50 rounded-md px-2">
-                                            My Orders
-                                        </Link>
-                                        <button
-                                            onClick={() => {
-                                                handleLogout();
-                                                setMobileMenuOpen(false);
-                                            }}
-                                            className="flex items-center gap-x-[10px] text-[14px] text-red-600 font-[400] py-2 w-full hover:bg-neutral-50 rounded-md px-2"
-                                        >
-                                            <LogOut size={16} />
-                                            Logout
-                                        </button>
-                                    </>
-                                ) : (
-                                    <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-x-[10px] text-[14px] text-neutral-950 font-[400] py-2 hover:bg-neutral-50 rounded-md px-2">
-                                        <UserLineIcon />
-                                        Sign In
-                                    </Link>
-                                )}
+                        {/* Search only for non-authenticated users */}
+                        {!isAuthenticated && (
+                            <div className="mb-2">
+                                <SearchBar />
                             </div>
+                        )}
+
+                        {/* Mobile Menu Drawer */}
+                        {mobileMenuOpen && (
+                            <>
+                                {/* Backdrop */}
+                                <div 
+                                    className="fixed inset-0 bg-black/50 z-[60]"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                />
+                                
+                                {/* Slide-in Drawer */}
+                                <div 
+                                    ref={mobileMenuRef}
+                                    className="fixed top-0 left-0 h-full w-[280px] bg-white shadow-2xl z-[70] overflow-y-auto animate-in slide-in-from-left duration-200"
+                                >
+                                    {/* Drawer Header */}
+                                    <div className="flex items-center justify-between px-4 py-3 bg-green-500 text-white sticky top-0">
+                                        <h2 className="font-semibold text-lg">Menu</h2>
+                                        <button 
+                                            onClick={() => setMobileMenuOpen(false)}
+                                            className="p-1 hover:bg-green-600 rounded-full transition-colors"
+                                        >
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    {/* User Info */}
+                                    {isAuthenticated && (
+                                        <div className="px-4 py-3 bg-neutral-50 border-b border-neutral-200">
+                                            <p className="text-sm font-semibold text-neutral-950">{user?.firstName} {user?.lastName}</p>
+                                            <p className="text-xs text-neutral-600 mt-0.5">{user?.email}</p>
+                                        </div>
+                                    )}
+
+                                    {/* Navigation Links */}
+                                    <div className="py-2">
+                                        {isAuthenticated && (
+                                            <>
+                                                <div className="px-2 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                                                    Browse
+                                                </div>
+                                                <Link href="#" className="flex items-center px-4 py-2.5 text-sm font-medium text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                                                    All Products
+                                                </Link>
+                                                <Link href="#" className="flex items-center px-4 py-2.5 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                                                    Products
+                                                </Link>
+                                                <Link href="#" className="flex items-center px-4 py-2.5 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                                                    Brands
+                                                </Link>
+                                                <Link href="#" className="flex items-center px-4 py-2.5 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                                                    Services
+                                                </Link>
+                                                <Link href="#" className="flex items-center px-4 py-2.5 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                                                    Resources
+                                                </Link>
+                                                <Link href="#" className="flex items-center px-4 py-2.5 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors" onClick={() => setMobileMenuOpen(false)}>
+                                                    Industries
+                                                </Link>
+
+                                                <div className="h-px bg-neutral-200 my-2"></div>
+
+                                                <div className="px-2 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                                                    Quick Actions
+                                                </div>
+                                            </>
+                                        )}
+
+                                        <button onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors w-full">
+                                            <ListUnorderedIcon />
+                                            Quick Order
+                                        </button>
+                                        <button onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors w-full">
+                                            <MapPinLineIcon />
+                                            Location
+                                        </button>
+                                        {isAuthenticated && (
+                                            <Link href="/favorites" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors">
+                                                <Heart3LineIcon />
+                                                Favourites
+                                            </Link>
+                                        )}
+
+                                        {/* Account Section */}
+                                        {isAuthenticated && (
+                                            <>
+                                                <div className="h-px bg-neutral-200 my-2"></div>
+                                                <div className="px-2 py-2 text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                                                    Account
+                                                </div>
+                                                <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors">
+                                                    <UserLineIcon />
+                                                    My Profile
+                                                </Link>
+                                                <Link href="/orders" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-green-50 hover:text-green-700 transition-colors">
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                                    </svg>
+                                                    My Orders
+                                                </Link>
+                                                <button
+                                                    onClick={() => {
+                                                        handleLogout();
+                                                        setMobileMenuOpen(false);
+                                                    }}
+                                                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors w-full mt-2"
+                                                >
+                                                    <LogOut size={16} />
+                                                    Logout
+                                                </button>
+                                            </>
+                                        )}
+
+                                        {!isAuthenticated && (
+                                            <>
+                                                <div className="h-px bg-neutral-200 my-2"></div>
+                                                <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-green-600 hover:bg-green-50 transition-colors">
+                                                    <UserLineIcon />
+                                                    Sign In
+                                                </Link>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>

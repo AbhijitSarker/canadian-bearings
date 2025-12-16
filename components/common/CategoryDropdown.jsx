@@ -128,17 +128,18 @@ export default function CategoryDropdown() {
         <div className="" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 bg-[#324a50] hover:bg-[#2a3e43] text-white px-4 h-10 rounded-full text-sm transition-colors flex-shrink-0"
+                className="flex items-center gap-1.5 md:gap-2 bg-[#324a50] hover:bg-[#2a3e43] text-white px-2 md:px-4 h-9 md:h-10 rounded-full text-xs md:text-sm transition-colors flex-shrink-0"
                 aria-label="All Products"
             >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <svg className="w-3.5 h-3.5 md:w-4 md:h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                     <rect x="3" y="3" width="7" height="7" rx="1" />
                     <rect x="14" y="3" width="7" height="7" rx="1" />
                     <rect x="3" y="14" width="7" height="7" rx="1" />
                     <rect x="14" y="14" width="7" height="7" rx="1" />
                 </svg>
-                <span className="whitespace-nowrap font-medium">All Product</span>
-                <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                <span className="whitespace-nowrap font-medium hidden sm:inline">All Product</span>
+                <span className="whitespace-nowrap font-medium sm:hidden">Categories</span>
+                <ChevronDown className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {isOpen && (
@@ -153,8 +154,8 @@ export default function CategoryDropdown() {
                     />
                     
                     {/* Drawer */}
-                    <div className="fixed top-0 left-0 h-full bg-white shadow-2xl z-[70] flex flex-col animate-in slide-in-from-left duration-200"
-                         style={{ width: `${Math.min(columns.length * 280, 1120)}px` }}>
+                    <div className="fixed top-0 left-0 h-full bg-white shadow-2xl z-[70] flex flex-col animate-in slide-in-from-left duration-200 w-full sm:w-auto"
+                         style={{ maxWidth: typeof window !== 'undefined' && window.innerWidth < 640 ? '100vw' : `${Math.min(columns.length * 280, 1120)}px`, width: typeof window !== 'undefined' && window.innerWidth < 640 ? '100vw' : `${Math.min(columns.length * 280, 1120)}px` }}>
                         {/* Header */}
                         <div className="flex items-center justify-between px-4 py-3 bg-green-500 text-white">
                             <div className="flex items-center gap-2">
@@ -184,7 +185,7 @@ export default function CategoryDropdown() {
                             {columns.map((column, columnIndex) => (
                                 <div 
                                     key={columnIndex}
-                                    className={`w-[280px] flex-shrink-0 overflow-y-auto ${
+                                    className={`w-full sm:w-[280px] flex-shrink-0 overflow-y-auto ${
                                         columnIndex === 0 ? 'bg-neutral-50' : 'bg-white'
                                     } ${columnIndex < columns.length - 1 ? 'border-r border-neutral-200' : ''}`}
                                 >
