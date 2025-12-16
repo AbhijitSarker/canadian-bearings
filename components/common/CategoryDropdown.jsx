@@ -1,6 +1,6 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
-import { ChevronDown, ChevronRight, Loader2, X } from "lucide-react"
+import { ChevronDown, ChevronRight, ChevronLeft, Loader2, X } from "lucide-react"
 import { categoryService } from "@/lib/api/services/categories"
 import { useRouter } from "next/navigation"
 
@@ -8,6 +8,7 @@ export default function CategoryDropdown() {
     const [isOpen, setIsOpen] = useState(false)
     const [columns, setColumns] = useState([]) // Array of column data: [{ items: [], loading: false, selectedId: null }]
     const [cache, setCache] = useState({}) // Cache: { categoryId: [subcategories] }
+    const [mobileActiveLevel, setMobileActiveLevel] = useState(0) // For mobile: which level is currently visible
     
     const dropdownRef = useRef(null)
     const router = useRouter()
@@ -18,6 +19,7 @@ export default function CategoryDropdown() {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsOpen(false)
                 setColumns([])
+                setMobileActiveLevel(0)
             }
         }
         document.addEventListener("mousedown", handleClickOutside)
@@ -66,6 +68,10 @@ export default function CategoryDropdown() {
     const handleCloseColumn = (columnIndex) => {
         // Remove this column and all columns after it
         setColumns(columns.slice(0, columnIndex))
+        // Update mobile active level
+        if (mobileActiveLevel >= columnIndex) {
+            setMobileActiveLevel(Math.max(0, columnIndex - 1))
+        }
     }
 
     const hasSubcategories = (item) => {
@@ -97,31 +103,39 @@ export default function CategoryDropdown() {
             parentName: category.name
         })
         setColumns(updatedColumns)
+        
+        // On mobile, move to next level after a brief delay to allow DOM to render
+        setTimeout(() => {
+            setMobileActiveLevel(columnIndex + 1)
+        }, 50)
 
         // Fetch subcategories asynchronously
         const subcategories = await fetchSubCategories(category.id)
 
         if (subcategories && subcategories.length > 0) {
             // Update the loading column with actual data
-            const finalColumns = columns.slice(0, columnIndex + 1)
-            finalColumns[columnIndex] = {
-                ...finalColumns[columnIndex],
-                selectedId: category.id
-            }
-            finalColumns.push({
+            const finalColumns = [...updatedColumns]
+            finalColumns[finalColumns.length - 1] = {
                 items: subcategories,
                 loading: false,
                 selectedId: null,
                 parentName: category.name
-            })
+            }
             setColumns(finalColumns)
         } else {
             // Leaf node - remove loading column and navigate
             setColumns(updatedColumns.slice(0, -1))
             setIsOpen(false)
             router.push(`/category/${category.id}`)
-            setTimeout(() => setColumns([]), 300)
+            setTimeout(() => {
+                setColumns([])
+                setMobileActiveLevel(0)
+            }, 300)
         }
+    }
+
+    const handleMobileBack = () => {
+        setMobileActiveLevel(Math.max(0, mobileActiveLevel - 1))
     }
 
     return (
@@ -150,12 +164,22 @@ export default function CategoryDropdown() {
                         onClick={() => {
                             setIsOpen(false)
                             setColumns([])
+                            setMobileActiveLevel(0)
                         }}
                     />
                     
                     {/* Drawer */}
-                    <div className="fixed top-0 left-0 h-full bg-white shadow-2xl z-[70] flex flex-col animate-in slide-in-from-left duration-200 w-full sm:w-auto"
-                         style={{ maxWidth: typeof window !== 'undefined' && window.innerWidth < 640 ? '100vw' : `${Math.min(columns.length * 280, 1120)}px`, width: typeof window !== 'undefined' && window.innerWidth < 640 ? '100vw' : `${Math.min(columns.length * 280, 1120)}px` }}>
+                    <div className="fixed top-0 left-0 h-full bg-white shadow-2xl z-[70] flex flex-col animate-in slide-in-from-left duration-200"
+                         style={{ 
+                             width: typeof window !== 'undefined' && window.innerWidth < 640 
+                                 ? '85vw' 
+                                 : typeof window !== 'undefined' && window.innerWidth < 1024
+                                     ? `${Math.min(columns.length * 280, 600)}px`
+                                     : `${Math.min(columns.length * 280, 1120)}px`,
+                             maxWidth: typeof window !== 'undefined' && window.innerWidth < 640 
+                                 ? '85vw' 
+                                 : '1120px'
+                         }}>
                         {/* Header */}
                         <div className="flex items-center justify-between px-4 py-3 bg-green-500 text-white">
                             <div className="flex items-center gap-2">
@@ -171,8 +195,9 @@ export default function CategoryDropdown() {
                                 onClick={() => {
                                     setIsOpen(false)
                                     setColumns([])
+                                    setMobileActiveLevel(0)
                                 }}
-                                className="p-1 hover:bg-[#2a3e43] rounded-full transition-colors"
+                                className="p-1 hover:bg-green-600 rounded-full transition-colors"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -180,12 +205,12 @@ export default function CategoryDropdown() {
                             </button>
                         </div>
 
-                        {/* Multi-Column Content */}
-                        <div className="flex flex-1 overflow-hidden">
+                        {/* Multi-Column Content - Desktop/Tablet */}
+                        <div className="hidden lg:flex flex-1 overflow-hidden">
                             {columns.map((column, columnIndex) => (
                                 <div 
                                     key={columnIndex}
-                                    className={`w-full sm:w-[280px] flex-shrink-0 overflow-y-auto ${
+                                    className={`w-[280px] flex-shrink-0 overflow-y-auto ${
                                         columnIndex === 0 ? 'bg-neutral-50' : 'bg-white'
                                     } ${columnIndex < columns.length - 1 ? 'border-r border-neutral-200' : ''}`}
                                 >
@@ -260,6 +285,77 @@ export default function CategoryDropdown() {
                                     <p className="font-medium text-neutral-600">Loading Categories...</p>
                                 </div>
                             )}
+                        </div>
+
+                        {/* Mobile/Tablet Stacked View */}
+                        <div className="lg:hidden flex-1 overflow-hidden relative">
+                            {columns.map((column, columnIndex) => (
+                                <div
+                                    key={columnIndex}
+                                    className={`absolute inset-0 bg-white transition-transform duration-300 ${
+                                        columnIndex === mobileActiveLevel 
+                                            ? 'translate-x-0' 
+                                            : columnIndex < mobileActiveLevel 
+                                                ? '-translate-x-full' 
+                                                : 'translate-x-full'
+                                    }`}
+                                >
+                                    {/* Mobile Column Header */}
+                                    <div className="sticky top-0 bg-neutral-100 px-3 py-3 border-b border-neutral-200 z-10 flex items-center gap-3">
+                                        {columnIndex > 0 && (
+                                            <button
+                                                onClick={handleMobileBack}
+                                                className="p-1 hover:bg-neutral-200 rounded-full transition-colors flex-shrink-0"
+                                                aria-label="Go back"
+                                            >
+                                                <ChevronLeft className="w-5 h-5 text-neutral-600" />
+                                            </button>
+                                        )}
+                                        <h3 className="font-semibold text-sm text-[#324a50] truncate flex-1">
+                                            {columnIndex === 0 ? 'All Categories' : column.parentName}
+                                        </h3>
+                                    </div>
+
+                                    {/* Mobile Column Items */}
+                                    <div className="overflow-y-auto h-full pb-20">
+                                        {column.loading ? (
+                                            <div className="flex justify-center items-center h-40">
+                                                <Loader2 className="w-6 h-6 animate-spin text-green-600" />
+                                            </div>
+                                        ) : column.items.length > 0 ? (
+                                            <div className="py-1">
+                                                {column.items.map((item) => (
+                                                    <div
+                                                        key={item.id}
+                                                        onClick={() => handleCategoryClick(item, columnIndex)}
+                                                        className={`px-4 py-3 flex items-center justify-between cursor-pointer transition-colors border-b border-neutral-100 ${
+                                                            column.selectedId === item.id
+                                                                ? 'bg-green-50 text-[#324a50] font-semibold'
+                                                                : 'text-neutral-700 active:bg-green-50'
+                                                        }`}
+                                                    >
+                                                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                                                            <span className="text-sm truncate">{item.name}</span>
+                                                            {item.productCount !== undefined && (
+                                                                <span className="text-xs text-neutral-400 flex-shrink-0">
+                                                                    ({item.productCount})
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        {hasSubcategories(item) && (
+                                                            <ChevronRight className="w-5 h-5 flex-shrink-0 ml-2 text-neutral-400" />
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center h-40 text-neutral-400 text-sm px-4 text-center">
+                                                <p>No subcategories found</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </>

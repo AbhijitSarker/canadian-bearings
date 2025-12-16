@@ -180,44 +180,36 @@ export default function Navbar() {
 
                     {/* Mobile Layout */}
                     <div className="md:hidden">
-                        {/* Top Row - Logo, Menu, Cart */}
+                        {/* Top Row - Hamburger + Logo on left, Categories + Cart on right */}
                         <div className="flex items-center justify-between mb-2">
-                            <button
-                                ref={mobileButtonRef}
-                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                                className="p-2 hover:bg-neutral-100 rounded-md transition-colors -ml-2"
-                                aria-label="Toggle menu"
-                            >
-                                <ListUnorderedIcon />
-                            </button>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    ref={mobileButtonRef}
+                                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                                    className="p-2 hover:bg-neutral-100 rounded-md transition-colors -ml-2"
+                                    aria-label="Toggle menu"
+                                >
+                                    <ListUnorderedIcon />
+                                </button>
+                                <Link href="/">
+                                    <Image src={site_logo} alt={'Logo'} className="h-8 w-auto" />
+                                </Link>
+                            </div>
                             
-                            <Link href="/" className="absolute left-1/2 -translate-x-1/2">
-                                <Image src={site_logo} alt={'Logo'} className="h-8 w-auto" />
-                            </Link>
-                            
-                            <Link href="/cart" className="bg-green-500 w-[40px] h-[40px] rounded-full flex justify-center items-center shadow-sm hover:bg-green-600 transition-colors">
-                                <ShoppingCart2LineIcon className="text-white" />
-                            </Link>
+                            <div className="flex items-center gap-2">
+                                {isAuthenticated && (
+                                    <CategoryDropdown />
+                                )}
+                                <Link href="/cart" className="bg-green-500 w-[40px] h-[40px] rounded-full flex justify-center items-center shadow-sm hover:bg-green-600 transition-colors">
+                                    <ShoppingCart2LineIcon className="text-white" />
+                                </Link>
+                            </div>
                         </div>
 
-                        {/* Second Row - Category & Search */}
-                        {isAuthenticated && (
-                            <div className="flex items-center gap-2 mb-2">
-                                <div className="flex-shrink-0">
-                                    <CategoryDropdown />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <SearchBar />
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Search only for non-authenticated users */}
-                        {!isAuthenticated && (
-                            <div className="mb-2">
-                                <SearchBar />
-                            </div>
-                        )}
+                        {/* Second Row - Full Width Search */}
+                        <div className="mb-2">
+                            <SearchBar />
+                        </div>
 
                         {/* Mobile Menu Drawer */}
                         {mobileMenuOpen && (
