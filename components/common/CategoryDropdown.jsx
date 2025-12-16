@@ -69,11 +69,15 @@ export default function CategoryDropdown() {
     }
 
     const hasSubcategories = (item) => {
-        // Check if item has subcategories in cache or if productCount suggests there might be
+        // Check childCount from API response
+        if (item.childCount !== undefined) {
+            return item.childCount > 0
+        }
+        // Fallback: check cache
         if (cache[item.id]) {
             return cache[item.id].length > 0
         }
-        // Assume items might have subcategories if not yet fetched
+        // Default to true if not yet fetched
         return true
     }
 
@@ -85,21 +89,35 @@ export default function CategoryDropdown() {
             selectedId: category.id
         }
 
-        // Fetch subcategories
+        // Immediately add new column with loading state
+        updatedColumns.push({
+            items: [],
+            loading: true,
+            selectedId: null,
+            parentName: category.name
+        })
+        setColumns(updatedColumns)
+
+        // Fetch subcategories asynchronously
         const subcategories = await fetchSubCategories(category.id)
 
         if (subcategories && subcategories.length > 0) {
-            // Add new column with subcategories
-            updatedColumns.push({
+            // Update the loading column with actual data
+            const finalColumns = columns.slice(0, columnIndex + 1)
+            finalColumns[columnIndex] = {
+                ...finalColumns[columnIndex],
+                selectedId: category.id
+            }
+            finalColumns.push({
                 items: subcategories,
                 loading: false,
                 selectedId: null,
                 parentName: category.name
             })
-            setColumns(updatedColumns)
+            setColumns(finalColumns)
         } else {
-            // Leaf node - navigate to category page
-            setColumns(updatedColumns)
+            // Leaf node - remove loading column and navigate
+            setColumns(updatedColumns.slice(0, -1))
             setIsOpen(false)
             router.push(`/category/${category.id}`)
             setTimeout(() => setColumns([]), 300)
@@ -138,7 +156,7 @@ export default function CategoryDropdown() {
                     <div className="fixed top-0 left-0 h-full bg-white shadow-2xl z-[70] flex flex-col animate-in slide-in-from-left duration-200"
                          style={{ width: `${Math.min(columns.length * 280, 1120)}px` }}>
                         {/* Header */}
-                        <div className="flex items-center justify-between px-4 py-3 bg-[#324a50] text-white">
+                        <div className="flex items-center justify-between px-4 py-3 bg-green-500 text-white">
                             <div className="flex items-center gap-2">
                                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                                     <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -199,11 +217,18 @@ export default function CategoryDropdown() {
                                                     onClick={() => handleCategoryClick(item, columnIndex)}
                                                     className={`px-4 py-2.5 flex items-center justify-between cursor-pointer transition-colors ${
                                                         column.selectedId === item.id
-                                                            ? 'bg-green-50 text-[#324a50] font-semibold border-l-4 border-l-[#324a50]'
+                                                            ? 'bg-green-50 text-[#324a50] font-semibold border-l-4 border-l-green-500'
                                                             : 'text-neutral-700 hover:bg-green-50 hover:text-[#324a50]'
                                                     }`}
                                                 >
-                                                    <span className="text-sm truncate flex-1">{item.name}</span>
+                                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                                        <span className="text-sm truncate">{item.name}</span>
+                                                        {item.productCount !== undefined && (
+                                                            <span className="text-xs text-neutral-400 flex-shrink-0">
+                                                                ({item.productCount})
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                     {hasSubcategories(item) && (
                                                         <ChevronRight className={`w-4 h-4 flex-shrink-0 ml-2 ${
                                                             column.selectedId === item.id ? 'text-[#324a50]' : 'text-neutral-400'
