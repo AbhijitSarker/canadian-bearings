@@ -142,7 +142,7 @@ export default function CategoryDropdown() {
         <div className="" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-1.5 md:gap-2 bg-[#324a50] hover:bg-[#2a3e43] text-white px-2 md:px-4 h-9 md:h-10 rounded-full text-xs md:text-sm transition-colors flex-shrink-0"
+                className="flex items-center gap-1.5 md:gap-2 bg-white hover:bg-green-50 border text-neutral-700 px-2 md:px-4 h-9 md:h-10 rounded-full text-xs md:text-sm transition-colors flex-shrink-0"
                 aria-label="All Products"
             >
                 <svg className="w-3.5 h-3.5 md:w-4 md:h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
