@@ -73,7 +73,7 @@ export default function CategoryDropdown() {
         <div className="" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 bg-[#324a50] hover:bg-[#2a3e43] text-white px-3 py-2 rounded-full text-sm transition-colors flex-shrink-0"
+                className="flex items-center gap-2 bg-[#324a50] hover:bg-[#2a3e43] text-white px-4 h-10 rounded-full text-sm transition-colors flex-shrink-0"
                 aria-label="All Products"
             >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -90,12 +90,12 @@ export default function CategoryDropdown() {
                 <>
                     {/* Backdrop */}
                     <div 
-                        className="fixed inset-0 bg-black/50 z-40"
+                        className="fixed inset-0 bg-black/50 z-[60]"
                         onClick={() => setIsOpen(false)}
                     />
                     
                     {/* Drawer */}
-                    <div className="fixed top-0 left-0 h-full w-[600px] bg-white shadow-2xl z-50 flex flex-col animate-in slide-in-from-left duration-200">
+                    <div className="fixed top-0 left-0 h-full w-[600px] bg-white shadow-2xl z-[70] flex flex-col animate-in slide-in-from-left duration-200">
                         {/* Header */}
                         <div className="flex items-center justify-between px-4 py-3 bg-green-500 text-white">
                             <div className="flex items-center gap-2">

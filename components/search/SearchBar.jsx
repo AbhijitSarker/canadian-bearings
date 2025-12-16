@@ -79,7 +79,7 @@ export default function SearchBar() {
                         onFocus={() => isAuthenticated && query.length > 0 && setShowSuggestions(true)}
                         placeholder={isAuthenticated ? "Search products..." : "Please sign in to search"}
                         disabled={!isAuthenticated}
-                        className={`flex-1 ml-5 text-sm md:text-base bg-transparent outline-none truncate min-w-0 pr-2 h-11 md:h-[44px] ${!isAuthenticated ? 'cursor-not-allowed text-neutral-400' : ''}`}
+                        className={`flex-1 ml-5 text-sm md:text-base bg-transparent outline-none truncate min-w-0 pr-2 h-10 ${!isAuthenticated ? 'cursor-not-allowed text-neutral-400' : ''}`}
                     />
                     <button
                         type="submit"
