@@ -82,14 +82,14 @@ export default function Navbar() {
                                 <Image src={site_logo} alt={'Logo'} className="w-auto h-10" />
                             </Link>
 
-                             {isAuthenticated && (
+                            {isAuthenticated && <>
                                 <CategoryDropdown />
-                            )}
 
-                            <div className="flex-1 min-w-0 max-w-xl">
-                                <SearchBar />
-                            </div>
-
+                                <div className="flex-1 min-w-0 max-w-xl">
+                                    <SearchBar />
+                                </div>
+                            </>
+                            }
                             {isAuthenticated && (
                                 <div className="flex items-center gap-4 xl:gap-6 flex-shrink-0">
                                     <Link href="#" className="text-neutral-700 text-sm font-medium hover:text-green-600 transition-colors">
@@ -112,14 +112,15 @@ export default function Navbar() {
                         </div>
                         
                         <div className="flex items-center gap-x-2 justify-end flex-shrink-0 ml-4">
-                            <Link 
-                                href="/favorites"
-                                className="flex items-center px-[10px] border-r border-neutral-300 gap-x-[5px] text-[14px] leading-[100%] text-neutral-950 font-[400] whitespace-nowrap hover:text-red-600 transition-colors"
-                            >
-                                <Heart3LineIcon />
+                            {isAuthenticated && (
+                                <Link 
+                                    href="/favorites"
+                                    className="flex items-center px-[10px] border-r border-neutral-300 gap-x-[5px] text-[14px] leading-[100%] text-neutral-950 font-[400] whitespace-nowrap hover:text-red-600 transition-colors"
+                                >
+                                    <Heart3LineIcon />
                                 Favourites
                             </Link>
-
+                            )}
                             {isAuthenticated ? (
                                 <div className="relative">
                                     <button

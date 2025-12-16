@@ -64,7 +64,7 @@ const dummy_languages = [
     }
 ]
 
-export default function TopHeader({ bgColor = "bg-green-50", textColor = "text-neutral-600", iconColor = "#4E9647" }) {
+export default function TopHeader({ bgColor = "bg-green-500", textColor = "text-white", iconColor = "#4E9647" }) {
     const [selectedLanguage, setSelectedLanguage] = useState(dummy_languages[0])
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const { isAuthenticated } = useAuth()
@@ -104,10 +104,10 @@ export default function TopHeader({ bgColor = "bg-green-50", textColor = "text-n
                             </>
                         )}
 
-                        <div className="relative ml-2">
+                        <div className="relative ml-2 ">
                             <button
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                className="border border-neutral-300 bg-green-50 rounded-md py-0.5 px-3 text-sm hover:bg-neutral-50 transition-colors min-w-[140px] flex items-center justify-between gap-3 shadow-sm"
+                                className="border border-neutral-300 bg-green-500 rounded-md py-0.5 px-3 text-sm hover:bg-neutral-50 transition-colors min-w-[140px] flex items-center justify-between gap-3 shadow-sm"
                             >
                                 <div className="flex items-center gap-2">
                                     <span className="leading-none">{selectedLanguage.flag}</span>
@@ -123,7 +123,7 @@ export default function TopHeader({ bgColor = "bg-green-50", textColor = "text-n
                                 </svg>
                             </button>
                             {isDropdownOpen && (
-                                <div className="absolute top-full right-0 mt-2 bg-white border border-neutral-200 rounded-2xl shadow-lg z-50 min-w-[180px] overflow-hidden">
+                                <div className="absolute text-black top-full right-0 mt-2 bg-white border border-neutral-200 rounded-2xl shadow-lg z-50 min-w-[180px] overflow-hidden">
                                     {dummy_languages.map((lang) => (
                                         <button
                                             key={lang.code}
