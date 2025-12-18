@@ -6,6 +6,7 @@ import SearchLineIcon from "@/assets/icons/serachLine";
 const FilterSection = ({
   title,
   items = [],
+  selected = [], // Array of selected IDs
   onChange,
   // viewAllBehavior: 'expand' (default) | 'link' | 'modal'
   viewAllBehavior = "expand",
@@ -14,8 +15,10 @@ const FilterSection = ({
 }) => {
   const [open, setOpen] = useState(true);
   const [query, setQuery] = useState("");
-  const [checked, setChecked] = useState(() => new Set());
   const [expandedAll, setExpandedAll] = useState(false);
+
+  // Convert selected prop to Set for efficient lookup
+  const selectedSet = useMemo(() => new Set(selected), [selected]);
 
   const filtered = useMemo(() => {
     if (!query) return items;
@@ -24,10 +27,9 @@ const FilterSection = ({
   }, [items, query]);
 
   const toggle = (id) => {
-    const next = new Set(checked);
+    const next = new Set(selectedSet);
     if (next.has(id)) next.delete(id);
     else next.add(id);
-    setChecked(next);
     onChange && onChange(Array.from(next));
   };
 
@@ -71,7 +73,7 @@ const FilterSection = ({
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={checked.has(it.id)}
+                    checked={selectedSet.has(it.id)}
                     onChange={() => toggle(it.id)}
                     className="w-5 h-5 rounded-sm border border-neutral-300 text-emerald-600 focus:ring-0"
                   />

@@ -126,7 +126,7 @@ export default function CategoryDropdown() {
             // Leaf node - remove loading column and navigate
             setColumns(updatedColumns.slice(0, -1))
             setIsOpen(false)
-            router.push(`/category/${category.id}`)
+            router.push(`/products?categories=${category.id}`)
             setTimeout(() => {
                 setColumns([])
                 setMobileActiveLevel(0)

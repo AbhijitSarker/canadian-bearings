@@ -12,9 +12,13 @@ import {
 } from "../ui/dropdown-menu";
 import searchData from "@/data/search-data.json";
 
-const SearchResults = ({ query = "", setQuery, sort, setSort, view = "grid", setView }) => {
+const SearchResults = ({ products, query = "", setQuery, sort, setSort, view = "grid", setView }) => {
     // Filter and sort products based on search query
     const sortedProducts = useMemo(() => {
+        // If products are provided via prop, use them directly (assume already filtered/sorted/paginated)
+        if (products) return products;
+
+        // Fallback to local searchData logic
         // If no search query, show all products
         if (!query?.trim()) return searchData.products;
         
@@ -51,7 +55,7 @@ const SearchResults = ({ query = "", setQuery, sort, setSort, view = "grid", set
                     return a.name.localeCompare(b.name);
             }
         });
-    }, [query, sort]);
+    }, [products, query, sort]);
 
     return (
         <div>
@@ -117,16 +121,32 @@ const SearchResults = ({ query = "", setQuery, sort, setSort, view = "grid", set
                     <div className="col-span-full text-center py-8">
                         <p className="text-neutral-500">No products found matching your search criteria.</p>
                     </div>
-                ) : sortedProducts.map((product) => (
-                    <div key={product.id}>
-                        <ProductCard 
-                            product={{
-                                ...product,
-                                image: `/assets/categories/${product.categoryImage || 'category1.png'}`
-                            }}
-                        />
-                    </div>
-                ))}
+                ) : sortedProducts.map((product) => {
+                    // Fix protocol-relative URLs
+                    const getAbsoluteUrl = (url) => {
+                        if (!url) return "/placeholder.png";
+                        if (url.startsWith("//")) return `https:${url}`;
+                        return url;
+                    };
+
+                    return (
+                        <div key={product.id || product.productId}>
+                            <ProductCard 
+                                product={{
+                                    ...product,
+                                    // Map API fields to ProductCard expected fields if needed
+                                    id: product.id || product.productId,
+                                    name: product.name || product.descriptionShort || product.cbSKU,
+                                    description: product.description || product.categoryName,
+                                    brand: product.brand || product.brandName,
+                                    itemNumber: product.itemNumber || product.mfgSKU,
+                                    image: getAbsoluteUrl(product.image || product.imageUrl || product.brandImageUrl || product.categoryImage),
+                                    price: product.price || 0
+                                }}
+                            />
+                        </div>
+                    );
+                })}
             </div>
             {sortedProducts.length > 0 && (
                 <div className="border-t p-4">

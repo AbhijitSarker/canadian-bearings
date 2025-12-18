@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import React, { useState } from "react";
+import CategoryCard from "@/components/ui/category-card";
 
 // Add custom CSS to hide scrollbar
 const styles = `
@@ -26,33 +27,10 @@ const ArrowRight = () => (
   </svg>
 );
 
-// Category Card Component
-const CategoryCard = ({ icon, name }) => (
-  <div className="flex flex-col items-center justify-center bg-white rounded-lg p-4 cursor-pointer border border-gray-200 hover:border-green-500 hover:shadow-md transition-all duration-200 w-[170px] h-[170px]">
-    <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-50 mb-4">
-      <img src={icon} alt={name} className="w-16 h-16 rounded-full object-contain" />
-    </div>
-    <span className="text-base font-light text-gray-800 text-center leading-4">{name}</span>
-  </div>
-);
-
-const CategorySlider = () => {
+const CategorySlider = ({ categories = [], onCategoryClick }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const scrollContainerRef = React.useRef(null);
-
-  // Sample category data with placeholder images
-  const categories = [
-    { name: "Abrasives", icon: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=100&h=100&fit=crop" },
-    { name: "Bearings", icon: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=100&h=100&fit=crop" },
-    { name: "Cutting Tools", icon: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=100&h=100&fit=crop" },
-    { name: "Electrical Supplies", icon: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=100&h=100&fit=crop" },
-    { name: "Fasteners", icon: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=100&h=100&fit=crop" },
-    { name: "Hardware & Material", icon: "https://images.unsplash.com/photo-1581092918484-8313e1f7f1a8?w=100&h=100&fit=crop" },
-    { name: "Mechanical Power Transmission", icon: "https://images.unsplash.com/photo-1581092918119-e3d1e8f675f6?w=100&h=100&fit=crop" },
-    { name: "Tools", icon: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=100&h=100&fit=crop" },
-    { name: "Safety Equipment", icon: "https://images.unsplash.com/photo-1588783952862-ff6d285783cc?w=100&h=100&fit=crop" },
-  ];
 
   // Responsive items per view
   const getItemsPerView = () => {
@@ -89,16 +67,15 @@ const CategorySlider = () => {
     setCurrentIndex(prev => Math.min(maxIndex, prev + 1));
   };
 
+  if (!categories || categories.length === 0) return null;
+
   return (
     <div className="w-full my-8">
       <style>{styles}</style>
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="flex flex-col md:flex-row  md:items-center justify-between mb-8">
-          <h2 className="text-4xl font-medium text-gray-800">Shop Our Top Categories</h2>
-          <Link href="/categories" className="text-green-600 hover:text-green-700 font-medium text-sm sm:text-base my-4 md:my-0">
-            Explore All Categories
-          </Link>
+          <h2 className="text-4xl font-medium text-gray-800">Categories</h2>
         </div>
 
         {/* Slider Container */}
@@ -133,10 +110,11 @@ const CategorySlider = () => {
             >
               {categories.map((cat, idx) => (
                 <div
-                  key={idx}
+                  key={cat.key || idx}
                   className={`flex-shrink-0 ${isMobile ? 'snap-start' : ''}`}
+                  onClick={() => onCategoryClick && onCategoryClick(cat)}
                 >
-                  <CategoryCard icon={cat.icon} name={cat.name} />
+                  <CategoryCard icon={cat.icon || "/placeholder.png"} name={cat.name} />
                 </div>
               ))}
               {/* Add extra spacing at the end on mobile to show peek */}
@@ -158,7 +136,7 @@ const CategorySlider = () => {
         </div>
 
         {/* Pagination Dots - Hidden on mobile */}
-        {!isMobile && (
+        {!isMobile && maxIndex > 0 && (
           <div className="flex justify-center gap-2 mt-6">
             {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
               <button

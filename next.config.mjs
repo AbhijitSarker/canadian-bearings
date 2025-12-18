@@ -17,6 +17,16 @@ const nextConfig = {
                 hostname: 'placehold.co',
                 pathname: '**',
             },
+            {
+                protocol: 'https',
+                hostname: 'cbmro.com',
+                pathname: '**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.cbmro.com',
+                pathname: '**',
+            },
         ],
     },
 };
