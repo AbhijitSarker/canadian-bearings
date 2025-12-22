@@ -5,6 +5,7 @@ import Image from "next/image"
 import HeartLike21Icon from '@/assets/icons/heartLike21';
 import { useFavorite } from '@/contexts/FavoriteContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCart } from '@/contexts/CartContext';
 import toast from 'react-hot-toast';
 
 import ShoppingCartLineIcon from '@/assets/icons/shoppingCartLine';
@@ -13,9 +14,11 @@ import { ShoppingCart } from "lucide-react";
 export default function ProductListCard({
     product
 }) {
-    const [quantity, setQuantity] = useState(3);
+    const [quantity, setQuantity] = useState(1);
     const { openSidebar, isFavorite } = useFavorite();
     const { isAuthenticated } = useAuth();
+    const { addItem, openCart } = useCart();
+    const [isAdding, setIsAdding] = useState(false);
 
     const handleFavoriteClick = () => {
         if (!isAuthenticated) {
@@ -23,6 +26,26 @@ export default function ProductListCard({
             return;
         }
         openSidebar(product);
+    };
+
+    const handleAddToCart = async () => {
+        if (!isAuthenticated) {
+            toast.error("Please sign in to add items to cart");
+            return;
+        }
+
+        setIsAdding(true);
+        // Use mfgSKU if available, otherwise fallback to cbSKU or itemNumber
+        const sku = product.mfgSKU || product.cbSKU || product.itemNumber;
+        
+        try {
+            const result = await addItem(product.id, sku, quantity);
+            if (result.success) {
+                openCart();
+            }
+        } finally {
+            setIsAdding(false);
+        }
     };
 
     const decreaseQty = () => {
@@ -121,10 +144,14 @@ export default function ProductListCard({
                         </div>
                     </div>
 
-                    <button className="w-full bg-white border border-[#ebebeb] text-neutral-600 hover:text-white py-3 rounded-[10px] hover:bg-green-500 hover:text-white transition-colors flex items-center justify-center gap-2">
+                    <button 
+                        onClick={handleAddToCart}
+                        disabled={isAdding}
+                        className="w-full bg-white border border-[#ebebeb] text-neutral-600 hover:text-white py-3 rounded-[10px] hover:bg-green-500 hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
                         <ShoppingCart fill="currentColor"/>
                         <span className="text-[16px] leading-[20px]  font-[500]">
-                            Add to Cart
+                            {isAdding ? 'Adding...' : 'Add to Cart'}
                         </span>
                     </button>
                 </div>

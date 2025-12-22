@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import SearchLineIcon from "@/assets/icons/serachLine";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const FilterSection = ({
   title,
@@ -41,7 +42,7 @@ const FilterSection = ({
         aria-expanded={open}
       >
         <h4 className="text-lg font-medium text-neutral-900">{title}</h4>
-        <span className="text-2xl text-neutral-600">{open ? "▾" : "▸"}</span>
+        <span className="text-2xl text-neutral-600">{open ? <ChevronDown /> : <ChevronUp />}</span>
       </button>
 
       {open && (
