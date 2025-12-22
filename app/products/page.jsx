@@ -56,11 +56,31 @@ const ProductsPage = () => {
   const [sort, setSort] = useState("relevance");
   const [view, setView] = useState("grid");
 
+  const [categoryMapping, setCategoryMapping] = useState({});
+
   // Parse URL parameters on mount and when URL changes
   useEffect(() => {
     const parsedFilters = parseFiltersFromURL(searchParams);
     setFilters(parsedFilters);
   }, [searchParams]);
+
+  // Update category mapping when new categories are loaded
+  useEffect(() => {
+    if (apiData.categories.length > 0) {
+      setCategoryMapping(prev => {
+        const newMapping = { ...prev };
+        let changed = false;
+        apiData.categories.forEach(cat => {
+          const key = parseInt(cat.key);
+          if (!newMapping[key]) {
+            newMapping[key] = cat.name;
+            changed = true;
+          }
+        });
+        return changed ? newMapping : prev;
+      });
+    }
+  }, [apiData.categories]);
 
   // Fetch products when filters change
   useEffect(() => {
@@ -82,7 +102,9 @@ const ProductsPage = () => {
         if (data.categories && filters.categories.length > 0) {
           const path = filters.categories.map(catId => {
             const found = data.categories.find(c => parseInt(c.key) === catId);
-            return found || { key: catId.toString(), name: `Category ${catId}` };
+            // Try to find name in mapping if not in current response
+            const name = found?.name || categoryMapping[catId] || `Category ${catId}`;
+            return { key: catId.toString(), name: name };
           });
           setCategoryPath(path);
         } else {
@@ -103,14 +125,18 @@ const ProductsPage = () => {
     };
 
     fetchProducts();
-  }, [filters]);
+  }, [filters, categoryMapping]); // Added categoryMapping to dependencies for categoryPath logic
 
   // Update URL when filters change
   const updateFilters = useCallback((newFilters) => {
     setFilters(newFilters);
     const searchString = buildURLFromFilters(newFilters);
     const newURL = searchString ? `/products?${searchString}` : "/products";
-    router.push(newURL, { scroll: false });
+    
+    // Defer router update to avoid "update while rendering" errors
+    setTimeout(() => {
+      router.push(newURL, { scroll: false });
+    }, 0);
   }, [router]);
 
   // Handler: Category tile click
@@ -242,8 +268,8 @@ const ProductsPage = () => {
     // Categories
     filters.categories.forEach(id => {
       const cat = apiData.categories.find(c => parseInt(c.key) === id);
-      if (cat) active.push({ type: 'category', id, label: cat.name, key: 'categories' });
-      else active.push({ type: 'category', id, label: `Category ${id}`, key: 'categories' });
+      const label = cat?.name || categoryMapping[id] || `Category ${id}`;
+      active.push({ type: 'category', id, label, key: 'categories' });
     });
 
     // Brands

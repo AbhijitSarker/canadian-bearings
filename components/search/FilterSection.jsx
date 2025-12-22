@@ -18,8 +18,8 @@ const FilterSection = ({
   const [query, setQuery] = useState("");
   const [expandedAll, setExpandedAll] = useState(false);
 
-  // Convert selected prop to Set for efficient lookup
-  const selectedSet = useMemo(() => new Set(selected), [selected]);
+  // Convert selected prop to Set for efficient lookup, normalizing to strings for loose comparison
+  const selectedSet = useMemo(() => new Set(selected.map(String)), [selected]);
 
   const filtered = useMemo(() => {
     if (!query) return items;
@@ -28,9 +28,11 @@ const FilterSection = ({
   }, [items, query]);
 
   const toggle = (id) => {
+    // Work with strings to ensure consistent matching
+    const idStr = String(id);
     const next = new Set(selectedSet);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
+    if (next.has(idStr)) next.delete(idStr);
+    else next.add(idStr);
     onChange && onChange(Array.from(next));
   };
 
@@ -74,7 +76,7 @@ const FilterSection = ({
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={selectedSet.has(it.id)}
+                    checked={selectedSet.has(String(it.id))}
                     onChange={() => toggle(it.id)}
                     className="w-5 h-5 rounded-sm border border-neutral-300 text-emerald-600 focus:ring-0"
                   />
