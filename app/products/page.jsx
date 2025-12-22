@@ -132,86 +132,76 @@ const ProductsPage = () => {
     setFilters(newFilters);
     const searchString = buildURLFromFilters(newFilters);
     const newURL = searchString ? `/products?${searchString}` : "/products";
-    
-    // Defer router update to avoid "update while rendering" errors
-    setTimeout(() => {
-      router.push(newURL, { scroll: false });
-    }, 0);
+    router.push(newURL, { scroll: false });
   }, [router]);
 
   // Handler: Category tile click
   const handleCategoryClick = useCallback((category) => {
-    const categoryId = parseInt(category.key);
-    setFilters(prev => {
-      const newCategories = prev.categories.includes(categoryId)
-        ? prev.categories.filter(id => id !== categoryId)
-        : [...prev.categories, categoryId];
-      
-      const newFilters = {
-        ...prev,
-        categories: newCategories,
-        pageNumber: 1,
-      };
-      updateFilters(newFilters);
-      return newFilters;
-    });
-  }, [updateFilters]);
+    // Robustly extract ID (handle key or id property)
+    const rawId = category.key || category.id;
+    if (!rawId) {
+      console.warn("Category click: Missing ID", category);
+      return;
+    }
+
+    const categoryId = parseInt(rawId, 10);
+    
+    // Toggle logic
+    const newCategories = filters.categories.includes(categoryId)
+      ? filters.categories.filter(id => id !== categoryId)
+      : [...filters.categories, categoryId];
+    
+    const newFilters = {
+      ...filters,
+      categories: newCategories,
+      pageNumber: 1,
+    };
+    updateFilters(newFilters);
+  }, [filters, updateFilters]);
 
   // Handler: Filter changes
   const handleFilterChange = useCallback((key, selectedIds) => {
-    setFilters(prev => {
-      // Convert string IDs back to numbers for categories and brands
-      const processedIds = (key === 'categories' || key === 'brands') 
-        ? selectedIds.map(id => parseInt(id, 10))
-        : selectedIds;
+    // Convert string IDs back to numbers for categories and brands
+    const processedIds = (key === 'categories' || key === 'brands') 
+      ? selectedIds.map(id => parseInt(id, 10))
+      : selectedIds;
 
-      const newFilters = {
-        ...prev,
-        [key]: processedIds,
-        pageNumber: 1,
-      };
-      updateFilters(newFilters);
-      return newFilters;
-    });
-  }, [updateFilters]);
+    const newFilters = {
+      ...filters,
+      [key]: processedIds,
+      pageNumber: 1,
+    };
+    updateFilters(newFilters);
+  }, [filters, updateFilters]);
 
   // Handler: Search within results
   const handleSearchChange = useCallback((searchTerm) => {
-    setFilters(prev => {
-      const newFilters = {
-        ...prev,
-        searchTerm,
-        pageNumber: 1,
-      };
-      updateFilters(newFilters);
-      return newFilters;
-    });
-  }, [updateFilters]);
+    const newFilters = {
+      ...filters,
+      searchTerm,
+      pageNumber: 1,
+    };
+    updateFilters(newFilters);
+  }, [filters, updateFilters]);
 
   // Handler: Page change
   const handlePageChange = useCallback((newPage) => {
-    setFilters(prev => {
-      const newFilters = {
-        ...prev,
-        pageNumber: newPage,
-      };
-      updateFilters(newFilters);
-      return newFilters;
-    });
-  }, [updateFilters]);
+    const newFilters = {
+      ...filters,
+      pageNumber: newPage,
+    };
+    updateFilters(newFilters);
+  }, [filters, updateFilters]);
 
   // Handler: Page size change
   const handlePageSizeChange = useCallback((newPageSize) => {
-    setFilters(prev => {
-      const newFilters = {
-        ...prev,
-        pageSize: newPageSize,
-        pageNumber: 1,
-      };
-      updateFilters(newFilters);
-      return newFilters;
-    });
-  }, [updateFilters]);
+    const newFilters = {
+      ...filters,
+      pageSize: newPageSize,
+      pageNumber: 1,
+    };
+    updateFilters(newFilters);
+  }, [filters, updateFilters]);
 
   // Transform data for FilterSection
   const categoryItems = useMemo(() => apiData.categories.map(c => ({
@@ -291,12 +281,9 @@ const ProductsPage = () => {
   }, [filters, apiData]);
 
   const removeFilter = (filter) => {
-    setFilters(prev => {
-      const newIds = prev[filter.key].filter(id => id !== filter.id);
-      const newFilters = { ...prev, [filter.key]: newIds, pageNumber: 1 };
-      updateFilters(newFilters);
-      return newFilters;
-    });
+    const newIds = filters[filter.key].filter(id => id !== filter.id);
+    const newFilters = { ...filters, [filter.key]: newIds, pageNumber: 1 };
+    updateFilters(newFilters);
   };
 
   const clearAllFilters = () => {
