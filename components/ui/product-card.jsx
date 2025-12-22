@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 import ShoppingCartLineIcon from '@/assets/icons/shoppingCartLine';
+import { ShoppingCart } from "lucide-react";
 
 export default function ProductCard({
     product
@@ -56,13 +57,13 @@ export default function ProductCard({
         </div>
 
         {/* Category */}
-        <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px] mt-[12px] ">{product.category}</p>
+        <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px] mt-[12px] ">{product.categoryName}</p>
 
         {/* Product Name */}
-        <h3 className="text-neutral-950 font-[500] text-[22px] leading-[100%] mb-3">{product.name}</h3>
+        <h3 className="text-neutral-950 font-semibold text-[22px] leading-[100%] mb-3">{product.name}</h3>
 
         {/* Description */}
-        <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-4">{product.description}</p>
+            <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-4">{product.description} | {product.descriptionShort}</p>
 
         {/* Item Number */}
         <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-[10px]">Item #{product.itemNumber}</p>
@@ -97,12 +98,12 @@ export default function ProductCard({
         </div>
 
         {/* Add to Cart Button */}
-        <button className="w-full bg-white border border-[#ebebeb] text-gray-700 py-3 rounded-[10px] hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-            <ShoppingCartLineIcon />
-            <span className="text-[16px] leading-[20px] text-neutral-600 font-[500]">
-                Add to Cart
-            </span>
-        </button>
+            <button className="w-full bg-white border border-[#ebebeb] text-neutral-600 hover:text-white py-3 rounded-[10px] hover:bg-green-500 hover:text-white transition-colors flex items-center justify-center gap-2">
+                <ShoppingCart fill="currentColor" />
+                <span className="text-[16px] leading-[20px]  font-[500]">
+                    Add to Cart
+                </span>
+            </button>
         </div>
     );
 }

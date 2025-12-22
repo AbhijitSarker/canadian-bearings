@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import toast from 'react-hot-toast';
 
 import ShoppingCartLineIcon from '@/assets/icons/shoppingCartLine';
+import { ShoppingCart } from "lucide-react";
 
 export default function ProductListCard({
     product
@@ -58,16 +59,34 @@ export default function ProductListCard({
             {/* Middle: Product Details */}
             <div className="flex-1 flex flex-col justify-center min-w-0 py-1">
                 {/* Category */}
-                <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px]">{product.category}</p>
+                <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px]">{product.categoryName}</p>
 
                 {/* Product Name */}
                 <h3 className="text-neutral-950 font-[500] text-[22px] leading-[100%] mb-3">{product.name}</h3>
 
                 {/* Description */}
-                <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-4 line-clamp-2">{product.description}</p>
-
+                <p className="text-neutral-950 text-[14px] font-[300] leading-[100%] mb-3">{product.description} | {product.descriptionShort}</p>
+                
                 {/* Item Number */}
-                <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-[10px]">Item #{product.itemNumber}</p>
+                <p className="text-neutral-950 text-[14px] font-[300] leading-[100%] mt-auto mb-3">Item #{product.itemNumber}</p>
+
+                {/* Attributes - List View Exclusive Details */}
+                {product.attributes && product.attributes.length > 0 && (
+                    <div className="mb-4">
+                         <ul className="text-[13px] leading-[160%] text-neutral-600 space-y-1">
+                            {product.attributes.slice(0, 5).map((attr, idx) => (
+                                <li key={idx} className="flex items-start">
+                                     <span className="text-neutral-400 mr-2">•</span>
+                                     <span>
+                                         {attr.value} {attr.unitName || ''}
+                                         <span className="text-neutral-400 ml-1">{attr.attributeName}</span>
+                                     </span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
             </div>
 
             {/* Right: Pricing & Actions */}
@@ -76,7 +95,7 @@ export default function ProductListCard({
                 <div className="flex flex-col items-start md:items-end gap-1">
                     <div className="flex items-baseline">
                         <span className="text-[22px] font-[500] leading-[100%] text-neutral-950">${product.price}</span>
-                        <span className="text-[14px] font-[300] leading-[100%] text-neutral-950">/each</span>
+                        <span className="text-[14px] font-[300] leading-[100%] text-neutral-950">/{product.unitName || 'each'}</span>
                     </div>
                 </div>
 
@@ -102,9 +121,9 @@ export default function ProductListCard({
                         </div>
                     </div>
 
-                    <button className="w-full bg-white border border-[#ebebeb] text-gray-700 py-3 rounded-[10px] hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
-                        <ShoppingCartLineIcon />
-                        <span className="text-[16px] leading-[20px] text-neutral-600 font-[500]">
+                    <button className="w-full bg-white border border-[#ebebeb] text-neutral-600 hover:text-white py-3 rounded-[10px] hover:bg-green-500 hover:text-white transition-colors flex items-center justify-center gap-2">
+                        <ShoppingCart fill="currentColor"/>
+                        <span className="text-[16px] leading-[20px]  font-[500]">
                             Add to Cart
                         </span>
                     </button>
