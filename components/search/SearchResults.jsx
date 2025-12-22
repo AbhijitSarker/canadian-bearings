@@ -4,11 +4,12 @@ import Link from "next/link";
 import SearchLineIcon from "@/assets/icons/serachLine";
 import { SlidersHorizontal, ChevronDown, Check, Layout, List } from "lucide-react";
 import ProductCard from "@/components/ui/product-card";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-    DropdownMenuItem,
+import ProductListCard from "@/components/ui/product-list-card";
+import { 
+    DropdownMenu, 
+    DropdownMenuTrigger, 
+    DropdownMenuContent, 
+    DropdownMenuItem 
 } from "../ui/dropdown-menu";
 import searchData from "@/data/search-data.json";
 
@@ -113,6 +114,24 @@ const SearchResults = ({ products, query = "", setQuery, sort, setSort, view = "
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
+
+                    <div className="flex items-center border border-neutral-200 rounded-lg bg-white p-1">
+                        <button
+                            onClick={() => setView('grid')}
+                            className={`p-1.5 rounded-md transition-colors ${view === 'grid' ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
+                            title="Grid View"
+                        >
+                            <Layout size={18} />
+                        </button>
+                        <div className="w-[1px] h-4 bg-neutral-200 mx-1"></div>
+                        <button
+                            onClick={() => setView('list')}
+                            className={`p-1.5 rounded-md transition-colors ${view === 'list' ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
+                            title="List View"
+                        >
+                            <List size={18} />
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -129,21 +148,25 @@ const SearchResults = ({ products, query = "", setQuery, sort, setSort, view = "
                         return url;
                     };
 
+                    const productData = {
+                        ...product,
+                        // Map API fields to ProductCard expected fields if needed
+                        id: product.id || product.productId,
+                        name: product.name || product.descriptionShort || product.cbSKU,
+                        description: product.description || product.categoryName,
+                        brand: product.brand || product.brandName,
+                        itemNumber: product.itemNumber || product.mfgSKU,
+                        image: getAbsoluteUrl(product.image || product.imageUrl || product.brandImageUrl || product.categoryImage),
+                        price: product.price || 0
+                    };
+
                     return (
                         <div key={product.id || product.productId}>
-                            <ProductCard 
-                                product={{
-                                    ...product,
-                                    // Map API fields to ProductCard expected fields if needed
-                                    id: product.id || product.productId,
-                                    name: product.name || product.descriptionShort || product.cbSKU,
-                                    description: product.description || product.categoryName,
-                                    brand: product.brand || product.brandName,
-                                    itemNumber: product.itemNumber || product.mfgSKU,
-                                    image: getAbsoluteUrl(product.image || product.imageUrl || product.brandImageUrl || product.categoryImage),
-                                    price: product.price || 0
-                                }}
-                            />
+                            {view === 'grid' ? (
+                                <ProductCard product={productData} />
+                            ) : (
+                                <ProductListCard product={productData} />
+                            )}
                         </div>
                     );
                 })}
