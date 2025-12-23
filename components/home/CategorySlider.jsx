@@ -114,7 +114,7 @@ const CategorySlider = ({ categories = [], onCategoryClick }) => {
                   className={`flex-shrink-0 ${isMobile ? 'snap-start' : ''}`}
                   onClick={() => onCategoryClick && onCategoryClick(cat)}
                 >
-                  <CategoryCard icon={cat.icon || "/placeholder.png"} name={cat.name} />
+                  <CategoryCard icon={cat.imageUrl || cat.icon || "/placeholder.png"} name={cat.name} />
                 </div>
               ))}
               {/* Add extra spacing at the end on mobile to show peek */}

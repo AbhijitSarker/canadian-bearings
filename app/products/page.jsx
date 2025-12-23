@@ -10,6 +10,7 @@ import SearchResults from "@/components/search/SearchResults";
 import Breadcrumb from "@/components/products/Breadcrumb";
 import { filterProducts, buildFilterPayload } from "@/lib/api/services/products";
 import { parseFiltersFromURL, buildURLFromFilters } from "@/lib/utils/urlHelpers";
+import { CATEGORY_IMAGES } from "@/lib/constants/categoryImages";
 import {
   Sheet,
   SheetContent,
@@ -90,9 +91,14 @@ const ProductsPage = () => {
         const payload = buildFilterPayload(filters);
         const data = await filterProducts(payload);
         
+        const categoriesWithImages = (data.categories || []).map(cat => ({
+          ...cat,
+          imageUrl: cat.imageUrl || CATEGORY_IMAGES[cat.key] || CATEGORY_IMAGES.default
+        }));
+
         setApiData({
           products: data.products || [],
-          categories: data.categories || [],
+          categories: categoriesWithImages,
           brands: data.brands || [],
           attributes: data.attributes || [],
           totalRecords: data.totalRecords || 0,
