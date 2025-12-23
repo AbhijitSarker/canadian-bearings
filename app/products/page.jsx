@@ -93,7 +93,7 @@ const ProductsPage = () => {
         
         const categoriesWithImages = (data.categories || []).map(cat => ({
           ...cat,
-          imageUrl: cat.imageUrl || CATEGORY_IMAGES[cat.key] || CATEGORY_IMAGES.default
+          imageUrl: cat.imageUrl
         }));
 
         setApiData({
@@ -358,28 +358,12 @@ const ProductsPage = () => {
 
             {/* Product Results */}
             <div className="col-span-12 lg:col-span-9">
+              <p className="font-medium mb-4">
+                {apiData.totalRecords === 0
+                  ? "No items found"
+                  : `Showing ${(filters.pageNumber - 1) * filters.pageSize + 1} - ${Math.min(filters.pageNumber * filters.pageSize, apiData.totalRecords)} of ${apiData.totalRecords.toLocaleString()} items`}
+              </p>
               <div className="border rounded-lg bg-white">
-                 {/* Pagination Header */}
-                 <div className="flex items-center justify-between p-4 border-b">
-                  <p className="font-medium">
-                    {apiData.totalRecords === 0 
-                      ? "No items found" 
-                      : `Showing ${(filters.pageNumber - 1) * filters.pageSize + 1} - ${Math.min(filters.pageNumber * filters.pageSize, apiData.totalRecords)} of ${apiData.totalRecords.toLocaleString()} items`}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <label className="text-sm text-neutral-600">Show:</label>
-                    <select
-                      value={filters.pageSize}
-                      onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                      className="rounded-md border px-2 py-1 text-sm"
-                    >
-                      <option value={12}>12</option>
-                      <option value={24}>24</option>
-                      <option value={48}>48</option>
-                      <option value={96}>96</option>
-                    </select>
-                  </div>
-                </div>
 
                 {/* Active Filters */}
                 {activeFilters.length > 0 && (

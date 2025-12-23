@@ -34,16 +34,16 @@ export default function CategoryDropdown() {
     }, [isOpen])
 
     const fetchLevel1 = async () => {
-        setColumns([{ items: [], loading: true, selectedId: null }])
+        setColumns([{ items: [], loading: true, selectedId: null, parentId: null }])
         try {
             const data = await categoryService.getSubCategories(null)
             if (data && data.subCategories) {
                 setCache(prev => ({ ...prev, 'root': data.subCategories }))
-                setColumns([{ items: data.subCategories, loading: false, selectedId: null }])
+                setColumns([{ items: data.subCategories, loading: false, selectedId: null, parentId: null }])
             }
         } catch (error) {
             console.error("Failed to fetch categories", error)
-            setColumns([{ items: [], loading: false, selectedId: null }])
+            setColumns([{ items: [], loading: false, selectedId: null, parentId: null }])
         }
     }
 
@@ -100,7 +100,8 @@ export default function CategoryDropdown() {
             items: [],
             loading: true,
             selectedId: null,
-            parentName: category.name
+            parentName: category.name,
+            parentId: category.id
         })
         setColumns(updatedColumns)
         
@@ -119,7 +120,8 @@ export default function CategoryDropdown() {
                 items: subcategories,
                 loading: false,
                 selectedId: null,
-                parentName: category.name
+                parentName: category.name,
+                parentId: category.id
             }
             setColumns(finalColumns)
         } else {
@@ -134,9 +136,35 @@ export default function CategoryDropdown() {
         }
     }
 
+    const handleHeaderClick = (column, columnIndex) => {
+        setIsOpen(false)
+        if (columnIndex === 0) {
+            router.push('/products')
+        } else if (column.parentId) {
+            router.push(`/products?categories=${column.parentId}`)
+        }
+        
+        // Reset state after navigation
+        setTimeout(() => {
+            setColumns([])
+            setMobileActiveLevel(0)
+        }, 300)
+    }
+
     const handleMobileBack = () => {
         setMobileActiveLevel(Math.max(0, mobileActiveLevel - 1))
     }
+
+    const CategorySkeleton = () => (
+        <div className="py-2 px-4 space-y-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="flex items-center justify-between">
+                    <div className="h-4 bg-neutral-200 rounded w-3/4 animate-pulse" />
+                    <div className="h-4 bg-neutral-200 rounded w-4 animate-pulse" />
+                </div>
+            ))}
+        </div>
+    )
 
     return (
         <div className="" ref={dropdownRef}>
@@ -216,7 +244,11 @@ export default function CategoryDropdown() {
                                 >
                                     {/* Column Header */}
                                     <div className="sticky top-0 bg-neutral-100 px-3 py-2 border-b border-neutral-200 z-10 flex items-center justify-between">
-                                        <h3 className="font-semibold text-sm text-[#324a50] truncate flex-1">
+                                        <h3 
+                                            onClick={() => handleHeaderClick(column, columnIndex)}
+                                            className="font-semibold text-sm text-[#324a50] underline truncate flex-1 cursor-pointer hover:text-green-600 transition-colors"
+                                            title="View all products in this category"
+                                        >
                                             {columnIndex === 0 ? 'All Categories' : column.parentName}
                                         </h3>
                                         {columnIndex > 0 && (
@@ -225,16 +257,14 @@ export default function CategoryDropdown() {
                                                 className="p-1 hover:bg-neutral-200 rounded-full transition-colors flex-shrink-0"
                                                 aria-label="Close column"
                                             >
-                                                <X className="w-4 h-4 text-neutral-600" />
+                                                <X className="w-3 h-3 text-neutral-600" />
                                             </button>
                                         )}
                                     </div>
 
                                     {/* Column Items */}
                                     {column.loading ? (
-                                        <div className="flex justify-center items-center h-40">
-                                            <Loader2 className="w-6 h-6 animate-spin text-green-600" />
-                                        </div>
+                                        <CategorySkeleton />
                                     ) : column.items.length > 0 ? (
                                         <div className="py-1">
                                             {column.items.map((item) => (
@@ -311,7 +341,10 @@ export default function CategoryDropdown() {
                                                 <ChevronLeft className="w-5 h-5 text-neutral-600" />
                                             </button>
                                         )}
-                                        <h3 className="font-semibold text-sm text-[#324a50] truncate flex-1">
+                                        <h3 
+                                            onClick={() => handleHeaderClick(column, columnIndex)}
+                                            className="font-semibold text-sm text-[#324a50] truncate flex-1 cursor-pointer hover:text-green-600 transition-colors"
+                                        >
                                             {columnIndex === 0 ? 'All Categories' : column.parentName}
                                         </h3>
                                     </div>
@@ -319,9 +352,7 @@ export default function CategoryDropdown() {
                                     {/* Mobile Column Items */}
                                     <div className="overflow-y-auto h-full pb-20">
                                         {column.loading ? (
-                                            <div className="flex justify-center items-center h-40">
-                                                <Loader2 className="w-6 h-6 animate-spin text-green-600" />
-                                            </div>
+                                            <CategorySkeleton />
                                         ) : column.items.length > 0 ? (
                                             <div className="py-1">
                                                 {column.items.map((item) => (
