@@ -26,6 +26,7 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import ProductsPageSkeleton from "@/components/skeletons/ProductsPageSkeleton";
 
 const ProductsPage = () => {
   const searchParams = useSearchParams();
@@ -53,7 +54,7 @@ const ProductsPage = () => {
   });
 
   const [categoryPath, setCategoryPath] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [sort, setSort] = useState("relevance");
   const [view, setView] = useState("grid");
 
@@ -305,6 +306,14 @@ const ProductsPage = () => {
   };
 
   const totalPages = Math.max(1, Math.ceil(apiData.totalRecords / filters.pageSize));
+
+  if (loading && apiData.products.length === 0) {
+    return (
+      <ProtectedRoute>
+        <ProductsPageSkeleton />
+      </ProtectedRoute>
+    )
+  }
 
   return (
     <ProtectedRoute>
