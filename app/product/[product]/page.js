@@ -78,39 +78,32 @@ export default function ProductPage() {
           </div>
         </div>
 
-
         {/* --- BOTTOM SECTION (ALIGN WITH COL 1 & 2) --- */}
-        {/* We use the same grid structure, but wrap the content in col-span-9 */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 xl:gap-x-8 mt-12">
+          
+          {/* Wrapper for Description + Tabs: Spans 9 Columns (Matches Col 1 + Col 2 above) */}
+          <div className="lg:col-span-9">
             
-            {/* Wrapper for Description + Tabs: Spans 9 Columns (Matches Col 1 + Col 2 above) */}
-            <div className="lg:col-span-9">
-                
-                {/* Product Description */}
-                <section className="mb-12">
-                    <h2 className="mb-4 text-3xl font-bold text-slate-900 tracking-tight">Product Details</h2>
-                    <p className="leading-relaxed text-slate-600 text-[15px] max-w-4xl">
-                        {productData.description}
-                    </p>
-                    <button className="mt-3 text-sm font-bold text-slate-900 hover:underline">
-                        Read More...
-                    </button>
-                </section>
+            {/* Product Description */}
+            <section className="mb-12">
+              <h2 className="mb-4 text-3xl font-bold text-slate-900 tracking-tight">Product Details</h2>
+              <p className="leading-relaxed text-slate-600 text-[15px] max-w-4xl">
+                {productData.description}
+              </p>
+              <button className="mt-3 text-sm font-bold text-slate-900 hover:underline">
+                Read More...
+              </button>
+            </section>
 
-                {/* Tabs */}
-                <div className="mb-16">
-                    <ProductTabs specs={productData.specs} />
-                </div>
-
+            {/* Tabs */}
+            <div className="mb-16">
+              <ProductTabs specs={productData.specs} />
             </div>
-            
-            {/* The remaining 3 columns (under Buy Box) are left empty automatically */}
+          </div>
         </div>
 
         {/* --- ALTERNATE PRODUCTS / FEATURED --- */}
-        {/* This is usually full width again */}
         <FeaturedProducts />
-
       </div>
 
       {/* --- FOOTER BANNER --- */}
