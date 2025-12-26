@@ -1,15 +1,10 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { ChevronRight, Share2, Heart, Printer } from "lucide-react";
-
-// Import your new modular components
 import ProductGallery from "@/components/product/ProductGallery";
 import ProductInfo from "@/components/product/ProductInfo";
 import ProductBuyBox from "@/components/product/ProductBuyBox";
 import ProductTabs from "@/components/product/ProductTabs";
-import AlternateProductsCarousel from "@/components/product/AlternateProductsCarousel";
 import FeaturedProducts from "@/components/home/feature-products";
 
 // --- FAKE DATA ---
@@ -53,68 +48,21 @@ const productData = {
   ],
 };
 
-const alternateProducts = [
-  {
-    id: 1,
-    name: "SKF 6203 2ZJEM",
-    category: "Ball Bearings",
-    description: "Single Row Cylindrical Bore Deep Groove Ball Bearing",
-    itemNumber: "101325229",
-    price: 31.89,
-    image: "https://placehold.co/200x200/png",
-  },
-  {
-    id: 2,
-    name: "SKF 6203 2ZJEM",
-    category: "Ball Bearings",
-    description: "Red Housing Version with Cylindrical Bore",
-    itemNumber: "101325230",
-    price: 34.50,
-    image: "https://placehold.co/200x200/png",
-  },
-  {
-    id: 3,
-    name: "SKF 6203 2ZJEM",
-    category: "Valve Assembly",
-    description: "Single Row Deep Groove with Steel Cage",
-    itemNumber: "101325231",
-    price: 28.99,
-    image: "https://placehold.co/200x200/png",
-  },
-  {
-    id: 4,
-    name: "SKF 6203 2ZJEM",
-    category: "Ball Bearings",
-    description: "Single Row Cylindrical Bore Deep Groove Ball Bearing",
-    itemNumber: "101325232",
-    price: 31.89,
-    image: "https://placehold.co/200x200/png",
-  },
-  {
-    id: 5,
-    name: "SKF 6203 2ZJEM",
-    category: "Ball Bearings",
-    description: "Single Row Cylindrical Bore Deep Groove Ball Bearing",
-    itemNumber: "101325229",
-    price: 31.89,
-    image: "https://placehold.co/200x200/png",
-  },
-];
-
 export default function ProductPage() {
   return (
     <div className="min-h-screen bg-white pb-20 font-sans text-slate-800">
-      <div className="container mx-auto max-w-[1400px] px-4 py-6">
-        {/* --- MAIN GRID LAYOUT --- */}
-        <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-12">
+      <div className="container mx-auto max-w-[1400px] px-4 md:px-6 py-6">
+        
+        {/* --- TOP SECTION (3 COLUMNS) --- */}
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-12 xl:gap-x-8">
           
-          {/* COLUMN 1: Image Gallery */}
-          <div className="lg:col-span-5 xl:col-span-4">
+          {/* COLUMN 1: Image Gallery (4 Cols) */}
+          <div className="lg:col-span-4 xl:col-span-4">
             <ProductGallery images={productData.images} title={productData.title} />
           </div>
 
-          {/* COLUMN 2: Product Information */}
-          <div className="lg:col-span-7 xl:col-span-5">
+          {/* COLUMN 2: Product Information (5 Cols) */}
+          <div className="lg:col-span-5 xl:col-span-5">
             <ProductInfo 
               brand={productData.brand}
               title={productData.title}
@@ -124,49 +72,66 @@ export default function ProductPage() {
             />
           </div>
 
-          {/* COLUMN 3: Buy Box */}
-          <div className="lg:col-span-12 xl:col-span-3 xl:pl-4">
+          {/* COLUMN 3: Buy Box (3 Cols) */}
+          <div className="lg:col-span-3 xl:col-span-3">
             <ProductBuyBox product={productData} />
           </div>
         </div>
 
-        {/* --- PRODUCT DESCRIPTION --- */}
-        <section className="my-16 max-w-4xl">
-          <h2 className="mb-6 text-3xl font-bold text-slate-900">Product Details</h2>
-          <p className="leading-relaxed text-slate-600">{productData.description}</p>
-          <button className="mt-4 font-bold text-slate-900 hover:underline">
-            Read More...
-          </button>
-        </section>
 
-        {/* --- TABS & SPECS --- */}
-        <ProductTabs specs={productData.specs} />
+        {/* --- BOTTOM SECTION (ALIGN WITH COL 1 & 2) --- */}
+        {/* We use the same grid structure, but wrap the content in col-span-9 */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 xl:gap-x-8 mt-12">
+            
+            {/* Wrapper for Description + Tabs: Spans 9 Columns (Matches Col 1 + Col 2 above) */}
+            <div className="lg:col-span-9">
+                
+                {/* Product Description */}
+                <section className="mb-12">
+                    <h2 className="mb-4 text-3xl font-bold text-slate-900 tracking-tight">Product Details</h2>
+                    <p className="leading-relaxed text-slate-600 text-[15px] max-w-4xl">
+                        {productData.description}
+                    </p>
+                    <button className="mt-3 text-sm font-bold text-slate-900 hover:underline">
+                        Read More...
+                    </button>
+                </section>
 
-        {/* --- ALTERNATE PRODUCTS CAROUSEL --- */}
-        {/* <AlternateProductsCarousel products={alternateProducts} /> */}
-        <FeaturedProducts></FeaturedProducts>
+                {/* Tabs */}
+                <div className="mb-16">
+                    <ProductTabs specs={productData.specs} />
+                </div>
+
+            </div>
+            
+            {/* The remaining 3 columns (under Buy Box) are left empty automatically */}
+        </div>
+
+        {/* --- ALTERNATE PRODUCTS / FEATURED --- */}
+        {/* This is usually full width again */}
+        <FeaturedProducts />
 
       </div>
 
       {/* --- FOOTER BANNER --- */}
-      <section className="relative h-[400px] w-full overflow-hidden bg-slate-900">
+      <section className="relative h-[400px] w-full overflow-hidden bg-slate-900 mt-10">
         <div className="absolute inset-0">
           <img
             src="https://placehold.co/1600x400/png"
             alt="Footer Banner"
-            className="h-full w-full object-cover opacity-50"
+            className="h-full w-full object-cover opacity-40"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/60 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/70 to-transparent"></div>
         </div>
 
-        <div className="container relative mx-auto flex h-full max-w-[1400px] flex-col justify-center px-4">
-          <h2 className="text-5xl font-extrabold text-white leading-tight">
+        <div className="container relative mx-auto flex h-full max-w-[1400px] flex-col justify-center px-6">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-white leading-[1.1]">
             WE'RE BETTER <br /> TOGETHER
           </h2>
           <p className="mt-4 max-w-lg text-lg text-slate-200">
             Sign up today and get the benefit of ordering faster, saving product lists and submitting online quotes.
           </p>
-          <button className="mt-8 w-fit rounded-md bg-[#4a8b3c] px-8 py-4 text-base font-bold text-white transition-colors hover:bg-[#3a6f2f]">
+          <button className="mt-8 w-fit rounded-md bg-[#4a8b3c] px-8 py-3.5 text-base font-bold text-white transition-colors hover:bg-[#3a6f2f] shadow-lg">
             Register Now
           </button>
         </div>

@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { 
   Search, 
@@ -9,7 +10,6 @@ import {
   FileText 
 } from "lucide-react";
 
-// Import the Table component you provided
 import {
   Table,
   TableBody,
@@ -20,6 +20,16 @@ import {
 } from "@/components/ui/table";
 
 // --- MOCK DATA ---
+const specsData = [
+    { label: "Bearing Type", value: "Deep Groove" },
+    { label: "O.D. Type", value: "Cylindrical" },
+    { label: "Cage Material", value: "Bearing Steel" },
+    { label: "O.D.", value: "4.72 in, 120 mm" },
+    { label: "Width", value: "1.14 in, 29 mm" },
+    { label: "Inch/Metric", value: "Metric" },
+    { label: "Outer Ring Width", value: "1.14 in, 29 mm" },
+];
+
 const packagingData = [
   { label: "Packaging Type", value: "Box" },
   { label: "Pack Quantity", value: "1" },
@@ -53,31 +63,72 @@ const TABS = [
   "Order History"
 ];
 
-export default function ProductTabs({ specs }) {
+// Reusable Component for the Zebra Striped Tables
+const SpecTable = ({ data }) => {
+    return (
+        <div className="w-full">
+            <div className="rounded-lg overflow-hidden">
+                {data.map((item, index) => (
+                    <div 
+                        key={index} 
+                        className={`flex items-center px-6 py-5 ${
+                            index % 2 === 0 ? "bg-[#F9FAFB]" : "bg-white"
+                        }`}
+                    >
+                        <div className="w-1/3 text-sm font-semibold text-slate-900">
+                            {item.label}
+                        </div>
+                        <div className="w-2/3 text-sm font-normal text-slate-900">
+                            {item.value}
+                        </div>
+                    </div>
+                ))}
+            </div>
+            {/* "See More" button matches the clean white look with border */}
+            <div className="mt-6">
+                <button className="h-10 px-8 rounded-lg border border-gray-200 bg-white text-sm font-medium text-slate-700 hover:bg-gray-50 transition-colors shadow-sm">
+                    See More
+                </button>
+            </div>
+        </div>
+    );
+};
+
+export default function ProductTabs() {
   const [activeTab, setActiveTab] = useState("Technical Specifications");
 
   return (
-    <section className="my-16">
-      <h2 className="mb-6 text-3xl font-bold text-slate-900">Overview</h2>
+    <section className="w-full py-10 bg-white font-sans">
+      <h2 className="mb-6 text-[32px] font-bold text-slate-900 tracking-tight">Overview</h2>
 
-      {/* --- TAB HEADERS (Pill Style) --- */}
-      <div className="mb-8 inline-flex w-full flex-wrap items-center rounded-lg bg-gray-100 p-1 sm:w-auto">
-        {TABS.map((tab) => {
-          const isActive = activeTab === tab;
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all sm:flex-none ${
-                isActive
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-gray-500 hover:text-slate-900"
-              }`}
-            >
-              {tab}
-            </button>
-          );
-        })}
+      {/* --- TAB HEADER (FULL WIDTH SEGMENTED CONTROL) --- */}
+      <div className="mb-8 w-full">
+        {/* FIX: Changed from 'inline-flex' to 'grid grid-cols-5 w-full'.
+            This forces the gray background to span the full width and distributes tabs evenly.
+            On smaller screens (below md), it falls back to a scrollable flex view.
+        */}
+        <div className="w-full bg-[#F4F5F7] p-1.5 rounded-xl overflow-x-auto no-scrollbar">
+            <div className="flex md:grid md:grid-cols-5 gap-1 min-w-max md:min-w-0">
+                {TABS.map((tab) => {
+                const isActive = activeTab === tab;
+                return (
+                    <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`
+                        flex items-center justify-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap
+                        ${isActive 
+                            ? "bg-white text-slate-900 shadow-sm" 
+                            : "text-slate-500 hover:text-slate-700 hover:bg-gray-200/50"
+                        }
+                    `}
+                    >
+                    {tab}
+                    </button>
+                );
+                })}
+            </div>
+        </div>
       </div>
 
       {/* --- TAB CONTENT --- */}
@@ -85,84 +136,41 @@ export default function ProductTabs({ specs }) {
         
         {/* 1. TECHNICAL SPECIFICATIONS */}
         {activeTab === "Technical Specifications" && (
-          <div className="rounded-lg">
-            <Table>
-              <TableBody>
-                {specs.map((spec, index) => (
-                  <TableRow 
-                    key={index} 
-                    className={`border-none ${index % 2 === 0 ? "bg-gray-50/60" : "bg-white"}`}
-                  >
-                    <TableCell className="w-1/3 py-4 pl-6 font-bold text-slate-900">
-                      {spec.label}
-                    </TableCell>
-                    <TableCell className="py-4 font-medium text-slate-700">
-                      {spec.value}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <div className="mt-6">
-                <button className="rounded-md border border-gray-200 px-6 py-2 text-sm font-medium hover:bg-gray-50">
-                    See More
-                </button>
-            </div>
-          </div>
+            <SpecTable data={specsData} />
         )}
 
         {/* 2. PACKAGING DETAILS */}
         {activeTab === "Packaging Details" && (
-          <div className="rounded-lg">
-             <Table>
-              <TableBody>
-                {packagingData.map((item, index) => (
-                  <TableRow 
-                    key={index} 
-                    className={`border-none ${index % 2 === 0 ? "bg-gray-50/60" : "bg-white"}`}
-                  >
-                    <TableCell className="w-1/3 py-4 pl-6 font-bold text-slate-900">
-                      {item.label}
-                    </TableCell>
-                    <TableCell className="py-4 font-medium text-slate-700">
-                      {item.value}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <div className="mt-6">
-                <button className="rounded-md border border-gray-200 px-6 py-2 text-sm font-medium hover:bg-gray-50">
-                    See More
-                </button>
-            </div>
-          </div>
+            <SpecTable data={packagingData} />
         )}
 
         {/* 3. RESOURCES */}
         {activeTab === "Resources" && (
-          <div className="flex flex-col items-center justify-center py-8 text-center sm:items-start sm:text-left">
-            <div className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                <h3 className="mb-4 text-center text-lg font-medium text-slate-900">Item Level Drawing</h3>
+          <div className="w-full max-w-[420px]">
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0px_2px_10px_rgba(0,0,0,0.02)]">
+                <h3 className="mb-6 text-center text-[15px] font-medium text-slate-900">Item Level Drawing</h3>
                 
-                {/* Drawing Placeholder */}
-                <div className="mb-6 flex items-center justify-center rounded bg-gray-50 p-8">
-                     {/* Replace with actual technical drawing image */}
-                    <img 
-                        src="https://placehold.co/200x200/png?text=Technical+Drawing" 
-                        alt="Technical Drawing" 
-                        className="h-40 w-auto object-contain mix-blend-multiply opacity-70"
-                    />
+                {/* Drawing Placeholder Area */}
+                <div className="mb-6 flex items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-[#FAFAFA] p-8 h-[240px]">
+                    <div className="relative w-full h-full flex items-center justify-center opacity-80">
+                         <img 
+                            src="https://placehold.co/400x400/png?text=Drawing"
+                            alt="Technical Drawing"
+                            className="max-h-full max-w-full object-contain mix-blend-multiply grayscale"
+                         />
+                    </div>
                 </div>
 
                 {/* Download Button */}
-                <button className="flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm transition-colors hover:bg-gray-50">
-                    <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-gray-500" />
-                        <span className="font-medium text-slate-700">Download Catalog [English]</span>
+                <button className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm transition-all hover:border-gray-300 hover:bg-gray-50">
+                    <div className="flex items-center gap-3">
+                        <div className="text-gray-400 rotate-45">
+                           <FileText size={18} />
+                        </div>
+                        <span className="font-medium text-slate-600">Download Catalog [English]</span>
                     </div>
                     <div className="flex items-center gap-3">
-                        <span className="text-xs text-gray-400">(4mb)</span>
+                        <span className="text-xs text-gray-400 font-medium">(4mb)</span>
                         <Download className="h-4 w-4 text-gray-400" />
                     </div>
                 </button>
@@ -172,84 +180,68 @@ export default function ProductTabs({ specs }) {
 
         {/* 4. CUSTOMER SPECIFIC INFO */}
         {activeTab === "Customer Specific Info" && (
-          <div className="rounded-lg">
-            <Table>
-              <TableBody>
-                {customerInfoData.map((info, index) => (
-                  <TableRow 
-                    key={index} 
-                    className={`border-none ${index % 2 === 0 ? "bg-gray-50/60" : "bg-white"}`}
-                  >
-                    <TableCell className="w-1/3 py-4 pl-6 font-bold text-slate-900">
-                      {info.label}
-                    </TableCell>
-                    <TableCell className="py-4 font-medium text-slate-700">
-                      {info.value}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+            <SpecTable data={customerInfoData} />
         )}
 
         {/* 5. ORDER HISTORY */}
         {activeTab === "Order History" && (
-          <div className="space-y-6">
+          <div className="space-y-6 w-full">
             
             {/* Summary Header */}
-            <div className="text-sm text-slate-700">
-                <span className="text-gray-500">Total Order:</span> <span className="font-bold">4</span>,{' '}
-                <span className="text-gray-500">Total Quantity:</span> <span className="font-bold">35</span>,{' '}
-                <span className="text-gray-500">Total Sale Amount:</span> <span className="font-bold">$231.28</span>
+            <div className="text-[13px] text-slate-600">
+                <span className="text-gray-500">Total Order:</span> <span className="font-semibold text-slate-900 mr-3">4</span>,{' '}
+                <span className="text-gray-500">Total Quantity:</span> <span className="font-semibold text-slate-900 mr-3">35</span>,{' '}
+                <span className="text-gray-500">Total Sale Amount:</span> <span className="font-semibold text-slate-900">$231.28</span>
             </div>
 
             {/* Controls */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
-                <div className="relative w-full max-w-xs">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="relative w-full max-w-[280px]">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                     <input 
                         type="text" 
                         placeholder="Search..." 
-                        className="w-full rounded-md border border-gray-200 py-2 pl-9 pr-4 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                        className="w-full rounded-md border border-gray-200 py-2 pl-9 pr-12 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400"
                     />
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-500">⌘1</div>
+                    <div className="absolute right-2 top-1/2 -translate-y-1/2 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-500 border border-gray-200">
+                        ⌘1
+                    </div>
                 </div>
                 
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                     <button className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-gray-50">
                         <Filter className="h-4 w-4" /> Filter
                     </button>
                     <button className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-gray-50">
-                        Last Week <span className="text-[10px]">▼</span>
+                        Last Week <span className="text-[8px] ml-1 opacity-60">▼</span>
                     </button>
                 </div>
             </div>
 
             {/* Data Table */}
-            <div className="rounded-lg border border-gray-100 bg-white">
+            <div className="rounded-lg border border-gray-200 bg-white overflow-hidden w-full">
                 <Table>
-                    <TableHeader className="bg-gray-50/50">
-                        <TableRow className="border-b-gray-100 hover:bg-transparent">
-                            <TableHead className="w-[180px]">Order Number</TableHead>
-                            <TableHead>Customer PO</TableHead>
-                            <TableHead>Order Date</TableHead>
-                            <TableHead>Price</TableHead>
-                            <TableHead>Qty Ordered</TableHead>
-                            <TableHead>Unit</TableHead>
-                            <TableHead>Interval</TableHead>
+                    <TableHeader className="bg-[#F9FAFB]">
+                        <TableRow className="border-b border-gray-200 hover:bg-[#F9FAFB]">
+                            <TableHead className="w-[180px] font-medium text-slate-500 h-12 pl-6">Order Number</TableHead>
+                            <TableHead className="font-medium text-slate-500 h-12">Customer PO</TableHead>
+                            <TableHead className="font-medium text-slate-500 h-12">Order Date</TableHead>
+                            <TableHead className="font-medium text-slate-500 h-12">Price</TableHead>
+                            <TableHead className="font-medium text-slate-500 h-12">Qty Ordered</TableHead>
+                            <TableHead className="font-medium text-slate-500 h-12">Unit</TableHead>
+                            <TableHead className="font-medium text-slate-500 h-12">Interval</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {orderHistoryData.map((order, idx) => (
-                            <TableRow key={idx} className="border-b-gray-50 last:border-0 hover:bg-gray-50/50">
-                                <TableCell className="font-medium text-slate-600">{order.orderNo}</TableCell>
-                                <TableCell>{order.po}</TableCell>
-                                <TableCell>{order.date}</TableCell>
-                                <TableCell>{order.price}</TableCell>
-                                <TableCell>{order.qty}</TableCell>
-                                <TableCell>{order.unit}</TableCell>
-                                <TableCell className="font-bold">{order.interval}</TableCell>
+                            <TableRow key={idx} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+                                <TableCell className="font-medium text-slate-600 py-4 pl-6">{order.orderNo}</TableCell>
+                                <TableCell className="text-slate-600 py-4">{order.po}</TableCell>
+                                <TableCell className="text-slate-600 py-4">{order.date}</TableCell>
+                                <TableCell className="text-slate-600 py-4">{order.price}</TableCell>
+                                <TableCell className="text-slate-600 py-4">{order.qty}</TableCell>
+                                <TableCell className="text-slate-600 py-4">{order.unit}</TableCell>
+                                <TableCell className="font-bold text-slate-900 py-4">{order.interval}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -257,29 +249,29 @@ export default function ProductTabs({ specs }) {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-                <div className="text-sm text-gray-500">Page 2 of 16</div>
-                <div className="flex items-center gap-2">
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50">
+            <div className="flex items-center justify-between pt-2">
+                <div className="text-sm text-gray-500 font-medium">Page 2 of 16</div>
+                <div className="flex items-center gap-1">
+                    <button className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 mr-2">
                         <ChevronLeft className="h-4 w-4 text-gray-600" />
                     </button>
-                    {/* Pagination Numbers Mock */}
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-600 hover:bg-gray-50">1</button>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-sm font-bold text-white">2</button>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-600 hover:bg-gray-50">3</button>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-600 hover:bg-gray-50">4</button>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-600 hover:bg-gray-50">5</button>
-                    <span className="text-gray-400">...</span>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-600 hover:bg-gray-50">16</button>
+                    
+                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-500 hover:bg-gray-100 font-medium">1</button>
+                    <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-sm font-medium text-white shadow-sm">2</button>
+                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-500 hover:bg-gray-100 font-medium">3</button>
+                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-500 hover:bg-gray-100 font-medium">4</button>
+                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-500 hover:bg-gray-100 font-medium">5</button>
+                    <span className="flex h-8 w-8 items-center justify-center text-sm text-gray-400">...</span>
+                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-500 hover:bg-gray-100 font-medium">16</button>
 
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50">
+                    <button className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 ml-2">
                         <ChevronRight className="h-4 w-4 text-gray-600" />
                     </button>
                 </div>
                 
                 <div className="hidden sm:block">
-                     <button className="flex items-center gap-2 rounded border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600">
-                        7 / page <span className="text-[8px]">▼</span>
+                     <button className="flex items-center gap-2 rounded border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50">
+                        7 / page <span className="text-[8px] opacity-60">▼</span>
                      </button>
                 </div>
             </div>
