@@ -2,13 +2,15 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Minus, Plus, ShoppingCart, Truck } from "lucide-react";
-
-// Import the new drawer
-import AddToCartDrawer from "./AddToCartDrawer";
+import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
+import toast from "react-hot-toast";
 
 export default function ProductBuyBox({ product }) {
   const [quantity, setQuantity] = useState(1);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const { addItem, openCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const [isAdding, setIsAdding] = useState(false);
 
   const handleQuantityChange = (type) => {
     if (type === "increment") {
@@ -18,8 +20,23 @@ export default function ProductBuyBox({ product }) {
     }
   };
 
-  const handleAddToCart = () => {
-    setIsDrawerOpen(true);
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      toast.error("Please sign in to add items to cart");
+      return;
+    }
+
+    setIsAdding(true);
+    const sku = product.mfgSku || product.cbSku || product.itemNumber;
+    
+    try {
+      const result = await addItem(product.prodId, sku, quantity);
+      if (result.success) {
+        openCart();
+      }
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   return (
@@ -78,19 +95,13 @@ export default function ProductBuyBox({ product }) {
         {/* Add to Cart Button */}
         <button 
           onClick={handleAddToCart}
-          className="flex w-full items-center justify-center gap-2 rounded-md bg-[#4a8b3c] py-4 text-base font-bold text-white transition-colors hover:bg-[#3a6f2f]"
+          disabled={isAdding}
+          className="flex w-full items-center justify-center gap-2 rounded-md bg-[#4a8b3c] py-4 text-base font-bold text-white transition-colors hover:bg-[#3a6f2f] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <ShoppingCart className="h-5 w-5" /> Add Cart
+          <ShoppingCart className="h-5 w-5" />
+          {isAdding ? 'Adding...' : 'Add to Cart'}
         </button>
       </div>
-
-      {/* The Drawer Component */}
-      <AddToCartDrawer 
-        isOpen={isDrawerOpen} 
-        onClose={() => setIsDrawerOpen(false)} 
-        product={product}
-        initialQuantity={quantity}
-      />
     </>
   );
 }

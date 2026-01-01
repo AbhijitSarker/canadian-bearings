@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import HeartLike21Icon from '@/assets/icons/heartLike21';
 import { useFavorite } from '@/contexts/FavoriteContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -59,10 +60,13 @@ export default function ProductListCard({
     return (
         <div className={`bg-white rounded-[10px] border border-neutral-300 p-[10px] relative transition-all hover:shadow-md flex flex-col md:flex-row gap-6`}>
             {/* Left: Product Image */}
-            <div className="w-full md:w-48 h-48 bg-gray-100 rounded-[8px] flex-shrink-0 relative flex items-center justify-center overflow-hidden">
+            <Link href={`/product/${product.uniqueId}`} className="w-full md:w-48 h-48 bg-gray-100 rounded-[8px] flex-shrink-0 relative flex items-center justify-center overflow-hidden">
                 {/* Favorite Icon */}
                  <button
-                    onClick={handleFavoriteClick}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleFavoriteClick();
+                    }}
                     className="absolute top-2 right-2 z-10"
                 >
                     <div className={`w-[36px] h-[36px] flex items-center justify-center rounded-full transition-colors ${isFavorite ? 'bg-red-50' : 'bg-white'}`}>
@@ -77,10 +81,10 @@ export default function ProductListCard({
                 height={141}
                 className="w-full h-full object-contain p-4"
                 />
-            </div>
+            </Link>
 
             {/* Middle: Product Details */}
-            <div className="flex-1 flex flex-col justify-center min-w-0 py-1">
+            <Link href={`/product/${product.uniqueId}`} className="flex-1 flex flex-col justify-center min-w-0 py-1">
                 {/* Category */}
                 <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px]">{product.categoryName}</p>
 
@@ -110,7 +114,7 @@ export default function ProductListCard({
                     </div>
                 )}
 
-            </div>
+            </Link>
 
             {/* Right: Pricing & Actions */}
             <div className="w-full md:w-64 flex-shrink-0 flex flex-col justify-center gap-4 border-t md:border-t-0 md:border-l border-neutral-100 pt-4 md:pt-0 md:pl-6">

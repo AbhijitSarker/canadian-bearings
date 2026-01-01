@@ -1,54 +1,106 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import ProductGallery from "@/components/product/ProductGallery";
 import ProductInfo from "@/components/product/ProductInfo";
 import ProductBuyBox from "@/components/product/ProductBuyBox";
 import ProductTabs from "@/components/product/ProductTabs";
 import FeaturedProducts from "@/components/home/feature-products";
-
-// --- FAKE DATA ---
-const productData = {
-  brand: "SKF",
-  title: "SKF 6203 2ZJEM",
-  subtitle: "6203 2ZJEM | Single Row Cylindrical Bore Deep Groove Ball Bearing",
-  itemNumber: "04166801",
-  price: 31.89,
-  msrp: 35.99,
-  currency: "$",
-  stockStatus: "Ready To ship",
-  estimatedArrival: "Get estimated arrival date",
-  features: [
-    "Deep Groove Bearing",
-    "2.17 in Inner Diameter",
-    "4.72 in Outer Diameter",
-    "1.14 in Width",
-    "Bearing Steel Material",
-    "Cylindrical O.D",
-    "1.14 in Outer Ring Width",
-    "Single Row",
-    "Metric",
-  ],
-  description:
-    "A must see. The welcoming foyer leads to a stunning formal dining or to the magnificent great room. The updated open kitchen has Quartz countertops, an over-the-cooktop hood vent, coffee bar, a wonderful pantry and updated lighting! The mud room has convenient & functional built-in cabinet lockers.",
-  specs: [
-    { label: "Bearing Type", value: "Deep Groove" },
-    { label: "O.D. Type", value: "Cylindrical" },
-    { label: "Cage Material", value: "Bearing Steel" },
-    { label: "O.D.", value: "4.72 in, 120 mm" },
-    { label: "Width", value: "1.14 in, 29 mm" },
-    { label: "Inch/Metric", value: "Metric" },
-    { label: "Outer Ring Width", value: "1.14 in, 29 mm" },
-  ],
-  images: [
-    "https://placehold.co/600x600/png",
-    "https://placehold.co/150x150/png",
-    "https://placehold.co/150x150/png",
-    "https://placehold.co/150x150/png",
-  ],
-};
+import { getProductDetails } from "@/lib/api/services/products";
+import ProductsPageSkeleton from "@/components/skeletons/ProductsPageSkeleton";
 
 export default function ProductPage() {
+  const params = useParams();
+  const productUuid = params.product;
+  
+  const [productData, setProductData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      if (!productUuid) return;
+      
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const data = await getProductDetails(productUuid);
+        setProductData(data);
+      } catch (err) {
+        console.error("Error fetching product details:", err);
+        setError(err.message || "Failed to load product details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProductDetails();
+  }, [productUuid]);
+
+  if (loading) {
+    return <ProductsPageSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Error Loading Product</h2>
+          <p className="text-slate-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!productData) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Product Not Found</h2>
+          <p className="text-slate-600">The product you're looking for doesn't exist.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Map API response to component props
+  const images = productData.imageUrl 
+    ? [productData.imageUrl] 
+    : ["https://placehold.co/600x600/png"];
+
+  const features = productData.technicalSpecs?.map(spec => 
+    `${spec.name}: ${spec.value}${spec.unit ? ' ' + spec.unit : ''}`
+  ) || [];
+
+  const specs = productData.technicalSpecs?.map(spec => ({
+    label: spec.name,
+    value: `${spec.value}${spec.unit ? ' ' + spec.unit : ''}`
+  })) || [];
+
+  const mappedProduct = {
+    prodId: productData.prodId,
+    uniqueId: productData.uniqueId,
+    brand: productData.brandName,
+    title: productData.descriptions?.description || productData.cbSku,
+    subtitle: productData.descriptions?.descriptionShort || "",
+    itemNumber: productData.mfgSku || productData.cbSku,
+    mfgSku: productData.mfgSku,
+    cbSku: productData.cbSku,
+    price: productData.price || 0,
+    msrp: productData.msrp || productData.price,
+    currency: "$",
+    stockStatus: "Ready To ship",
+    estimatedArrival: "Get estimated arrival date",
+    features: features,
+    description: productData.descriptions?.descriptionLong || productData.descriptions?.description || "",
+    specs: specs,
+    images: images,
+    categoryName: productData.categoryName,
+    unit: productData.unit,
+  };
+
   return (
     <div className="min-h-screen bg-white pb-20 font-sans text-slate-800">
       <div className="container mx-auto max-w-[1400px] px-4 md:px-6 py-6">
@@ -58,23 +110,23 @@ export default function ProductPage() {
           
           {/* COLUMN 1: Image Gallery (4 Cols) */}
           <div className="lg:col-span-4 xl:col-span-4">
-            <ProductGallery images={productData.images} title={productData.title} />
+            <ProductGallery images={mappedProduct.images} title={mappedProduct.title} />
           </div>
 
           {/* COLUMN 2: Product Information (5 Cols) */}
           <div className="lg:col-span-5 xl:col-span-5">
             <ProductInfo 
-              brand={productData.brand}
-              title={productData.title}
-              subtitle={productData.subtitle}
-              itemNumber={productData.itemNumber}
-              features={productData.features}
+              brand={mappedProduct.brand}
+              title={mappedProduct.title}
+              subtitle={mappedProduct.subtitle}
+              itemNumber={mappedProduct.itemNumber}
+              features={mappedProduct.features}
             />
           </div>
 
           {/* COLUMN 3: Buy Box (3 Cols) */}
           <div className="lg:col-span-3 xl:col-span-3">
-            <ProductBuyBox product={productData} />
+            <ProductBuyBox product={mappedProduct} />
           </div>
         </div>
 
@@ -85,20 +137,21 @@ export default function ProductPage() {
           <div className="lg:col-span-9">
             
             {/* Product Description */}
-            <section className="mb-12">
-              <h2 className="mb-4 text-3xl font-bold text-slate-900 tracking-tight">Product Details</h2>
-              <p className="leading-relaxed text-slate-600 text-[15px] max-w-4xl">
-                {productData.description}
-              </p>
-              <button className="mt-3 text-sm font-bold text-slate-900 hover:underline">
-                Read More...
-              </button>
-            </section>
+            {mappedProduct.description && (
+              <section className="mb-12">
+                <h2 className="mb-4 text-3xl font-bold text-slate-900 tracking-tight">Product Details</h2>
+                <p className="leading-relaxed text-slate-600 text-[15px] max-w-4xl">
+                  {mappedProduct.description}
+                </p>
+              </section>
+            )}
 
             {/* Tabs */}
-            <div className="mb-16">
-              <ProductTabs specs={productData.specs} />
-            </div>
+            {mappedProduct.specs.length > 0 && (
+              <div className="mb-16">
+                <ProductTabs specs={mappedProduct.specs} />
+              </div>
+            )}
           </div>
         </div>
 

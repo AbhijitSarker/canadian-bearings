@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import HeartLike21Icon from '@/assets/icons/heartLike21';
 import { useFavorite } from '@/contexts/FavoriteContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -70,36 +71,39 @@ export default function ProductCard({
                 </div>
             </button>
 
-            {/* Product Image */}
-            <div className="bg-gray-100 rounded-[8px] mb-4 h-48 flex-shrink-0 flex items-center justify-center overflow-hidden">
-                <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={153}
-                    height={141}
-                    className="w-full h-full object-contain p-4"
-                />
-            </div>
+            {/* Clickable Product Link */}
+            <Link href={`/product/${product.uniqueId}`} className="block">
+                {/* Product Image */}
+                <div className="bg-gray-100 rounded-[8px] mb-4 h-48 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                    <Image
+                        src={product.image}
+                        alt={product.name}
+                        width={153}
+                        height={141}
+                        className="w-full h-full object-contain p-4"
+                    />
+                </div>
 
-            {/* Category */}
-            <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px] mt-[12px] truncate">
-                {product.categoryName}
-            </p>
+                {/* Category */}
+                <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px] mt-[12px] truncate">
+                    {product.categoryName}
+                </p>
 
-            {/* Product Name - Added line-clamp-2 to ensure consistent height */}
-            <h3 className="text-neutral-950 font-semibold text-[22px] leading-[110%] mb-3 line-clamp-2 h-[50px]">
-                {product.name}
-            </h3>
+                {/* Product Name - Added line-clamp-2 to ensure consistent height */}
+                <h3 className="text-neutral-950 font-semibold text-[22px] leading-[110%] mb-3 line-clamp-2 h-[50px]">
+                    {product.name}
+                </h3>
 
-            {/* Description - Added line-clamp to prevent overflowing cards */}
-            <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-4 line-clamp-2">
-                {product.description} | {product.descriptionShort}
-            </p>
+                {/* Description - Added line-clamp to prevent overflowing cards */}
+                <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-4 line-clamp-2">
+                    {product.description} | {product.descriptionShort}
+                </p>
 
-            {/* Item Number */}
-            <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-[10px]">
-                Item #{product.itemNumber}
-            </p>
+                {/* Item Number */}
+                <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-[10px]">
+                    Item #{product.itemNumber}
+                </p>
+            </Link>
 
             {/* 2. Added 'mt-auto' here. 
                   This pushes the Price section (and everything below it) to the bottom of the card.
