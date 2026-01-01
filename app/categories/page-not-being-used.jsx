@@ -57,7 +57,7 @@ const CategoriesPage = () => {
 
         {/* Simple responsive wrapping list of categories */}
         <div className="mt-6 mb-16">
-          <div className="flex flex-wrap gap-4 justify-between">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {categories.map((cat, idx) => {
               // generate a consistent slug for linking
               const slug = cat.name

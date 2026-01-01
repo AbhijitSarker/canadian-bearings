@@ -69,7 +69,7 @@ const CategoryPage = async ({ params }) => {
 
         {/* Subcategories */}
         <div className="mt-6">
-          <div className="flex flex-wrap gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {subcats.map((s, i) => (
               <div key={i} className="p-1">
                 <CategoryCard icon={s.icon} name={s.name} />

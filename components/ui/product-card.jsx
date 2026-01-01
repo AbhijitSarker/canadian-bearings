@@ -35,7 +35,6 @@ export default function ProductCard({
         }
 
         setIsAdding(true);
-        // Use mfgSKU if available, otherwise fallback to cbSKU or itemNumber
         const sku = product.mfgSKU || product.cbSKU || product.itemNumber;
         
         try {
@@ -57,80 +56,95 @@ export default function ProductCard({
     };
 
     return (
-        <div className={`bg-white rounded-[10px] border border-neutral-300 p-[10px] relative`}>
-        {/* Favorite Icon */}
-        <button
-            onClick={handleFavoriteClick}
-            className="absolute top-4 right-4 z-10"
-        >
-            <div className={`w-[36px] h-[36px] flex items-center justify-center rounded-full transition-colors ${isFavorite ? 'bg-red-50' : 'bg-white'}`}>
-                <HeartLike21Icon className={isFavorite ? 'text-red-500 fill-current' : ''} />
-            </div>
-        </button>
-
-        {/* Product Image */}
-        <div className="bg-gray-100 rounded-[8px] mb-4 h-48 flex items-center justify-center overflow-hidden">
-            <Image
-            src={product.image}
-            alt={product.name}
-            width={153} // Assuming a fixed width/height for optimization, matching the parent div's height (h-48 = 192px)
-            height={141} // Assuming a fixed width/height for optimization, matching the parent div's height (h-48 = 192px)
-            className="w-full h-full object-contain p-4"
-            />
-        </div>
-
-        {/* Category */}
-        <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px] mt-[12px] ">{product.categoryName}</p>
-
-        {/* Product Name */}
-        <h3 className="text-neutral-950 font-semibold text-[22px] leading-[100%] mb-3">{product.name}</h3>
-
-        {/* Description */}
-            <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-4">{product.description} | {product.descriptionShort}</p>
-
-        {/* Item Number */}
-        <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-[10px]">Item #{product.itemNumber}</p>
-
-        {/* Price and Quantity */}
-        <div className="flex items-center justify-between border-t py-[10px]">
-            <div className="flex items-baseline">
-            <span className="text-[22px] font-[500] leading-[100%] text-neutral-950">${product.price}</span>
-            <span className="text-[14px] font-[300] leading-[100%] text-neutral-950">/each</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-            <span className="text-[14px] font-[300] leading-[100%] text-neutral-800">QTY:</span>
-            <div className="flex items-center justify-center bg-neutral-50 rounded-[36px] p-[3px] max-w-[96px]">
-                <button
-                onClick={decreaseQty}
-                className="w-[31px] h-[31px] bg-white border border-grey-50 rounded-[34px] flex items-center justify-center"
-                >
-                −
-                </button>
-                <span className="text-center px-[7px]">
-                {quantity}
-                </span>
-                <button
-                onClick={increaseQty}
-                className="w-[31px] h-[31px] bg-white border border-grey-50 rounded-[34px] flex items-center justify-center"
-                >
-                +
-                </button>
-            </div>
-            </div>
-        </div>
-
-        {/* Add to Cart Button */}
-            <button 
-                onClick={handleAddToCart}
-                disabled={isAdding}
-                className="w-full bg-white border border-[#ebebeb] text-neutral-600 hover:text-white py-3 rounded-[10px] hover:bg-green-500 hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        /* 1. Added 'h-full', 'flex', and 'flex-col' to the main wrapper. 
+              This ensures the card stretches to fill the grid cell and acts as a flex container.
+        */
+        <div className={`bg-white rounded-[10px] border border-neutral-300 p-[10px] relative h-full flex flex-col`}>
+            {/* Favorite Icon */}
+            <button
+                onClick={handleFavoriteClick}
+                className="absolute top-4 right-4 z-10"
             >
-                <ShoppingCart fill="currentColor" />
-                <span className="text-[16px] leading-[20px]  font-[500]">
-                    {isAdding ? 'Adding...' : 'Add to Cart'}
-                </span>
+                <div className={`w-[36px] h-[36px] flex items-center justify-center rounded-full transition-colors ${isFavorite ? 'bg-red-50' : 'bg-white'}`}>
+                    <HeartLike21Icon className={isFavorite ? 'text-red-500 fill-current' : ''} />
+                </div>
             </button>
+
+            {/* Product Image */}
+            <div className="bg-gray-100 rounded-[8px] mb-4 h-48 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                <Image
+                    src={product.image}
+                    alt={product.name}
+                    width={153}
+                    height={141}
+                    className="w-full h-full object-contain p-4"
+                />
+            </div>
+
+            {/* Category */}
+            <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px] mt-[12px] truncate">
+                {product.categoryName}
+            </p>
+
+            {/* Product Name - Added line-clamp-2 to ensure consistent height */}
+            <h3 className="text-neutral-950 font-semibold text-[22px] leading-[110%] mb-3 line-clamp-2 h-[50px]">
+                {product.name}
+            </h3>
+
+            {/* Description - Added line-clamp to prevent overflowing cards */}
+            <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-4 line-clamp-2">
+                {product.description} | {product.descriptionShort}
+            </p>
+
+            {/* Item Number */}
+            <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-[10px]">
+                Item #{product.itemNumber}
+            </p>
+
+            {/* 2. Added 'mt-auto' here. 
+                  This pushes the Price section (and everything below it) to the bottom of the card.
+            */}
+            <div className="mt-auto pt-[10px]">
+                <div className="flex items-center justify-between border-t py-[10px]">
+                    <div className="flex items-baseline">
+                        <span className="text-[22px] font-[500] leading-[100%] text-neutral-950">${product.price}</span>
+                        <span className="text-[14px] font-[300] leading-[100%] text-neutral-950">/each</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <span className="text-[14px] font-[300] leading-[100%] text-neutral-800">QTY:</span>
+                        <div className="flex items-center justify-center bg-neutral-50 rounded-[36px] p-[3px] max-w-[96px]">
+                            <button
+                                onClick={decreaseQty}
+                                className="w-[31px] h-[31px] bg-white border border-grey-50 rounded-[34px] flex items-center justify-center"
+                            >
+                                −
+                            </button>
+                            <span className="text-center px-[7px]">
+                                {quantity}
+                            </span>
+                            <button
+                                onClick={increaseQty}
+                                className="w-[31px] h-[31px] bg-white border border-grey-50 rounded-[34px] flex items-center justify-center"
+                            >
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Add to Cart Button */}
+                <button
+                    onClick={handleAddToCart}
+                    disabled={isAdding}
+                    className="w-full bg-white border border-[#ebebeb] text-neutral-600 hover:text-white py-3 rounded-[10px] hover:bg-green-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <ShoppingCart size={20} />
+                    <span className="text-[16px] leading-[20px] font-[500]">
+                        {isAdding ? 'Adding...' : 'Add to Cart'}
+                    </span>
+                </button>
+            </div>
         </div>
     );
 }
