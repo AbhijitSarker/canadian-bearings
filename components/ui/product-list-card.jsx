@@ -97,6 +97,8 @@ export default function ProductListCard({
 
     return (
         <div className={`bg-white rounded-[10px] border border-neutral-300 p-[10px] relative transition-all hover:shadow-md flex flex-col md:flex-row gap-6`}>
+            {/* Left: Product Image */}
+            <div className="w-full md:w-48 h-48 bg-gray-100 rounded-[8px] flex-shrink-0 relative flex items-center justify-center overflow-hidden">
                 {/* Favorite Icon */}
                  <button
                     onClick={(e) => {
@@ -117,25 +119,25 @@ export default function ProductListCard({
                 height={141}
                 className="w-full h-full object-contain p-4"
                 />
+            </div>
 
             {/* Middle: Product Details */}
-            <Link href={`/products/${product.uniqueId}`} className="flex-1 flex flex-col justify-center min-w-0 py-1">
+            <div className="flex-1 flex flex-col justify-center min-w-0 py-1">
                 {/* Category */}
                 <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px]">{product.categoryName}</p>
 
-                {/* Left: Product Image */}
-                <Link href={`/product/${product.uniqueId}`} className="w-full md:w-48 h-48 bg-gray-100 rounded-[8px] flex-shrink-0 relative flex items-center justify-center overflow-hidden">
-                    {/* Product Name */}
-                    <h3 className="text-neutral-950 font-[500] text-[22px] leading-[100%] mb-3">{product.name}</h3>
+                <Link href={`/products/${product.uniqueId}`}>
+                {/* Product Name */}
+                <h3 className="font-[500] hover:text-green-500 hover:underline text-[22px] leading-[100%] mb-3">{product.name}</h3>
                 </Link>
 
                 {/* Description */}
-                <p className="text-neutral-950 text-[14px] font-[300] leading-[100%] mb-3">{product.description} | {product.descriptionShort}</p>
-
+                <p className="text-[14px] font-[300] leading-[100%] mb-3">{product.description} | {product.descriptionShort}</p>
+                
                 {/* Item Number */}
-                <p className="text-neutral-950 text-[14px] font-[300] leading-[100%] mt-auto mb-3">Item #{product.itemNumber}</p>
+                <p className="text-[14px] font-[300] leading-[100%] mt-auto mb-3">Item #{product.itemNumber}</p>
 
-                { }
+                {/* Attributes - List View Exclusive Details */}
                 {product.attributes && product.attributes.length > 0 && (
                     <div className="mb-4">
                          <ul className="text-[13px] leading-[160%] text-neutral-600 space-y-1">
@@ -152,7 +154,7 @@ export default function ProductListCard({
                     </div>
                 )}
 
-            </Link>
+            </div>
 
             {/* Right: Pricing & Actions */}
             <div className="w-full md:w-64 flex-shrink-0 flex flex-col justify-center gap-4 border-t md:border-t-0 md:border-l border-neutral-100 pt-4 md:pt-0 md:pl-6">

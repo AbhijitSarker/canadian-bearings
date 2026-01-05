@@ -7,6 +7,7 @@ import ProductInfo from "@/components/products/ProductInfo";
 import ProductBuyBox from "@/components/products/ProductBuyBox";
 import ProductTabs from "@/components/products/ProductTabs";
 import FeaturedProducts from "@/components/home/feature-products";
+import Breadcrumb from "@/components/products/Breadcrumb";
 import { getProductDetails } from "@/lib/api/services/products";
 import ProductsPageSkeleton from "@/components/skeletons/ProductsPageSkeleton";
 
@@ -105,6 +106,13 @@ export default function ProductPage() {
   return (
     <div className="min-h-screen bg-white pb-20 container mx-auto">
       <div className="container mx-auto max-w-[1400px] px-4 md:px-6 py-6">
+        
+        {/* Breadcrumb */}
+        <Breadcrumb 
+          categoryPath={[
+            { name: mappedProduct.title, key: 'product' }
+          ]}
+        />
         
         {/* --- TOP SECTION (3 COLUMNS) --- */}
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-12 xl:gap-x-8">
