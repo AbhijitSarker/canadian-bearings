@@ -10,7 +10,8 @@ import { useCart } from '@/contexts/CartContext';
 import toast from 'react-hot-toast';
 
 import ShoppingCartLineIcon from '@/assets/icons/shoppingCartLine';
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Eye, Loader2 } from "lucide-react";
+import { getProductPrice } from "@/lib/api/services/products";
 
 export default function ProductListCard({
     product
@@ -20,6 +21,9 @@ export default function ProductListCard({
     const { isAuthenticated } = useAuth();
     const { addItem, openCart } = useCart();
     const [isAdding, setIsAdding] = useState(false);
+    const [priceData, setPriceData] = useState(null);
+    const [isPriceRevealed, setIsPriceRevealed] = useState(false);
+    const [isLoadingPrice, setIsLoadingPrice] = useState(false);
 
     const handleFavoriteClick = () => {
         if (!isAuthenticated) {
@@ -27,6 +31,40 @@ export default function ProductListCard({
             return;
         }
         openSidebar(product);
+    };
+
+    const handleRevealPrice = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        setIsLoadingPrice(true);
+        
+        // Determine which part number to use
+        const partNo = product.custSKU || product.cbSKU;
+        
+        if (!partNo) {
+            // No part number available, show "On Request"
+            setPriceData({ por: true });
+            setIsPriceRevealed(true);
+            setIsLoadingPrice(false);
+            return;
+        }
+
+        try {
+            const data = await getProductPrice(partNo);
+            if (data.success) {
+                setPriceData(data.product);
+            } else {
+                setPriceData({ por: true });
+            }
+            setIsPriceRevealed(true);
+        } catch (error) {
+            console.error("Error fetching price:", error);
+            setPriceData({ por: true });
+            setIsPriceRevealed(true);
+        } finally {
+            setIsLoadingPrice(false);
+        }
     };
 
     const handleAddToCart = async () => {
@@ -120,10 +158,40 @@ export default function ProductListCard({
             <div className="w-full md:w-64 flex-shrink-0 flex flex-col justify-center gap-4 border-t md:border-t-0 md:border-l border-neutral-100 pt-4 md:pt-0 md:pl-6">
                 
                 <div className="flex flex-col items-start md:items-end gap-1">
-                    <div className="flex items-baseline">
-                        <span className="text-[22px] font-[500] leading-[100%] text-neutral-950">${product.price}</span>
-                        <span className="text-[14px] font-[300] leading-[100%] text-neutral-950">/{product.unitName || 'each'}</span>
-                    </div>
+                    {!isPriceRevealed ? (
+                        <button
+                            onClick={handleRevealPrice}
+                            disabled={isLoadingPrice}
+                            className="flex items-center gap-2 rounded-md bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 transition-all hover:bg-gray-200 disabled:opacity-50"
+                        >
+                            {isLoadingPrice ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    <span>Loading...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Eye className="h-4 w-4" />
+                                    <span>Reveal Price</span>
+                                </>
+                            )}
+                        </button>
+                    ) : (
+                        <div className="flex items-baseline">
+                            {priceData?.por || !priceData?.price ? (
+                                <span className="text-[16px] font-[500] leading-[100%] text-slate-600">Price: On Request</span>
+                            ) : (
+                                <>
+                                    <span className="text-[22px] font-[500] leading-[100%] text-neutral-950">
+                                        ${priceData.price.toFixed(2)}
+                                    </span>
+                                    <span className="text-[14px] font-[300] leading-[100%] text-neutral-950">
+                                        /{priceData.uomName || product.unitName || 'each'}
+                                    </span>
+                                </>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex flex-col items-end gap-3 w-full">

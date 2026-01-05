@@ -10,7 +10,8 @@ import { useCart } from '@/contexts/CartContext';
 import toast from 'react-hot-toast';
 
 import ShoppingCartLineIcon from '@/assets/icons/shoppingCartLine';
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Eye, Loader2 } from "lucide-react";
+import { getProductPrice } from "@/lib/api/services/products";
 
 export default function ProductCard({
     product
@@ -20,6 +21,9 @@ export default function ProductCard({
     const { isAuthenticated } = useAuth();
     const { addItem, openCart } = useCart();
     const [isAdding, setIsAdding] = useState(false);
+    const [priceData, setPriceData] = useState(null);
+    const [isPriceRevealed, setIsPriceRevealed] = useState(false);
+    const [isLoadingPrice, setIsLoadingPrice] = useState(false);
 
     const handleFavoriteClick = () => {
         if (!isAuthenticated) {
@@ -27,6 +31,40 @@ export default function ProductCard({
             return;
         }
         openSidebar(product);
+    };
+
+    const handleRevealPrice = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        setIsLoadingPrice(true);
+        
+        // Determine which part number to use
+        const partNo = product.custSKU || product.cbSKU;
+        
+        if (!partNo) {
+            // No part number available, show "On Request"
+            setPriceData({ por: true });
+            setIsPriceRevealed(true);
+            setIsLoadingPrice(false);
+            return;
+        }
+
+        try {
+            const data = await getProductPrice(partNo);
+            if (data.success) {
+                setPriceData(data.product);
+            } else {
+                setPriceData({ por: true });
+            }
+            setIsPriceRevealed(true);
+        } catch (error) {
+            console.error("Error fetching price:", error);
+            setPriceData({ por: true });
+            setIsPriceRevealed(true);
+        } finally {
+            setIsLoadingPrice(false);
+        }
     };
 
     const handleAddToCart = async () => {
@@ -71,8 +109,6 @@ export default function ProductCard({
                 </div>
             </button>
 
-            {/* Clickable Product Link */}
-            <Link href={`/product/${product.uniqueId}`} className="block">
                 {/* Product Image */}
                 <div className="bg-gray-100 rounded-[8px] mb-4 h-48 flex-shrink-0 flex items-center justify-center overflow-hidden">
                     <Image
@@ -89,11 +125,14 @@ export default function ProductCard({
                     {product.categoryName}
                 </p>
 
+            {/* Clickable Product Link */}
+            <Link href={`/products/${product.uniqueId}`} className="block">
                 {/* Product Name - Added line-clamp-2 to ensure consistent height */}
-                <h3 className="text-neutral-950 font-semibold text-[22px] leading-[110%] mb-3 line-clamp-2 h-[50px]">
+                <h3 className="text-neutral-950 hover:text-green-500 hover:underline font-semibold text-[22px] leading-[110%] mb-3 line-clamp-2 h-[50px]">
                     {product.name}
                 </h3>
 
+            </Link>
                 {/* Description - Added line-clamp to prevent overflowing cards */}
                 <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-4 line-clamp-2">
                     {product.description} | {product.descriptionShort}
@@ -103,17 +142,46 @@ export default function ProductCard({
                 <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-[10px]">
                     Item #{product.itemNumber}
                 </p>
-            </Link>
 
             {/* 2. Added 'mt-auto' here. 
                   This pushes the Price section (and everything below it) to the bottom of the card.
             */}
             <div className="mt-auto pt-[10px]">
                 <div className="flex items-center justify-between border-t py-[10px]">
-                    <div className="flex items-baseline">
-                        <span className="text-[22px] font-[500] leading-[100%] text-neutral-950">${product.price}</span>
-                        <span className="text-[14px] font-[300] leading-[100%] text-neutral-950">/each</span>
-                    </div>
+                    {!isPriceRevealed ? (
+                        <button
+                            onClick={handleRevealPrice}
+                            disabled={isLoadingPrice}
+                            className="flex items-center gap-1.5 rounded-md bg-gray-100 px-3 py-2 text-xs font-medium text-gray-700 transition-all hover:bg-gray-200 disabled:opacity-50"
+                        >
+                            {isLoadingPrice ? (
+                                <>
+                                    <Loader2 className="h-3 w-3 animate-spin" />
+                                    <span>Loading...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Eye className="h-3 w-3" />
+                                    <span>Reveal Price</span>
+                                </>
+                            )}
+                        </button>
+                    ) : (
+                        <div className="flex items-baseline">
+                            {priceData?.por || !priceData?.price ? (
+                                <span className="text-[14px] font-[500] leading-[100%] text-slate-600">On Request</span>
+                            ) : (
+                                <>
+                                    <span className="text-[22px] font-[500] leading-[100%] text-neutral-950">
+                                        ${priceData.price.toFixed(2)}
+                                    </span>
+                                    <span className="text-[14px] font-[300] leading-[100%] text-neutral-950">
+                                        /{priceData.uomName || 'each'}
+                                    </span>
+                                </>
+                            )}
+                        </div>
+                    )}
 
                     <div className="flex items-center gap-2">
                         <span className="text-[14px] font-[300] leading-[100%] text-neutral-800">QTY:</span>
