@@ -204,6 +204,16 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
+  };
+
   const renderTabContent = (tab) => {
     switch (tab) {
       case "Technical Specifications":
