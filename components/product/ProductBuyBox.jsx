@@ -1,22 +1,58 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { Minus, Plus, ShoppingCart, Truck } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Truck, Eye } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
+import { getProductPrice } from "@/lib/api/services/products";
 
 export default function ProductBuyBox({ product }) {
   const [quantity, setQuantity] = useState(1);
   const { addItem, openCart } = useCart();
   const { isAuthenticated } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
+  const [priceData, setPriceData] = useState(null);
+  const [isPriceRevealed, setIsPriceRevealed] = useState(false);
+  const [isLoadingPrice, setIsLoadingPrice] = useState(false);
 
   const handleQuantityChange = (type) => {
     if (type === "increment") {
       setQuantity((prev) => prev + 1);
     } else if (type === "decrement" && quantity > 1) {
       setQuantity((prev) => prev - 1);
+    }
+  };
+
+  const handleRevealPrice = async () => {
+    setIsLoadingPrice(true);
+    
+    // Determine which part number to use
+    const partNo = product.custSKU || product.cbSku;
+    
+    if (!partNo) {
+      // No part number available, show "On Request"
+      setPriceData({ por: true });
+      setIsPriceRevealed(true);
+      setIsLoadingPrice(false);
+      return;
+    }
+
+    try {
+      const data = await getProductPrice(partNo);
+      if (data.success) {
+        setPriceData(data.product);
+      } else {
+        setPriceData({ por: true });
+      }
+      setIsPriceRevealed(true);
+    } catch (error) {
+      console.error("Error fetching price:", error);
+      toast.error("Failed to load price");
+      setPriceData({ por: true });
+      setIsPriceRevealed(true);
+    } finally {
+      setIsLoadingPrice(false);
     }
   };
 
@@ -45,15 +81,39 @@ export default function ProductBuyBox({ product }) {
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
         <div className="mb-6">
           <p className="text-sm font-medium text-gray-500">Your Price</p>
-          <div className="mt-1 flex items-baseline gap-1">
-            <span className="text-4xl font-bold text-slate-900">
-              {product.currency}{product.price}
-            </span>
-            <span className="text-gray-500">/each</span>
-          </div>
-          <p className="mt-1 text-sm text-gray-400 line-through">
-            {product.currency}{product.msrp}
-          </p>
+          
+          {!isPriceRevealed ? (
+            <button
+              onClick={handleRevealPrice}
+              disabled={isLoadingPrice}
+              className="mt-2 flex items-center gap-2 rounded-lg bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700 transition-all hover:bg-slate-200 disabled:opacity-50"
+            >
+              <Eye className="h-4 w-4" />
+              {isLoadingPrice ? "Loading..." : "Reveal Price"}
+            </button>
+          ) : (
+            <>
+              {priceData?.por || !priceData?.price ? (
+                <div className="mt-1">
+                  <span className="text-2xl font-bold text-slate-900">Price: On Request</span>
+                </div>
+              ) : (
+                <>
+                  <div className="mt-1 flex items-baseline gap-1">
+                    <span className="text-4xl font-bold text-slate-900">
+                      ${priceData.price.toFixed(2)}
+                    </span>
+                    <span className="text-gray-500">/{priceData.uomName || 'each'}</span>
+                  </div>
+                  {priceData.listPrice > 0 && priceData.listPrice > priceData.price && (
+                    <p className="mt-1 text-sm text-gray-400 line-through">
+                      ${priceData.listPrice.toFixed(2)}
+                    </p>
+                  )}
+                </>
+              )}
+            </>
+          )}
         </div>
 
         {/* Quantity Selector */}

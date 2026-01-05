@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Search, 
   Filter, 
   Download, 
   ChevronLeft, 
   ChevronRight, 
-  FileText 
+  FileText,
+  Package,
+  Loader2
 } from "lucide-react";
 
 import {
@@ -19,26 +21,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-// --- MOCK DATA ---
-const specsData = [
-    { label: "Bearing Type", value: "Deep Groove" },
-    { label: "O.D. Type", value: "Cylindrical" },
-    { label: "Cage Material", value: "Bearing Steel" },
-    { label: "O.D.", value: "4.72 in, 120 mm" },
-    { label: "Width", value: "1.14 in, 29 mm" },
-    { label: "Inch/Metric", value: "Metric" },
-    { label: "Outer Ring Width", value: "1.14 in, 29 mm" },
+import { getPackingInfo, getInventory } from "@/lib/api/services/products";
+import toast from "react-hot-toast";
+
+const TABS = [
+  "Technical Specifications",
+  "Packaging Details",
+  "Inventory",
+  "Resources",
+  "Customer Specific Info",
+  "Order History"
 ];
 
-const packagingData = [
-  { label: "Packaging Type", value: "Box" },
-  { label: "Pack Quantity", value: "1" },
-  { label: "Box Length", value: "5.00 in" },
-  { label: "Box Width", value: "5.00 in" },
-  { label: "Box Height", value: "2.00 in" },
-  { label: "Gross Weight", value: "0.45 lbs" },
-];
-
+// Mock data for tabs that don't have APIs yet
 const customerInfoData = [
   { label: "CB Product ID", value: "10035979" },
   { label: "Selling Unit Name", value: "each" },
@@ -55,16 +50,24 @@ const orderHistoryData = [
   { orderNo: "SO-29-1006106", po: "IGORS MAZURS", date: "23-04-25", price: "$34", qty: 4, unit: "each", interval: "172" },
 ];
 
-const TABS = [
-  "Technical Specifications",
-  "Packaging Details",
-  "Resources",
-  "Customer Specific Info",
-  "Order History"
-];
-
 // Reusable Component for the Zebra Striped Tables
-const SpecTable = ({ data }) => {
+const SpecTable = ({ data, isLoading }) => {
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+        </div>
+      );
+    }
+
+    if (!data || data.length === 0) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <p className="text-gray-500">No data available</p>
+        </div>
+      );
+    }
+
     return (
         <div className="w-full">
             <div className="rounded-lg overflow-hidden">
@@ -76,26 +79,80 @@ const SpecTable = ({ data }) => {
                         }`}
                     >
                         <div className="w-1/3 text-sm font-semibold text-slate-900">
-                            {item.label}
+                            {item.label || item.name}
                         </div>
                         <div className="w-2/3 text-sm font-normal text-slate-900">
-                            {item.value}
+                            {item.value}{item.unit ? ' ' + item.unit : ''}
                         </div>
                     </div>
                 ))}
             </div>
-            {/* "See More" button matches the clean white look with border */}
-            <div className="mt-6">
-                <button className="h-10 px-8 rounded-lg border border-gray-200 bg-white text-sm font-medium text-slate-700 hover:bg-gray-50 transition-colors shadow-sm">
-                    See More
-                </button>
-            </div>
+            {data.length > 7 && (
+              <div className="mt-6">
+                  <button className="h-10 px-8 rounded-lg border border-gray-200 bg-white text-sm font-medium text-slate-700 hover:bg-gray-50 transition-colors shadow-sm">
+                      See More
+                  </button>
+              </div>
+            )}
         </div>
     );
 };
 
-export default function ProductTabs() {
+export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] }) {
   const [activeTab, setActiveTab] = useState("Technical Specifications");
+  const [packingData, setPackingData] = useState([]);
+  const [inventoryData, setInventoryData] = useState(null);
+  const [isLoadingPacking, setIsLoadingPacking] = useState(false);
+  const [isLoadingInventory, setIsLoadingInventory] = useState(false);
+
+  // Fetch packing info when Packaging Details tab is active
+  useEffect(() => {
+    if (activeTab === "Packaging Details" && productUuid && packingData.length === 0) {
+      fetchPackingInfo();
+    }
+  }, [activeTab, productUuid]);
+
+  // Fetch inventory when Inventory tab is active
+  useEffect(() => {
+    if (activeTab === "Inventory" && !inventoryData) {
+      fetchInventoryData();
+    }
+  }, [activeTab]);
+
+  const fetchPackingInfo = async () => {
+    setIsLoadingPacking(true);
+    try {
+      const data = await getPackingInfo(productUuid);
+      setPackingData(data);
+    } catch (error) {
+      console.error("Error fetching packing info:", error);
+      toast.error("Failed to load packing information");
+      setPackingData([]);
+    } finally {
+      setIsLoadingPacking(false);
+    }
+  };
+
+  const fetchInventoryData = async () => {
+    const partNo = custSKU || cbSku;
+    
+    if (!partNo) {
+      setInventoryData({ success: false, message: "No part number available" });
+      return;
+    }
+
+    setIsLoadingInventory(true);
+    try {
+      const data = await getInventory(partNo);
+      setInventoryData(data);
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+      toast.error("Failed to load inventory");
+      setInventoryData({ success: false, message: "Failed to load inventory" });
+    } finally {
+      setIsLoadingInventory(false);
+    }
+  };
 
   return (
     <section className="w-full py-10 bg-white">
@@ -103,12 +160,8 @@ export default function ProductTabs() {
 
       {/* --- TAB HEADER (FULL WIDTH SEGMENTED CONTROL) --- */}
       <div className="mb-8 w-full">
-        {/* FIX: Changed from 'inline-flex' to 'grid grid-cols-5 w-full'.
-            This forces the gray background to span the full width and distributes tabs evenly.
-            On smaller screens (below md), it falls back to a scrollable flex view.
-        */}
         <div className="w-full bg-[#F4F5F7] p-1.5 rounded-xl overflow-x-auto no-scrollbar">
-            <div className="flex md:grid md:grid-cols-5 gap-1 min-w-max md:min-w-0">
+            <div className="flex md:grid md:grid-cols-6 gap-1 min-w-max md:min-w-0">
                 {TABS.map((tab) => {
                 const isActive = activeTab === tab;
                 return (
@@ -136,15 +189,78 @@ export default function ProductTabs() {
         
         {/* 1. TECHNICAL SPECIFICATIONS */}
         {activeTab === "Technical Specifications" && (
-            <SpecTable data={specsData} />
+            <SpecTable data={specs} isLoading={false} />
         )}
 
         {/* 2. PACKAGING DETAILS */}
         {activeTab === "Packaging Details" && (
-            <SpecTable data={packagingData} />
+            <SpecTable data={packingData} isLoading={isLoadingPacking} />
         )}
 
-        {/* 3. RESOURCES */}
+        {/* 3. INVENTORY */}
+        {activeTab === "Inventory" && (
+          <div className="w-full">
+            {isLoadingInventory ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+              </div>
+            ) : !inventoryData?.success ? (
+              <div className="flex items-center justify-center py-12">
+                <p className="text-gray-500">
+                  {inventoryData?.message || "No inventory data available"}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Summary Header */}
+                <div className="flex items-center gap-6 p-4 bg-slate-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <Package className="h-5 w-5 text-slate-600" />
+                    <span className="text-sm font-semibold text-slate-900">
+                      Total Available: <span className="text-green-600">{inventoryData.totalAvailable}</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Inventory Table */}
+                <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+                  <Table>
+                    <TableHeader className="bg-[#F9FAFB]">
+                      <TableRow className="border-b border-gray-200 hover:bg-[#F9FAFB]">
+                        <TableHead className="font-medium text-slate-500 h-12 pl-6">Warehouse</TableHead>
+                        <TableHead className="font-medium text-slate-500 h-12">Qty Available</TableHead>
+                        <TableHead className="font-medium text-slate-500 h-12">Qty On Hand</TableHead>
+                        <TableHead className="font-medium text-slate-500 h-12">Qty Committed</TableHead>
+                        <TableHead className="font-medium text-slate-500 h-12">Qty In Transit</TableHead>
+                        <TableHead className="font-medium text-slate-500 h-12">Qty On Order</TableHead>
+                        <TableHead className="font-medium text-slate-500 h-12">Qty Backordered</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {inventoryData.inventoryDetails?.map((warehouse, idx) => (
+                        <TableRow key={idx} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+                          <TableCell className="font-medium text-slate-700 py-4 pl-6">{warehouse.warehouse}</TableCell>
+                          <TableCell className="text-slate-600 py-4">
+                            <span className={warehouse.qtyAvailable > 0 ? "font-semibold text-green-600" : ""}>
+                              {warehouse.qtyAvailable}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-slate-600 py-4">{warehouse.qtyOnHand}</TableCell>
+                          <TableCell className="text-slate-600 py-4">{warehouse.qtyCommitted}</TableCell>
+                          <TableCell className="text-slate-600 py-4">{warehouse.qtyInTransit}</TableCell>
+                          <TableCell className="text-slate-600 py-4">{warehouse.qtyOnOrder}</TableCell>
+                          <TableCell className="text-slate-600 py-4">{warehouse.qtyBackordered}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 4. RESOURCES */}
         {activeTab === "Resources" && (
           <div className="w-full max-w-[420px] mx-auto">
             <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0px_2px_10px_rgba(0,0,0,0.02)]">
@@ -178,12 +294,12 @@ export default function ProductTabs() {
           </div>
         )}
 
-        {/* 4. CUSTOMER SPECIFIC INFO */}
+        {/* 5. CUSTOMER SPECIFIC INFO */}
         {activeTab === "Customer Specific Info" && (
-            <SpecTable data={customerInfoData} />
+            <SpecTable data={customerInfoData} isLoading={false} />
         )}
 
-        {/* 5. ORDER HISTORY */}
+        {/* 6. ORDER HISTORY */}
         {activeTab === "Order History" && (
           <div className="space-y-6 w-full">
             

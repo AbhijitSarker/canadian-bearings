@@ -88,6 +88,7 @@ export default function ProductPage() {
     itemNumber: productData.mfgSku || productData.cbSku,
     mfgSku: productData.mfgSku,
     cbSku: productData.cbSku,
+    custSKU: productData.custSKU || "",
     price: productData.price || 0,
     msrp: productData.msrp || productData.price,
     currency: "$",
@@ -147,11 +148,14 @@ export default function ProductPage() {
             )}
 
             {/* Tabs */}
-            {mappedProduct.specs.length > 0 && (
-              <div className="mb-16">
-                <ProductTabs specs={mappedProduct.specs} />
-              </div>
-            )}
+            <div className="mb-16">
+              <ProductTabs 
+                productUuid={mappedProduct.uniqueId}
+                custSKU={mappedProduct.custSKU}
+                cbSku={mappedProduct.cbSku}
+                specs={mappedProduct.specs} 
+              />
+            </div>
           </div>
         </div>
 
