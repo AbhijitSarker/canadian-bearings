@@ -114,56 +114,58 @@ export default function ProductPage() {
           ]}
         />
         
-        {/* --- TOP SECTION (3 COLUMNS) --- */}
+        {/* --- MAIN CONTENT AREA: TWO COLUMNS (9:3) --- */}
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-12 xl:gap-x-8">
           
-          {/* COLUMN 1: Image Gallery (4 Cols) */}
-          <div className="lg:col-span-4 xl:col-span-4">
-            <ProductGallery images={mappedProduct.images} title={mappedProduct.title} />
-          </div>
-
-          {/* COLUMN 2: Product Information (5 Cols) */}
-          <div className="lg:col-span-5 xl:col-span-5">
-            <ProductInfo 
-              brand={mappedProduct.brand}
-              title={mappedProduct.title}
-              subtitle={mappedProduct.subtitle}
-              itemNumber={mappedProduct.itemNumber}
-              features={mappedProduct.features}
-            />
-          </div>
-
-          {/* COLUMN 3: Buy Box (3 Cols) */}
-          <div className="lg:col-span-3 xl:col-span-3">
-            <ProductBuyBox product={mappedProduct} />
-          </div>
-        </div>
-
-        {/* --- BOTTOM SECTION (ALIGN WITH COL 1 & 2) --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6 xl:gap-x-8 mt-12">
-          
-          {/* Wrapper for Description + Tabs: Spans 9 Columns (Matches Col 1 + Col 2 above) */}
+          {/* LEFT COLUMN: Gallery, Info, Description, Tabs (Spans 9 Cols) */}
           <div className="lg:col-span-9">
-            
-            {/* Product Description */}
-            {mappedProduct.description && (
-              <section className="mb-12">
-                <h2 className="mb-4 text-3xl font-bold text-slate-900 tracking-tight">Product Details</h2>
-                <p className="leading-relaxed text-slate-600 text-[15px] max-w-4xl">
-                  {mappedProduct.description}
-                </p>
-              </section>
-            )}
+            <div className="grid grid-cols-1 gap-x-6 lg:grid-cols-9">
+              {/* Image Gallery (4 Cols) */}
+              <div className="lg:col-span-4">
+                <ProductGallery images={mappedProduct.images} title={mappedProduct.title} />
+              </div>
 
-            {/* Tabs */}
-            <div className="mb-16">
-              <ProductTabs 
-                productUuid={mappedProduct.uniqueId}
-                productId={mappedProduct.prodId}
-                custSKU={mappedProduct.custSKU}
-                cbSku={mappedProduct.cbSku}
-                specs={mappedProduct.specs} 
-              />
+              {/* Product Information (5 Cols) */}
+              <div className="lg:col-span-5">
+                <ProductInfo 
+                  brand={mappedProduct.brand}
+                  title={mappedProduct.title}
+                  subtitle={mappedProduct.subtitle}
+                  itemNumber={mappedProduct.itemNumber}
+                  features={mappedProduct.features}
+                />
+              </div>
+            </div>
+
+            {/* Bottom Content Area: Description + Tabs */}
+            <div className="mt-12">
+              {/* Product Description */}
+              {mappedProduct.description && (
+                <section className="mb-12">
+                  <h2 className="mb-4 text-3xl font-bold text-slate-900 tracking-tight">Product Details</h2>
+                  <p className="leading-relaxed text-slate-600 text-[15px] max-w-4xl">
+                    {mappedProduct.description}
+                  </p>
+                </section>
+              )}
+
+              {/* Tabs */}
+              <div className="mb-16">
+                <ProductTabs 
+                  productUuid={mappedProduct.uniqueId}
+                  productId={mappedProduct.prodId}
+                  custSKU={mappedProduct.custSKU}
+                  cbSku={mappedProduct.cbSku}
+                  specs={mappedProduct.specs} 
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT COLUMN: Buy Box (Sticky, Spans 3 Cols) */}
+          <div className="lg:col-span-3">
+            <div className="sticky top-6">
+              <ProductBuyBox product={mappedProduct} />
             </div>
           </div>
         </div>

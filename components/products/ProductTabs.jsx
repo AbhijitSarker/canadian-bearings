@@ -45,6 +45,8 @@ const customerInfoData = [
 
 // Reusable Component for the Row-style Tables
 const SpecTable = ({ data, isLoading }) => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    
     if (isLoading) {
       return (
         <div className="flex items-center justify-center py-12">
@@ -61,10 +63,13 @@ const SpecTable = ({ data, isLoading }) => {
       );
     }
 
+    const displayData = isExpanded ? data : data.slice(0, 10);
+    const hasMore = data.length > 10;
+
     return (
         <div className="w-full">
             <div className="space-y-3">
-                {data.map((item, index) => (
+                {displayData.map((item, index) => (
                     <div 
                         key={index} 
                         className="flex items-center px-6 py-5 bg-[#F9FAFB] rounded-lg border border-transparent transition-colors hover:border-gray-200"
@@ -79,9 +84,12 @@ const SpecTable = ({ data, isLoading }) => {
                 ))}
             </div>
             
-            {data.length > 10 && (
+            {hasMore && !isExpanded && (
               <div className="mt-8">
-                  <button className="h-11 px-10 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-slate-600 hover:bg-gray-50 transition-all shadow-sm">
+                  <button 
+                    onClick={() => setIsExpanded(true)}
+                    className="h-11 px-10 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-slate-600 hover:bg-gray-50 transition-all shadow-sm"
+                  >
                       See More
                   </button>
               </div>
