@@ -115,7 +115,7 @@ const SearchResults = ({ products, query = "", setQuery, sort, setSort, view = "
                         </DropdownMenu>
                     </div>
 
-                    <div className="flex items-center border border-neutral-200 rounded-lg bg-white p-1">
+                    <div className="hidden md:flex items-center border border-neutral-200 rounded-lg bg-white p-1">
                         <button
                             onClick={() => setView('grid')}
                             className={`p-1.5 rounded-md transition-colors ${view === 'grid' ? 'bg-neutral-100 text-neutral-900' : 'text-neutral-400 hover:text-neutral-600'}`}
