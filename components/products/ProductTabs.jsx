@@ -50,7 +50,7 @@ const orderHistoryData = [
   { orderNo: "SO-29-1006106", po: "IGORS MAZURS", date: "23-04-25", price: "$34", qty: 4, unit: "each", interval: "172" },
 ];
 
-// Reusable Component for the Zebra Striped Tables
+// Reusable Component for the Row-style Tables
 const SpecTable = ({ data, isLoading }) => {
     if (isLoading) {
       return (
@@ -70,26 +70,25 @@ const SpecTable = ({ data, isLoading }) => {
 
     return (
         <div className="w-full">
-            <div className="rounded-lg overflow-hidden">
+            <div className="space-y-3">
                 {data.map((item, index) => (
                     <div 
                         key={index} 
-                        className={`flex items-center px-6 py-5 ${
-                            index % 2 === 0 ? "bg-[#F9FAFB]" : "bg-white"
-                        }`}
+                        className="flex items-center px-6 py-5 bg-[#F9FAFB] rounded-lg border border-transparent transition-colors hover:border-gray-200"
                     >
-                        <div className="w-1/3 text-sm font-semibold text-slate-900">
+                        <div className="w-1/2 text-[15px] font-semibold text-slate-900">
                             {item.label || item.name}
                         </div>
-                        <div className="w-2/3 text-sm font-normal text-slate-900">
+                        <div className="w-1/2 text-[15px] font-medium text-slate-800">
                             {item.value}{item.unit ? ' ' + item.unit : ''}
                         </div>
                     </div>
                 ))}
             </div>
-            {data.length > 7 && (
-              <div className="mt-6">
-                  <button className="h-10 px-8 rounded-lg border border-gray-200 bg-white text-sm font-medium text-slate-700 hover:bg-gray-50 transition-colors shadow-sm">
+            
+            {data.length > 10 && (
+              <div className="mt-8">
+                  <button className="h-11 px-10 rounded-xl border border-gray-200 bg-white text-sm font-semibold text-slate-600 hover:bg-gray-50 transition-all shadow-sm">
                       See More
                   </button>
               </div>
@@ -156,12 +155,12 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
 
   return (
     <section className="w-full py-10 bg-white">
-      <h2 className="mb-6 text-[32px] font-bold text-slate-900 tracking-tight">Overview</h2>
+      <h2 className="mb-8 text-[36px] font-extrabold text-slate-900 tracking-tight">Overview</h2>
 
-      {/* --- TAB HEADER (FULL WIDTH SEGMENTED CONTROL) --- */}
-      <div className="mb-8 w-full">
-        <div className="w-full bg-[#F4F5F7] p-1.5 rounded-xl overflow-x-auto no-scrollbar">
-            <div className="flex md:grid md:grid-cols-6 gap-1 min-w-max md:min-w-0">
+      {/* --- TAB HEADER (UPDATED TO MATCH DESIGN) --- */}
+      <div className="mb-10 w-full">
+        <div className="w-full bg-[#F4F5F7] p-1.5 rounded-xl border border-gray-100 flex items-center overflow-x-auto no-scrollbar">
+            <div className="flex gap-1.5 min-w-max">
                 {TABS.map((tab) => {
                 const isActive = activeTab === tab;
                 return (
@@ -169,10 +168,10 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`
-                        flex items-center justify-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap
+                        flex items-center justify-center px-6 py-2.5 text-[14px] font-semibold rounded-lg transition-all duration-200 whitespace-nowrap
                         ${isActive 
-                            ? "bg-white text-slate-900 shadow-sm" 
-                            : "text-slate-500 hover:text-slate-700 hover:bg-gray-200/50"
+                            ? "bg-white text-slate-900 shadow-md border border-gray-100" 
+                            : "text-slate-500 hover:text-slate-800"
                         }
                     `}
                     >
@@ -213,43 +212,45 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
             ) : (
               <div className="space-y-6">
                 {/* Summary Header */}
-                <div className="flex items-center gap-6 p-4 bg-slate-50 rounded-lg border border-gray-200">
-                  <div className="flex items-center gap-2">
-                    <Package className="h-5 w-5 text-slate-600" />
+                <div className="flex items-center gap-6 p-4 bg-slate-50/50 rounded-xl border border-slate-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center">
+                      <Package className="h-4 w-4 text-slate-600" />
+                    </div>
                     <span className="text-sm font-semibold text-slate-900">
-                      Total Available: <span className="text-green-600">{inventoryData.totalAvailable}</span>
+                      Total Available: <span className="text-[#4a8b3c]">{inventoryData.totalAvailable}</span>
                     </span>
                   </div>
                 </div>
 
                 {/* Inventory Table */}
-                <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+                <div className="rounded-xl border border-gray-100 bg-white overflow-hidden shadow-sm">
                   <Table>
-                    <TableHeader className="bg-[#F9FAFB]">
-                      <TableRow className="border-b border-gray-200 hover:bg-[#F9FAFB]">
-                        <TableHead className="font-medium text-slate-500 h-12 pl-6">Warehouse</TableHead>
-                        <TableHead className="font-medium text-slate-500 h-12">Qty Available</TableHead>
-                        <TableHead className="font-medium text-slate-500 h-12">Qty On Hand</TableHead>
-                        <TableHead className="font-medium text-slate-500 h-12">Qty Committed</TableHead>
-                        <TableHead className="font-medium text-slate-500 h-12">Qty In Transit</TableHead>
-                        <TableHead className="font-medium text-slate-500 h-12">Qty On Order</TableHead>
-                        <TableHead className="font-medium text-slate-500 h-12">Qty Backordered</TableHead>
+                    <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
+                      <TableRow className="hover:bg-transparent">
+                        <TableHead className="text-[14px] font-bold text-slate-900 h-14 pl-6">Warehouse</TableHead>
+                        <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qty Available</TableHead>
+                        <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qty On Hand</TableHead>
+                        <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qty Committed</TableHead>
+                        <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qty In Transit</TableHead>
+                        <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qty On Order</TableHead>
+                        <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qty Backordered</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {inventoryData.inventoryDetails?.map((warehouse, idx) => (
-                        <TableRow key={idx} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
-                          <TableCell className="font-medium text-slate-700 py-4 pl-6">{warehouse.warehouse}</TableCell>
-                          <TableCell className="text-slate-600 py-4">
-                            <span className={warehouse.qtyAvailable > 0 ? "font-semibold text-green-600" : ""}>
+                        <TableRow key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50">
+                          <TableCell className="text-[13px] font-semibold text-slate-700 py-4 pl-6">{warehouse.warehouse}</TableCell>
+                          <TableCell className="text-[13px] py-4">
+                            <span className={warehouse.qtyAvailable > 0 ? "font-bold text-[#4a8b3c]" : "text-slate-600"}>
                               {warehouse.qtyAvailable}
                             </span>
                           </TableCell>
-                          <TableCell className="text-slate-600 py-4">{warehouse.qtyOnHand}</TableCell>
-                          <TableCell className="text-slate-600 py-4">{warehouse.qtyCommitted}</TableCell>
-                          <TableCell className="text-slate-600 py-4">{warehouse.qtyInTransit}</TableCell>
-                          <TableCell className="text-slate-600 py-4">{warehouse.qtyOnOrder}</TableCell>
-                          <TableCell className="text-slate-600 py-4">{warehouse.qtyBackordered}</TableCell>
+                          <TableCell className="text-[13px] text-slate-600 py-4">{warehouse.qtyOnHand}</TableCell>
+                          <TableCell className="text-[13px] text-slate-600 py-4">{warehouse.qtyCommitted}</TableCell>
+                          <TableCell className="text-[13px] text-slate-600 py-4">{warehouse.qtyInTransit}</TableCell>
+                          <TableCell className="text-[13px] text-slate-600 py-4">{warehouse.qtyOnOrder}</TableCell>
+                          <TableCell className="text-[13px] text-slate-600 py-4">{warehouse.qtyBackordered}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -263,11 +264,11 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
         {/* 4. RESOURCES */}
         {activeTab === "Resources" && (
           <div className="w-full max-w-[420px] mx-auto">
-            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0px_2px_10px_rgba(0,0,0,0.02)]">
-                <h3 className="mb-6 text-center text-[15px] font-medium text-slate-900">Item Level Drawing</h3>
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0px_2px_15px_rgba(0,0,0,0.03)]">
+                <h3 className="mb-6 text-center text-[15px] font-bold text-slate-900 uppercase tracking-tight">Item Level Drawing</h3>
                 
                 {/* Drawing Placeholder Area */}
-                <div className="mb-6 flex items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-[#FAFAFA] p-8 h-[240px]">
+                <div className="mb-6 flex items-center justify-center rounded-xl border-2 border-dashed border-gray-100 bg-slate-50/50 p-8 h-[240px]">
                     <div className="relative w-full h-full flex items-center justify-center opacity-80">
                          <img 
                             src="https://placehold.co/400x400/png?text=Drawing"
@@ -278,16 +279,16 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
                 </div>
 
                 {/* Download Button */}
-                <button className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm transition-all hover:border-gray-300 hover:bg-gray-50">
+                <button className="group flex w-full items-center justify-between rounded-lg border border-gray-100 bg-white px-4 py-3.5 text-sm transition-all hover:border-slate-200 hover:bg-slate-50 shadow-sm">
                     <div className="flex items-center gap-3">
-                        <div className="text-gray-400 rotate-45">
+                        <div className="text-slate-400 transition-colors group-hover:text-slate-600">
                            <FileText size={18} />
                         </div>
-                        <span className="font-medium text-slate-600">Download Catalog [English]</span>
+                        <span className="font-semibold text-slate-700">Download Catalog [English]</span>
                     </div>
                     <div className="flex items-center gap-3">
-                        <span className="text-xs text-gray-400 font-medium">(4mb)</span>
-                        <Download className="h-4 w-4 text-gray-400" />
+                        <span className="text-[11px] text-slate-400 font-bold uppercase tracking-tighter">(4mb)</span>
+                        <Download className="h-4 w-4 text-slate-400 transition-colors group-hover:text-slate-600" />
                     </div>
                 </button>
             </div>
@@ -301,63 +302,63 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
 
         {/* 6. ORDER HISTORY */}
         {activeTab === "Order History" && (
-          <div className="space-y-6 w-full">
+          <div className="space-y-6 w-full animate-in fade-in duration-500">
             
             {/* Summary Header */}
-            <div className="text-[13px] text-slate-600">
-                <span className="text-gray-500">Total Order:</span> <span className="font-semibold text-slate-900 mr-3">4</span>,{' '}
-                <span className="text-gray-500">Total Quantity:</span> <span className="font-semibold text-slate-900 mr-3">35</span>,{' '}
-                <span className="text-gray-500">Total Sale Amount:</span> <span className="font-semibold text-slate-900">$231.28</span>
+            <div className="text-[13px] font-medium text-slate-500">
+                Total Order: <span className="font-bold text-slate-900 mr-4">4</span>
+                Total Quantity: <span className="font-bold text-slate-900 mr-4">35</span>
+                Total Sale Amount: <span className="font-bold text-slate-900">$231.28</span>
             </div>
 
             {/* Controls */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="relative w-full max-w-[280px]">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <div className="relative w-full max-w-[320px]">
+                    <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                     <input 
                         type="text" 
-                        placeholder="Search..." 
-                        className="w-full rounded-md border border-gray-200 py-2 pl-9 pr-12 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400"
+                        placeholder="Search orders..." 
+                        className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-10 pr-12 text-[13px] outline-none transition-all focus:border-[#4a8b3c] focus:ring-1 focus:ring-[#4a8b3c]/20 shadow-sm placeholder:text-slate-400"
                     />
-                    <div className="absolute right-2 top-1/2 -translate-y-1/2 rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-500 border border-gray-200">
+                    <div className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold text-slate-400 border border-slate-100">
                         ⌘1
                     </div>
                 </div>
                 
                 <div className="flex gap-3">
-                    <button className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-gray-50">
+                    <button className="flex items-center gap-2.5 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-[14px] font-semibold text-slate-700 transition-all hover:bg-slate-50 shadow-sm">
                         <Filter className="h-4 w-4" /> Filter
                     </button>
-                    <button className="flex items-center gap-2 rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-gray-50">
-                        Last Week <span className="text-[8px] ml-1 opacity-60">▼</span>
+                    <button className="flex items-center gap-2.5 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-[14px] font-semibold text-slate-700 transition-all hover:bg-slate-50 shadow-sm">
+                        Last Week <ChevronRight className="h-3.5 w-3.5 rotate-90 opacity-60" />
                     </button>
                 </div>
             </div>
 
             {/* Data Table */}
-            <div className="rounded-lg border border-gray-200 bg-white overflow-hidden w-full">
+            <div className="rounded-xl border border-gray-100 bg-white overflow-hidden w-full shadow-sm">
                 <Table>
-                    <TableHeader className="bg-[#F9FAFB]">
-                        <TableRow className="border-b border-gray-200 hover:bg-[#F9FAFB]">
-                            <TableHead className="w-[180px] font-medium text-slate-500 h-12 pl-6">Order Number</TableHead>
-                            <TableHead className="font-medium text-slate-500 h-12">Customer PO</TableHead>
-                            <TableHead className="font-medium text-slate-500 h-12">Order Date</TableHead>
-                            <TableHead className="font-medium text-slate-500 h-12">Price</TableHead>
-                            <TableHead className="font-medium text-slate-500 h-12">Qty Ordered</TableHead>
-                            <TableHead className="font-medium text-slate-500 h-12">Unit</TableHead>
-                            <TableHead className="font-medium text-slate-500 h-12">Interval</TableHead>
+                    <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
+                        <TableRow className="hover:bg-transparent">
+                            <TableHead className="w-[180px] font-bold text-slate-900 h-14 pl-6 text-[14px]">Order Number</TableHead>
+                            <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Customer PO</TableHead>
+                            <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Order Date</TableHead>
+                            <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Price</TableHead>
+                            <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Qty Ordered</TableHead>
+                            <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Unit</TableHead>
+                            <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Interval</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {orderHistoryData.map((order, idx) => (
-                            <TableRow key={idx} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
-                                <TableCell className="font-medium text-slate-600 py-4 pl-6">{order.orderNo}</TableCell>
-                                <TableCell className="text-slate-600 py-4">{order.po}</TableCell>
-                                <TableCell className="text-slate-600 py-4">{order.date}</TableCell>
-                                <TableCell className="text-slate-600 py-4">{order.price}</TableCell>
-                                <TableCell className="text-slate-600 py-4">{order.qty}</TableCell>
-                                <TableCell className="text-slate-600 py-4">{order.unit}</TableCell>
-                                <TableCell className="font-bold text-slate-900 py-4">{order.interval}</TableCell>
+                            <TableRow key={idx} className="border-b border-gray-50 last:border-0 transition-colors hover:bg-slate-50/50">
+                                <TableCell className="font-semibold text-slate-700 py-4 pl-6 text-[14px]">{order.orderNo}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.po}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.date}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.price}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px] font-medium">{order.qty}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.unit}</TableCell>
+                                <TableCell className="font-bold text-slate-900 py-4 text-[14px]">{order.interval}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -365,29 +366,37 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between pt-2">
-                <div className="text-sm text-gray-500 font-medium">Page 2 of 16</div>
-                <div className="flex items-center gap-1">
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 mr-2">
-                        <ChevronLeft className="h-4 w-4 text-gray-600" />
+            <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+                <div className="text-[14px] text-slate-500 font-bold uppercase tracking-wider">Page 2 of 16</div>
+                <div className="flex items-center gap-1.5">
+                    <button className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-white hover:bg-slate-50 shadow-sm transition-all mr-2">
+                        <ChevronLeft className="h-5 w-5 text-slate-600" />
                     </button>
                     
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-500 hover:bg-gray-100 font-medium">1</button>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-sm font-medium text-white shadow-sm">2</button>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-500 hover:bg-gray-100 font-medium">3</button>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-500 hover:bg-gray-100 font-medium">4</button>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-500 hover:bg-gray-100 font-medium">5</button>
-                    <span className="flex h-8 w-8 items-center justify-center text-sm text-gray-400">...</span>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full text-sm text-gray-500 hover:bg-gray-100 font-medium">16</button>
+                    {[1, 2, 3, 4, 5].map((pageNum) => (
+                      <button 
+                        key={pageNum}
+                        className={`flex h-10 w-10 items-center justify-center rounded-full text-[14px] font-bold transition-all
+                          ${pageNum === 2 
+                            ? "bg-slate-900 text-white shadow-xl shadow-slate-200" 
+                            : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                          }
+                        `}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+                    <span className="flex h-10 w-6 items-center justify-center text-[14px] text-slate-300 font-bold">...</span>
+                    <button className="flex h-10 w-10 items-center justify-center rounded-full text-[14px] font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900">16</button>
 
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 ml-2">
-                        <ChevronRight className="h-4 w-4 text-gray-600" />
+                    <button className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-white hover:bg-slate-50 shadow-sm transition-all ml-2">
+                        <ChevronRight className="h-5 w-5 text-slate-600" />
                     </button>
                 </div>
                 
                 <div className="hidden sm:block">
-                     <button className="flex items-center gap-2 rounded border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50">
-                        7 / page <span className="text-[8px] opacity-60">▼</span>
+                     <button className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-5 py-2.5 text-[14px] font-bold text-slate-600 hover:bg-slate-50 shadow-sm transition-all">
+                        7 / page <ChevronRight className="h-4 w-4 rotate-90 opacity-60 ml-2" />
                      </button>
                 </div>
             </div>

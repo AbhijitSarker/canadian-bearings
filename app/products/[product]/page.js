@@ -84,7 +84,7 @@ export default function ProductPage() {
     prodId: productData.prodId,
     uniqueId: productData.uniqueId,
     brand: productData.brandName,
-    title: productData.descriptions?.description || productData.cbSku,
+    title: productData.descriptions?.descriptionShort || productData.cbSku,
     subtitle: productData.descriptions?.descriptionShort || "",
     itemNumber: productData.mfgSku || productData.cbSku,
     mfgSku: productData.mfgSku,
