@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import ProductGallery from "@/components/product/ProductGallery";
-import ProductInfo from "@/components/product/ProductInfo";
-import ProductBuyBox from "@/components/product/ProductBuyBox";
-import ProductTabs from "@/components/product/ProductTabs";
+import ProductGallery from "@/components/products/ProductGallery";
+import ProductInfo from "@/components/products/ProductInfo";
+import ProductBuyBox from "@/components/products/ProductBuyBox";
+import ProductTabs from "@/components/products/ProductTabs";
 import FeaturedProducts from "@/components/home/feature-products";
 import { getProductDetails } from "@/lib/api/services/products";
 import ProductsPageSkeleton from "@/components/skeletons/ProductsPageSkeleton";
@@ -103,7 +103,7 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-white pb-20 container mx-auto">
       <div className="container mx-auto max-w-[1400px] px-4 md:px-6 py-6">
         
         {/* --- TOP SECTION (3 COLUMNS) --- */}

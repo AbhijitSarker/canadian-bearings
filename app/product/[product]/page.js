@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import ProductGallery from "@/components/product/ProductGallery";
-import ProductInfo from "@/components/product/ProductInfo";
-import ProductBuyBox from "@/components/product/ProductBuyBox";
-import ProductTabs from "@/components/product/ProductTabs";
+import ProductGallery from "@/components/products/ProductGallery";
+import ProductInfo from "@/components/products/ProductInfo";
+import ProductBuyBox from "@/components/products/ProductBuyBox";
+import ProductTabs from "@/components/products/ProductTabs";
 import FeaturedProducts from "@/components/home/feature-products";
 import { getProductDetails } from "@/lib/api/services/products";
 import ProductsPageSkeleton from "@/components/skeletons/ProductsPageSkeleton";
