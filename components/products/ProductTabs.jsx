@@ -7,6 +7,7 @@ import {
   Download, 
   ChevronLeft, 
   ChevronRight, 
+  ChevronDown,
   FileText,
   Package,
   Loader2
@@ -203,64 +204,14 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
     }
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit'
-    });
-  };
-
-  return (
-    <section className="w-full py-10 bg-white">
-      <h2 className="mb-8 text-[36px] font-extrabold text-slate-900 tracking-tight">Overview</h2>
-
-      {/* --- TAB HEADER (UPDATED TO MATCH DESIGN) --- */}
-      <div className="mb-10 w-full">
-        <div className="w-full bg-[#F4F5F7] p-1.5 rounded-xl border border-gray-100 flex items-center overflow-x-auto no-scrollbar">
-            <div className="flex gap-1.5 min-w-max">
-                {TABS.map((tab) => {
-                const isActive = activeTab === tab;
-                return (
-                    <button
-                    key={tab}
-                    onClick={() => {
-                        setActiveTab(tab);
-                        setCurrentPage(1); // Reset page when switching tabs
-                    }}
-                    className={`
-                        flex items-center justify-center px-6 py-2.5 text-[14px] font-semibold rounded-lg transition-all duration-200 whitespace-nowrap
-                        ${isActive 
-                            ? "bg-white text-slate-900 shadow-md border border-gray-100" 
-                            : "text-slate-500 hover:text-slate-800"
-                        }
-                    `}
-                    >
-                    {tab}
-                    </button>
-                );
-                })}
-            </div>
-        </div>
-      </div>
-
-      {/* --- TAB CONTENT --- */}
-      <div className="min-h-[200px]">
-        
-        {/* 1. TECHNICAL SPECIFICATIONS */}
-        {activeTab === "Technical Specifications" && (
-            <SpecTable data={specs} isLoading={false} />
-        )}
-
-        {/* 2. PACKAGING DETAILS */}
-        {activeTab === "Packaging Details" && (
-            <SpecTable data={packingData} isLoading={isLoadingPacking} />
-        )}
-
-        {/* 3. INVENTORY */}
-        {activeTab === "Inventory" && (
+  const renderTabContent = (tab) => {
+    switch (tab) {
+      case "Technical Specifications":
+        return <SpecTable data={specs} isLoading={false} />;
+      case "Packaging Details":
+        return <SpecTable data={packingData} isLoading={isLoadingPacking} />;
+      case "Inventory":
+        return (
           <div className="w-full">
             {isLoadingInventory ? (
               <div className="flex items-center justify-center py-12">
@@ -274,7 +225,6 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
               </div>
             ) : (
               <div className="space-y-6">
-                {/* Summary Header */}
                 <div className="flex items-center gap-6 p-4 bg-slate-50/50 rounded-xl border border-slate-100">
                   <div className="flex items-center gap-2.5">
                     <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center">
@@ -285,9 +235,7 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                     </span>
                   </div>
                 </div>
-
-                {/* Inventory Table */}
-                <div className="rounded-xl border border-gray-100 bg-white overflow-hidden shadow-sm">
+                <div className="rounded-xl border border-gray-100 bg-white overflow-hidden shadow-sm overflow-x-auto">
                   <Table>
                     <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
                       <TableRow className="hover:bg-transparent">
@@ -303,7 +251,7 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                     <TableBody>
                       {inventoryData.inventoryDetails?.map((warehouse, idx) => (
                         <TableRow key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50">
-                          <TableCell className="text-[13px] font-semibold text-slate-700 py-4 pl-6">{warehouse.warehouse}</TableCell>
+                          <TableCell className="text-[13px] font-semibold text-slate-700 py-4 pl-6 whitespace-nowrap">{warehouse.warehouse}</TableCell>
                           <TableCell className="text-[13px] py-4">
                             <span className={warehouse.qtyAvailable > 0 ? "font-bold text-[#4a8b3c]" : "text-slate-600"}>
                               {warehouse.qtyAvailable}
@@ -322,15 +270,12 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
               </div>
             )}
           </div>
-        )}
-
-        {/* 4. RESOURCES */}
-        {activeTab === "Resources" && (
+        );
+      case "Resources":
+        return (
           <div className="w-full max-w-[420px] mx-auto">
             <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-[0px_2px_15px_rgba(0,0,0,0.03)]">
                 <h3 className="mb-6 text-center text-[15px] font-bold text-slate-900 uppercase tracking-tight">Item Level Drawing</h3>
-                
-                {/* Drawing Placeholder Area */}
                 <div className="mb-6 flex items-center justify-center rounded-xl border-2 border-dashed border-gray-100 bg-slate-50/50 p-8 h-[240px]">
                     <div className="relative w-full h-full flex items-center justify-center opacity-80">
                          <img 
@@ -340,8 +285,6 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                          />
                     </div>
                 </div>
-
-                {/* Download Button */}
                 <button className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3.5 text-sm transition-all hover:border-slate-200 hover:bg-slate-50 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="text-slate-400 transition-colors group-hover:text-slate-600">
@@ -356,32 +299,23 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                 </button>
             </div>
           </div>
-        )}
-
-        {/* 5. CUSTOMER SPECIFIC INFO */}
-        {activeTab === "Customer Specific Info" && (
-            <SpecTable data={customerInfoData} isLoading={false} />
-        )}
-
-        {/* 6. ORDER HISTORY */}
-        {activeTab === "Order History" && (
+        );
+      case "Customer Specific Info":
+        return <SpecTable data={customerInfoData} isLoading={false} />;
+      case "Order History":
+        return (
           <div className="space-y-6 w-full animate-in fade-in duration-500">
-            
-            {/* Summary Header */}
             <div className="text-[13px] font-medium text-slate-500">
                 Total Order: <span className="font-bold text-slate-900 mr-4">{orderSummary.totalOrders}</span>
                 Total Quantity: <span className="font-bold text-slate-900 mr-4">{orderSummary.totalQty}</span>
                 Total Sale Amount: <span className="font-bold text-slate-900">${orderSummary.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
-
-                  {/* Data Table */}
-            <div className="rounded-xl border border-gray-100 bg-white overflow-hidden w-full shadow-sm relative min-h-[300px]">
-                {isLoadingOrderHistory ? (
+            <div className="rounded-xl border border-gray-100 bg-white overflow-hidden w-full shadow-sm relative min-h-[300px] overflow-x-auto">
+                {isLoadingOrderHistory && (
                   <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10 flex items-center justify-center">
                     <Loader2 className="h-8 w-8 animate-spin text-[#4a8b3c]" />
                   </div>
-                ) : null}
-                
+                )}
                 <Table>
                     <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
                         <TableRow className="hover:bg-transparent">
@@ -399,10 +333,10 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                         {orderHistory.length > 0 ? (
                           orderHistory.map((order, idx) => (
                             <TableRow key={idx} className="border-b border-gray-50 last:border-0 transition-colors hover:bg-slate-50/50">
-                                <TableCell className="font-semibold text-slate-700 py-4 pl-6 text-[14px]">{order.orderNo}</TableCell>
-                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.custpo || "-"}</TableCell>
-                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.placedByName || "-"}</TableCell>
-                                <TableCell className="text-slate-600 py-4 text-[14px]">{formatDate(order.enterdt)}</TableCell>
+                                <TableCell className="font-semibold text-slate-700 py-4 pl-6 text-[14px] whitespace-nowrap">{order.orderNo}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px] whitespace-nowrap">{order.custpo || "-"}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px] whitespace-nowrap">{order.placedByName || "-"}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px] whitespace-nowrap">{formatDate(order.enterdt)}</TableCell>
                                 <TableCell className="text-slate-600 py-4 text-[14px]">${order.price?.toFixed(2)}</TableCell>
                                 <TableCell className="text-slate-600 py-4 text-[14px] font-medium">{order.qtyOrdered}</TableCell>
                                 <TableCell className="text-slate-600 py-4 text-[14px]">{order.unit}</TableCell>
@@ -419,14 +353,12 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                     </TableBody>
                 </Table>
             </div>
-
-            {/* Pagination */}
             {orderSummary.totalOrders > pageSize && (
-              <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-50">
                   <div className="text-[14px] text-slate-500 font-bold uppercase tracking-wider">
                     Page {currentPage} of {totalPages}
                   </div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 flex-wrap justify-center">
                       <button 
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
@@ -434,7 +366,6 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                       >
                           <ChevronLeft className="h-5 w-5 text-slate-600" />
                       </button>
-                      
                       {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                         const pageNum = i + 1;
                         return (
@@ -452,7 +383,6 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                           </button>
                         );
                       })}
-                      
                       {totalPages > 5 && <span className="flex h-10 w-6 items-center justify-center text-[14px] text-slate-300 font-bold">...</span>}
                       {totalPages > 5 && (
                         <button 
@@ -467,7 +397,6 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                           {totalPages}
                         </button>
                       )}
-
                       <button 
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
@@ -476,7 +405,6 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                           <ChevronRight className="h-5 w-5 text-slate-600" />
                       </button>
                   </div>
-                  
                   <div className="hidden sm:block">
                        <button className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-5 py-2.5 text-[14px] font-bold text-slate-600 hover:bg-slate-50 shadow-sm transition-all">
                           {pageSize} / page <ChevronRight className="h-4 w-4 rotate-90 opacity-60 ml-2" />
@@ -484,10 +412,85 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                   </div>
               </div>
             )}
-
           </div>
-        )}
+        );
+      default:
+        return null;
+    }
+  };
 
+  return (
+    <section className="w-full py-10 bg-white">
+      <h2 className="mb-8 text-[28px] sm:text-[36px] font-extrabold text-slate-900 tracking-tight">Overview</h2>
+
+      {/* --- DESKTOP VIEW (sm and up) --- */}
+      <div className="hidden sm:block">
+        {/* Tab Header */}
+        <div className="mb-10 w-full bg-[#F4F5F7] p-1.5 rounded-xl border border-gray-100 flex items-center overflow-x-auto no-scrollbar">
+            <div className="flex gap-1.5 min-w-max">
+                {TABS.map((tab) => {
+                const isActive = activeTab === tab;
+                return (
+                    <button
+                        key={tab}
+                        onClick={() => {
+                            setActiveTab(tab);
+                            setCurrentPage(1);
+                        }}
+                        className={`
+                            flex items-center justify-center px-6 py-2.5 text-[14px] font-semibold rounded-lg transition-all duration-200 whitespace-nowrap
+                            ${isActive 
+                                ? "bg-white text-slate-900 shadow-md border border-gray-100" 
+                                : "text-slate-500 hover:text-slate-800"
+                            }
+                        `}
+                    >
+                        {tab}
+                    </button>
+                );
+                })}
+            </div>
+        </div>
+
+        {/* Tab Content */}
+        <div className="min-h-[200px] animate-in fade-in duration-500">
+          {renderTabContent(activeTab)}
+        </div>
+      </div>
+
+      {/* --- MOBILE VIEW (Accordion) --- */}
+      <div className="block sm:hidden space-y-3">
+        {TABS.map((tab) => {
+          const isActive = activeTab === tab;
+          return (
+            <div key={tab} className="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-sm">
+              <button
+                onClick={() => {
+                   setActiveTab(isActive ? null : tab);
+                   setCurrentPage(1);
+                }}
+                className={`
+                  w-full flex items-center justify-between px-5 py-4 text-left transition-colors
+                  ${isActive ? "bg-slate-50 border-b border-gray-100" : "bg-white"}
+                `}
+              >
+                <span className={`text-[15px] font-bold ${isActive ? "text-slate-900" : "text-slate-700"}`}>
+                  {tab}
+                </span>
+                <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform duration-300 ${isActive ? "rotate-180 text-slate-900" : ""}`} />
+              </button>
+              
+              <div className={`
+                overflow-hidden transition-all duration-300 ease-in-out
+                ${isActive ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"}
+              `}>
+                <div className="p-5">
+                  {renderTabContent(tab)}
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
