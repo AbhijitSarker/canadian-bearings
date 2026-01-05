@@ -29,6 +29,7 @@ const TABS = [
   "Technical Specifications",
   "Packaging Details",
   "Inventory",
+  "Vendor Inventory",
   "Resources",
   "Customer Specific Info",
   "Order History"
@@ -42,6 +43,12 @@ const customerInfoData = [
   { label: "Location", value: "1" },
   { label: "Selling Unit Code", value: "EA" },
   { label: "Qty Interval", value: "1.0000" },
+];
+
+const vendorInventoryData = [
+  { location: "Warehouse A", address: "123 Industrial Way, Toronto, ON", leadtime: "2-3 Days", qty: 450 },
+  { location: "Warehouse B", address: "456 Logistics Blvd, Vancouver, BC", leadtime: "5-7 Days", qty: 120 },
+  { location: "Supplier Direct", address: "789 Factory Rd, Chicago, IL", leadtime: "10-14 Days", qty: 1500 },
 ];
 
 // Reusable Component for the Row-style Tables
@@ -279,6 +286,35 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                 </div>
               </div>
             )}
+          </div>
+        );
+      case "Vendor Inventory":
+        return (
+          <div className="w-full">
+            <div className="rounded-xl border border-gray-100 bg-white overflow-hidden shadow-sm overflow-x-auto">
+              <Table>
+                <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
+                  <TableRow className="hover:bg-transparent">
+                    <TableHead className="text-[14px] font-bold text-slate-900 h-14 pl-6">Location</TableHead>
+                    <TableHead className="text-[14px] font-bold text-slate-900 h-14">Address</TableHead>
+                    <TableHead className="text-[14px] font-bold text-slate-900 h-14">Leadtime</TableHead>
+                    <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qty Available</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {vendorInventoryData.map((item, idx) => (
+                    <TableRow key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50">
+                      <TableCell className="text-[13px] font-semibold text-slate-700 py-4 pl-6 whitespace-nowrap">{item.location}</TableCell>
+                      <TableCell className="text-[13px] text-slate-600 py-4 min-w-[200px]">{item.address}</TableCell>
+                      <TableCell className="text-[13px] text-slate-600 py-4 whitespace-nowrap">{item.leadtime}</TableCell>
+                      <TableCell className="text-[13px] py-4 whitespace-nowrap font-bold text-slate-900">
+                        {item.qty.toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         );
       case "Resources":
