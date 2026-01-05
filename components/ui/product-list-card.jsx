@@ -164,7 +164,7 @@ export default function ProductListCard({
                         <button
                             onClick={handleRevealPrice}
                             disabled={isLoadingPrice}
-                            className="flex items-center gap-2 rounded-md bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 transition-all hover:bg-gray-200 disabled:opacity-50"
+                            className="flex items-center gap-2 rounded-md bg-orange-50 px-4 py-2.5 text-sm font-medium text-[#E65100] transition-all hover:bg-orange-100 disabled:opacity-50"
                         >
                             {isLoadingPrice ? (
                                 <>
@@ -221,7 +221,7 @@ export default function ProductListCard({
                     <button 
                         onClick={handleAddToCart}
                         disabled={isAdding}
-                        className="w-full bg-white border border-[#ebebeb] text-neutral-600 hover:text-white py-3 rounded-[10px] hover:bg-green-500 hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-green-500 border border-[#ebebeb] text-white hover:text-white py-3 rounded-[10px] hover:bg-green-600 hover:text-white transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <ShoppingCart fill="currentColor"/>
                         <span className="text-[16px] leading-[20px]  font-[500]">

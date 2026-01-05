@@ -98,7 +98,7 @@ export default function ProductCard({
         /* 1. Added 'h-full', 'flex', and 'flex-col' to the main wrapper. 
               This ensures the card stretches to fill the grid cell and acts as a flex container.
         */
-        <div className={`bg-white rounded-[10px] border border-neutral-300 p-[10px] relative h-full flex flex-col`}>
+        <div className={`bg-white rounded-[10px] border border-neutral-300 p-[10px] hover:shadow-md relative h-full flex flex-col`}>
             {/* Favorite Icon */}
             <button
                 onClick={handleFavoriteClick}
@@ -152,7 +152,7 @@ export default function ProductCard({
                         <button
                             onClick={handleRevealPrice}
                             disabled={isLoadingPrice}
-                            className="flex items-center gap-1.5 rounded-md bg-gray-100 px-3 py-2 text-xs font-medium text-gray-700 transition-all hover:bg-gray-200 disabled:opacity-50"
+                            className="flex items-center gap-1.5 rounded-md bg-orange-50 px-3 py-2 text-xs font-medium text-[#E65100] transition-all hover:bg-orange-100 disabled:opacity-50"
                         >
                             {isLoadingPrice ? (
                                 <>
@@ -209,7 +209,7 @@ export default function ProductCard({
                 <button
                     onClick={handleAddToCart}
                     disabled={isAdding}
-                    className="w-full bg-white border border-[#ebebeb] text-neutral-600 hover:text-white py-3 rounded-[10px] hover:bg-green-500 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-green-500 border border-[#ebebeb] text-white hover:text-white py-3 rounded-[10px] hover:bg-green-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <ShoppingCart size={20} />
                     <span className="text-[16px] leading-[20px] font-[500]">
