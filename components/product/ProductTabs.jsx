@@ -98,7 +98,7 @@ export default function ProductTabs() {
   const [activeTab, setActiveTab] = useState("Technical Specifications");
 
   return (
-    <section className="w-full py-10 bg-white font-sans">
+    <section className="w-full py-10 bg-white">
       <h2 className="mb-6 text-[32px] font-bold text-slate-900 tracking-tight">Overview</h2>
 
       {/* --- TAB HEADER (FULL WIDTH SEGMENTED CONTROL) --- */}

@@ -102,7 +102,7 @@ export default function ProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-20 font-sans text-slate-800">
+    <div className="min-h-screen bg-white pb-20">
       <div className="container mx-auto max-w-[1400px] px-4 md:px-6 py-6">
         
         {/* --- TOP SECTION (3 COLUMNS) --- */}
