@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { 
   Search, 
   Filter, 
@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { getPackingInfo, getInventory } from "@/lib/api/services/products";
+import { getPackingInfo, getInventory, getOrderHistory } from "@/lib/api/services/products";
 import toast from "react-hot-toast";
 
 const TABS = [
@@ -41,13 +41,6 @@ const customerInfoData = [
   { label: "Location", value: "1" },
   { label: "Selling Unit Code", value: "EA" },
   { label: "Qty Interval", value: "1.0000" },
-];
-
-const orderHistoryData = [
-  { orderNo: "SO-29-1006106", po: "IGORS MAZURS", date: "23-04-25", price: "$34", qty: 4, unit: "each", interval: "172" },
-  { orderNo: "SO-29-1006106", po: "IGORS MAZURS", date: "23-04-25", price: "$34", qty: 4, unit: "each", interval: "172" },
-  { orderNo: "SO-29-1006106", po: "IGORS MAZURS", date: "23-04-25", price: "$34", qty: 4, unit: "each", interval: "172" },
-  { orderNo: "SO-29-1006106", po: "IGORS MAZURS", date: "23-04-25", price: "$34", qty: 4, unit: "each", interval: "172" },
 ];
 
 // Reusable Component for the Row-style Tables
@@ -97,12 +90,19 @@ const SpecTable = ({ data, isLoading }) => {
     );
 };
 
-export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] }) {
+export default function ProductTabs({ productUuid, productId, custSKU, cbSku, specs = [] }) {
   const [activeTab, setActiveTab] = useState("Technical Specifications");
   const [packingData, setPackingData] = useState([]);
   const [inventoryData, setInventoryData] = useState(null);
   const [isLoadingPacking, setIsLoadingPacking] = useState(false);
   const [isLoadingInventory, setIsLoadingInventory] = useState(false);
+
+  // Order History State
+  const [orderHistory, setOrderHistory] = useState([]);
+  const [orderSummary, setOrderSummary] = useState({ totalOrders: 0, totalQty: 0, totalAmount: 0 });
+  const [isLoadingOrderHistory, setIsLoadingOrderHistory] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
   // Fetch packing info when Packaging Details tab is active
   useEffect(() => {
@@ -117,6 +117,13 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
       fetchInventoryData();
     }
   }, [activeTab]);
+
+  // Fetch order history when Order History tab is active or page changes
+  useEffect(() => {
+    if (activeTab === "Order History" && productId) {
+      fetchOrderHistory();
+    }
+  }, [activeTab, productId, currentPage]);
 
   const fetchPackingInfo = async () => {
     setIsLoadingPacking(true);
@@ -153,6 +160,51 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
     }
   };
 
+  const fetchOrderHistory = async () => {
+    setIsLoadingOrderHistory(true);
+    try {
+      const payload = {
+        productId: productId,
+        pageNumber: currentPage,
+        pageSize: pageSize
+      };
+      const response = await getOrderHistory(payload);
+      if (response.success) {
+        setOrderHistory(response.orderHistory || []);
+        setOrderSummary({
+          totalOrders: response.numberOfOrders || 0,
+          totalQty: response.totalQtyOrdered || 0,
+          totalAmount: response.totalSaleAmount || 0
+        });
+      } else {
+        toast.error(response.message || "Failed to load order history");
+      }
+    } catch (error) {
+      console.error("Error fetching order history:", error);
+      toast.error("Failed to load order history");
+    } finally {
+      setIsLoadingOrderHistory(false);
+    }
+  };
+
+  const totalPages = Math.ceil(orderSummary.totalOrders / pageSize) || 1;
+
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: '2-digit'
+    });
+  };
+
   return (
     <section className="w-full py-10 bg-white">
       <h2 className="mb-8 text-[36px] font-extrabold text-slate-900 tracking-tight">Overview</h2>
@@ -166,7 +218,10 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
                 return (
                     <button
                     key={tab}
-                    onClick={() => setActiveTab(tab)}
+                    onClick={() => {
+                        setActiveTab(tab);
+                        setCurrentPage(1); // Reset page when switching tabs
+                    }}
                     className={`
                         flex items-center justify-center px-6 py-2.5 text-[14px] font-semibold rounded-lg transition-all duration-200 whitespace-nowrap
                         ${isActive 
@@ -279,7 +334,7 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
                 </div>
 
                 {/* Download Button */}
-                <button className="group flex w-full items-center justify-between rounded-lg border border-gray-100 bg-white px-4 py-3.5 text-sm transition-all hover:border-slate-200 hover:bg-slate-50 shadow-sm">
+                <button className="group flex w-full items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-3.5 text-sm transition-all hover:border-slate-200 hover:bg-slate-50 shadow-sm">
                     <div className="flex items-center gap-3">
                         <div className="text-slate-400 transition-colors group-hover:text-slate-600">
                            <FileText size={18} />
@@ -306,42 +361,25 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
             
             {/* Summary Header */}
             <div className="text-[13px] font-medium text-slate-500">
-                Total Order: <span className="font-bold text-slate-900 mr-4">4</span>
-                Total Quantity: <span className="font-bold text-slate-900 mr-4">35</span>
-                Total Sale Amount: <span className="font-bold text-slate-900">$231.28</span>
+                Total Order: <span className="font-bold text-slate-900 mr-4">{orderSummary.totalOrders}</span>
+                Total Quantity: <span className="font-bold text-slate-900 mr-4">{orderSummary.totalQty}</span>
+                Total Sale Amount: <span className="font-bold text-slate-900">${orderSummary.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
 
-            {/* Controls */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="relative w-full max-w-[320px]">
-                    <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input 
-                        type="text" 
-                        placeholder="Search orders..." 
-                        className="w-full rounded-lg border border-gray-200 bg-white py-2.5 pl-10 pr-12 text-[13px] outline-none transition-all focus:border-[#4a8b3c] focus:ring-1 focus:ring-[#4a8b3c]/20 shadow-sm placeholder:text-slate-400"
-                    />
-                    <div className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold text-slate-400 border border-slate-100">
-                        ⌘1
-                    </div>
-                </div>
+                  {/* Data Table */}
+            <div className="rounded-xl border border-gray-100 bg-white overflow-hidden w-full shadow-sm relative min-h-[300px]">
+                {isLoadingOrderHistory ? (
+                  <div className="absolute inset-0 bg-white/50 backdrop-blur-[2px] z-10 flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-[#4a8b3c]" />
+                  </div>
+                ) : null}
                 
-                <div className="flex gap-3">
-                    <button className="flex items-center gap-2.5 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-[14px] font-semibold text-slate-700 transition-all hover:bg-slate-50 shadow-sm">
-                        <Filter className="h-4 w-4" /> Filter
-                    </button>
-                    <button className="flex items-center gap-2.5 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-[14px] font-semibold text-slate-700 transition-all hover:bg-slate-50 shadow-sm">
-                        Last Week <ChevronRight className="h-3.5 w-3.5 rotate-90 opacity-60" />
-                    </button>
-                </div>
-            </div>
-
-            {/* Data Table */}
-            <div className="rounded-xl border border-gray-100 bg-white overflow-hidden w-full shadow-sm">
                 <Table>
                     <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
                         <TableRow className="hover:bg-transparent">
-                            <TableHead className="w-[180px] font-bold text-slate-900 h-14 pl-6 text-[14px]">Order Number</TableHead>
-                            <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Customer PO</TableHead>
+                            <TableHead className="w-[150px] font-bold text-slate-900 h-14 pl-6 text-[14px]">Order #</TableHead>
+                            <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Cust PO</TableHead>
+                            <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Placed By</TableHead>
                             <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Order Date</TableHead>
                             <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Price</TableHead>
                             <TableHead className="font-bold text-slate-900 h-14 text-[14px]">Qty Ordered</TableHead>
@@ -350,56 +388,94 @@ export default function ProductTabs({ productUuid, custSKU, cbSku, specs = [] })
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {orderHistoryData.map((order, idx) => (
+                        {orderHistory.length > 0 ? (
+                          orderHistory.map((order, idx) => (
                             <TableRow key={idx} className="border-b border-gray-50 last:border-0 transition-colors hover:bg-slate-50/50">
                                 <TableCell className="font-semibold text-slate-700 py-4 pl-6 text-[14px]">{order.orderNo}</TableCell>
-                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.po}</TableCell>
-                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.date}</TableCell>
-                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.price}</TableCell>
-                                <TableCell className="text-slate-600 py-4 text-[14px] font-medium">{order.qty}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.custpo || "-"}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px]">{order.placedByName || "-"}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px]">{formatDate(order.enterdt)}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px]">${order.price?.toFixed(2)}</TableCell>
+                                <TableCell className="text-slate-600 py-4 text-[14px] font-medium">{order.qtyOrdered}</TableCell>
                                 <TableCell className="text-slate-600 py-4 text-[14px]">{order.unit}</TableCell>
-                                <TableCell className="font-bold text-slate-900 py-4 text-[14px]">{order.interval}</TableCell>
+                                <TableCell className="font-bold text-slate-900 py-4 text-[14px]">{order.interval || "-"}</TableCell>
                             </TableRow>
-                        ))}
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={8} className="text-center py-10 text-slate-500">
+                              No order history found for this product.
+                            </TableCell>
+                          </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-                <div className="text-[14px] text-slate-500 font-bold uppercase tracking-wider">Page 2 of 16</div>
-                <div className="flex items-center gap-1.5">
-                    <button className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-white hover:bg-slate-50 shadow-sm transition-all mr-2">
-                        <ChevronLeft className="h-5 w-5 text-slate-600" />
-                    </button>
-                    
-                    {[1, 2, 3, 4, 5].map((pageNum) => (
+            {orderSummary.totalOrders > pageSize && (
+              <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+                  <div className="text-[14px] text-slate-500 font-bold uppercase tracking-wider">
+                    Page {currentPage} of {totalPages}
+                  </div>
+                  <div className="flex items-center gap-1.5">
                       <button 
-                        key={pageNum}
-                        className={`flex h-10 w-10 items-center justify-center rounded-full text-[14px] font-bold transition-all
-                          ${pageNum === 2 
-                            ? "bg-slate-900 text-white shadow-xl shadow-slate-200" 
-                            : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-                          }
-                        `}
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-white hover:bg-slate-50 shadow-sm transition-all mr-2 disabled:opacity-30"
                       >
-                        {pageNum}
+                          <ChevronLeft className="h-5 w-5 text-slate-600" />
                       </button>
-                    ))}
-                    <span className="flex h-10 w-6 items-center justify-center text-[14px] text-slate-300 font-bold">...</span>
-                    <button className="flex h-10 w-10 items-center justify-center rounded-full text-[14px] font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900">16</button>
+                      
+                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                        const pageNum = i + 1;
+                        return (
+                          <button 
+                            key={pageNum}
+                            onClick={() => handlePageChange(pageNum)}
+                            className={`flex h-10 w-10 items-center justify-center rounded-full text-[14px] font-bold transition-all
+                              ${pageNum === currentPage 
+                                ? "bg-slate-900 text-white shadow-xl shadow-slate-200" 
+                                : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                              }
+                            `}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+                      
+                      {totalPages > 5 && <span className="flex h-10 w-6 items-center justify-center text-[14px] text-slate-300 font-bold">...</span>}
+                      {totalPages > 5 && (
+                        <button 
+                          onClick={() => handlePageChange(totalPages)}
+                          className={`flex h-10 w-10 items-center justify-center rounded-full text-[14px] font-bold transition-all
+                            ${currentPage === totalPages 
+                              ? "bg-slate-900 text-white shadow-xl shadow-slate-200" 
+                              : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                            }
+                          `}
+                        >
+                          {totalPages}
+                        </button>
+                      )}
 
-                    <button className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-white hover:bg-slate-50 shadow-sm transition-all ml-2">
-                        <ChevronRight className="h-5 w-5 text-slate-600" />
-                    </button>
-                </div>
-                
-                <div className="hidden sm:block">
-                     <button className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-5 py-2.5 text-[14px] font-bold text-slate-600 hover:bg-slate-50 shadow-sm transition-all">
-                        7 / page <ChevronRight className="h-4 w-4 rotate-90 opacity-60 ml-2" />
-                     </button>
-                </div>
-            </div>
+                      <button 
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-100 bg-white hover:bg-slate-50 shadow-sm transition-all ml-2 disabled:opacity-30"
+                      >
+                          <ChevronRight className="h-5 w-5 text-slate-600" />
+                      </button>
+                  </div>
+                  
+                  <div className="hidden sm:block">
+                       <button className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-5 py-2.5 text-[14px] font-bold text-slate-600 hover:bg-slate-50 shadow-sm transition-all">
+                          {pageSize} / page <ChevronRight className="h-4 w-4 rotate-90 opacity-60 ml-2" />
+                       </button>
+                  </div>
+              </div>
+            )}
 
           </div>
         )}

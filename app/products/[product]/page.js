@@ -159,6 +159,7 @@ export default function ProductPage() {
             <div className="mb-16">
               <ProductTabs 
                 productUuid={mappedProduct.uniqueId}
+                productId={mappedProduct.prodId}
                 custSKU={mappedProduct.custSKU}
                 cbSku={mappedProduct.cbSku}
                 specs={mappedProduct.specs} 
