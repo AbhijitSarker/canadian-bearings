@@ -333,6 +333,8 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                     <TableRow className="hover:bg-transparent">
                       <TableHead className="text-[14px] font-bold text-slate-900 h-14 pl-6">Location</TableHead>
                       <TableHead className="text-[14px] font-bold text-slate-900 h-14">Address</TableHead>
+                      <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qualifier</TableHead>
+                      <TableHead className="text-[14px] font-bold text-slate-900 h-14">UOM</TableHead>
                       <TableHead className="text-[14px] font-bold text-slate-900 h-14">Leadtime</TableHead>
                       <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qty Available</TableHead>
                     </TableRow>
@@ -353,6 +355,8 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
                         <TableRow key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50">
                           <TableCell className="text-[13px] font-semibold text-slate-700 py-4 pl-6 whitespace-nowrap">{item.cityName}</TableCell>
                           <TableCell className="text-[13px] text-slate-600 py-4 min-w-[200px]">{addressParts.join(", ")}</TableCell>
+                          <TableCell className="text-[13px] text-slate-600 py-4 whitespace-nowrap">{item.productQualifier}</TableCell>
+                          <TableCell className="text-[13px] text-slate-600 py-4 whitespace-nowrap uppercase">{item.unitOfMeasure}</TableCell>
                           <TableCell className="text-[13px] text-slate-600 py-4 whitespace-nowrap">{leadtime}</TableCell>
                           <TableCell className="text-[13px] py-4 whitespace-nowrap font-bold text-slate-900">
                             {item.availableQty}
