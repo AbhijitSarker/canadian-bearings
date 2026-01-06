@@ -123,9 +123,10 @@ export default function ProductListCard({
 
             {/* Middle: Product Details */}
             <div className="flex-1 flex flex-col justify-center min-w-0 py-1">
-                {/* Category */}
-                <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px]">{product.categoryName}</p>
-
+                <div className="text-sm font-bold text-[#E65100] uppercase tracking-wide mb-2">
+                    {product.brandName}
+                </div>
+                
                 <Link href={`/products/${product.uniqueId}`}>
                 {/* Product Name */}
                 <h3 className="font-[500] hover:text-green-500 hover:underline text-[22px] leading-[100%] mb-3">{product.name}</h3>
@@ -135,7 +136,24 @@ export default function ProductListCard({
                 <p className="text-[14px] font-[300] leading-[100%] mb-3">{product.description} | {product.descriptionShort}</p>
                 
                 {/* Item Number */}
-                <p className="text-[14px] font-[300] leading-[100%] mt-auto mb-3">Item #{product.itemNumber}</p>
+
+                <div className="flex flex-wrap gap-2 mb-3">
+                    {(product.mfgSKU || product.mfgSku) && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100">
+                            MFG: {product.mfgSKU || product.mfgSku}
+                        </span>
+                    )}
+                    {(product.cbSKU || product.cbSku) && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-orange-50 text-orange-700 border border-orange-100">
+                            CB: {product.cbSKU || product.cbSku}
+                        </span>
+                    )}
+                    {(product.custSKU || product.custSku) && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-100">
+                            CUST: {product.custSKU || product.custSku}
+                        </span>
+                    )}
+                </div>
 
                 {/* Attributes - List View Exclusive Details */}
                 {product.attributes && product.attributes.length > 0 && (

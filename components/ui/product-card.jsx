@@ -120,10 +120,9 @@ export default function ProductCard({
                     />
                 </div>
 
-                {/* Category */}
-                <p className="text-neutral-800 text-[14px] font-[400] leading-[100%] mb-[10px] mt-[12px] truncate">
-                    {product.categoryName}
-                </p>
+            <div className="text-sm font-bold text-[#E65100] uppercase tracking-wide mb-2">
+                {product.brandName}
+            </div>
 
             {/* Clickable Product Link */}
             <Link href={`/products/${product.uniqueId}`} className="block">
@@ -138,10 +137,24 @@ export default function ProductCard({
                     {product.description} | {product.descriptionShort}
                 </p>
 
-                {/* Item Number */}
-                <p className="text-neutral-600 text-[14px] font-[300] leading-[100%] mb-[10px]">
-                    Item #{product.itemNumber}
-                </p>
+
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                    {(product.mfgSKU || product.mfgSku) && (
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-100">
+                            MFG: {product.mfgSKU || product.mfgSku}
+                        </span>
+                    )}
+                    {(product.cbSKU || product.cbSku) && (
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-orange-50 text-orange-700 border border-orange-100">
+                            CB: {product.cbSKU || product.cbSku}
+                        </span>
+                    )}
+                    {(product.custSKU || product.custSku) && (
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-100">
+                            CUST: {product.custSKU || product.custSku}
+                        </span>
+                    )}
+                </div>
 
             {/* 2. Added 'mt-auto' here. 
                   This pushes the Price section (and everything below it) to the bottom of the card.

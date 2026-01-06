@@ -134,6 +134,9 @@ export default function ProductPage() {
                   subtitle={mappedProduct.subtitle}
                   itemNumber={mappedProduct.itemNumber}
                   features={mappedProduct.features}
+                  mfgSku={mappedProduct.mfgSku}
+                  cbSku={mappedProduct.cbSku}
+                  custSKU={mappedProduct.custSKU}
                 />
               </div>
             </div>
