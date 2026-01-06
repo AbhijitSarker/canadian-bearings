@@ -2,6 +2,7 @@
 
 import { useCart } from '@/contexts/CartContext';
 import { X, Trash2, Plus, Minus, Loader2, ShoppingBag } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 function CartItemRow({ item, onUpdate, onRemove }) {
@@ -172,11 +173,13 @@ export default function CartSidebar() {
               >
                 {clearing ? 'Clearing...' : 'Clear Cart'}
               </button>
-              <button
-                className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
-              >
-                Proceed to Checkout
-              </button>
+                <button
+                  className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
+                >
+              <Link href="/cart">
+                  Proceed to Checkout
+                </Link>
+                </button>
             </div>
           </div>
         )}

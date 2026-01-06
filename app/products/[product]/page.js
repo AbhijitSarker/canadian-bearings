@@ -101,6 +101,7 @@ export default function ProductPage() {
     images: images,
     categoryName: productData.categoryName,
     unit: productData.unit,
+    isDVAVendor: productData.isDVAVendor || false,
   };
 
   return (
@@ -137,29 +138,6 @@ export default function ProductPage() {
               </div>
             </div>
 
-            {/* Bottom Content Area: Description + Tabs */}
-            <div className="mt-12">
-              {/* Product Description */}
-              {mappedProduct.description && (
-                <section className="mb-12">
-                  <h2 className="mb-4 text-3xl font-bold text-slate-900 tracking-tight">Product Details</h2>
-                  <p className="leading-relaxed text-slate-600 text-[15px] max-w-4xl">
-                    {mappedProduct.description}
-                  </p>
-                </section>
-              )}
-
-              {/* Tabs */}
-              <div className="mb-16">
-                <ProductTabs 
-                  productUuid={mappedProduct.uniqueId}
-                  productId={mappedProduct.prodId}
-                  custSKU={mappedProduct.custSKU}
-                  cbSku={mappedProduct.cbSku}
-                  specs={mappedProduct.specs} 
-                />
-              </div>
-            </div>
           </div>
 
           {/* RIGHT COLUMN: Buy Box (Sticky, Spans 3 Cols) */}
@@ -167,6 +145,29 @@ export default function ProductPage() {
             <div className="sticky top-6">
               <ProductBuyBox product={mappedProduct} />
             </div>
+          </div>
+        </div>
+        <div className="mt-12">
+          {/* Product Description */}
+          {mappedProduct.description && (
+            <section className="mb-12">
+              <h2 className="mb-4 text-3xl font-bold text-slate-900 tracking-tight">Product Details</h2>
+              <p className="leading-relaxed text-slate-600 text-[15px] max-w-4xl">
+                {mappedProduct.description}
+              </p>
+            </section>
+          )}
+
+          {/* Tabs */}
+          <div className="mb-16">
+            <ProductTabs 
+              productUuid={mappedProduct.uniqueId}
+              productId={mappedProduct.prodId}
+              custSKU={mappedProduct.custSKU}
+              cbSku={mappedProduct.cbSku}
+              specs={mappedProduct.specs} 
+              isDVAVendor={mappedProduct.isDVAVendor}
+            />
           </div>
         </div>
 

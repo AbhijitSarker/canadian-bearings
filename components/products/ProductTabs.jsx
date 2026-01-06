@@ -22,7 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { getPackingInfo, getInventory, getOrderHistory } from "@/lib/api/services/products";
+import { getPackingInfo, getInventory, getVendorInventory, getOrderHistory } from "@/lib/api/services/products";
 import toast from "react-hot-toast";
 
 const TABS = [
@@ -43,12 +43,6 @@ const customerInfoData = [
   { label: "Location", value: "1" },
   { label: "Selling Unit Code", value: "EA" },
   { label: "Qty Interval", value: "1.0000" },
-];
-
-const vendorInventoryData = [
-  { location: "Warehouse A", address: "123 Industrial Way, Toronto, ON", leadtime: "2-3 Days", qty: 450 },
-  { location: "Warehouse B", address: "456 Logistics Blvd, Vancouver, BC", leadtime: "5-7 Days", qty: 120 },
-  { location: "Supplier Direct", address: "789 Factory Rd, Chicago, IL", leadtime: "10-14 Days", qty: 1500 },
 ];
 
 // Reusable Component for the Row-style Tables
@@ -106,12 +100,22 @@ const SpecTable = ({ data, isLoading }) => {
     );
 };
 
-export default function ProductTabs({ productUuid, productId, custSKU, cbSku, specs = [] }) {
+export default function ProductTabs({ productUuid, productId, custSKU, cbSku, specs = [], isDVAVendor = false }) {
+  // Filter tabs based on isDVAVendor flag
+  const visibleTabs = TABS.filter(tab => {
+    if (tab === "Vendor Inventory") {
+      return isDVAVendor;
+    }
+    return true;
+  });
+
   const [activeTab, setActiveTab] = useState("Technical Specifications");
   const [packingData, setPackingData] = useState([]);
   const [inventoryData, setInventoryData] = useState(null);
+  const [vendorInventory, setVendorInventory] = useState(null);
   const [isLoadingPacking, setIsLoadingPacking] = useState(false);
   const [isLoadingInventory, setIsLoadingInventory] = useState(false);
+  const [isLoadingVendorInventory, setIsLoadingVendorInventory] = useState(false);
 
   // Order History State
   const [orderHistory, setOrderHistory] = useState([]);
@@ -133,6 +137,13 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
       fetchInventoryData();
     }
   }, [activeTab]);
+
+  // Fetch vendor inventory when Vendor Inventory tab is active
+  useEffect(() => {
+    if (activeTab === "Vendor Inventory" && productUuid && !vendorInventory) {
+      fetchVendorInventory();
+    }
+  }, [activeTab, productUuid]);
 
   // Fetch order history when Order History tab is active or page changes
   useEffect(() => {
@@ -173,6 +184,20 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
       setInventoryData({ success: false, message: "Failed to load inventory" });
     } finally {
       setIsLoadingInventory(false);
+    }
+  };
+
+  const fetchVendorInventory = async () => {
+    setIsLoadingVendorInventory(true);
+    try {
+      const data = await getVendorInventory(productUuid);
+      setVendorInventory(data);
+    } catch (error) {
+      console.error("Error fetching vendor inventory:", error);
+      toast.error("Failed to load vendor inventory");
+      setVendorInventory({ success: false, message: "Failed to load vendor inventory" });
+    } finally {
+      setIsLoadingVendorInventory(false);
     }
   };
 
@@ -291,30 +316,54 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
       case "Vendor Inventory":
         return (
           <div className="w-full">
-            <div className="rounded-xl border border-gray-100 bg-white overflow-hidden shadow-sm overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="text-[14px] font-bold text-slate-900 h-14 pl-6">Location</TableHead>
-                    <TableHead className="text-[14px] font-bold text-slate-900 h-14">Address</TableHead>
-                    <TableHead className="text-[14px] font-bold text-slate-900 h-14">Leadtime</TableHead>
-                    <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qty Available</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {vendorInventoryData.map((item, idx) => (
-                    <TableRow key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50">
-                      <TableCell className="text-[13px] font-semibold text-slate-700 py-4 pl-6 whitespace-nowrap">{item.location}</TableCell>
-                      <TableCell className="text-[13px] text-slate-600 py-4 min-w-[200px]">{item.address}</TableCell>
-                      <TableCell className="text-[13px] text-slate-600 py-4 whitespace-nowrap">{item.leadtime}</TableCell>
-                      <TableCell className="text-[13px] py-4 whitespace-nowrap font-bold text-slate-900">
-                        {item.qty.toLocaleString()}
-                      </TableCell>
+            {isLoadingVendorInventory ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+              </div>
+            ) : !vendorInventory?.success ? (
+              <div className="flex items-center justify-center py-12">
+                <p className="text-gray-500">
+                  {vendorInventory?.message || "No vendor inventory available"}
+                </p>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-gray-100 bg-white overflow-hidden shadow-sm overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-[#F9FAFB] border-b border-gray-100">
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead className="text-[14px] font-bold text-slate-900 h-14 pl-6">Location</TableHead>
+                      <TableHead className="text-[14px] font-bold text-slate-900 h-14">Address</TableHead>
+                      <TableHead className="text-[14px] font-bold text-slate-900 h-14">Leadtime</TableHead>
+                      <TableHead className="text-[14px] font-bold text-slate-900 h-14">Qty Available</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {vendorInventory.results?.map((item, idx) => {
+                      const addressParts = [item.cityName, item.stateCode, item.countryCode, item.postalCode].filter(Boolean);
+                      // Use dateAvailable as Leadtime, format it nicely if it's a date string like YYYYMMDD
+                      let leadtime = item.dateAvailable;
+                      if (item.dateAvailable && item.dateAvailable.length === 8) {
+                          const y = item.dateAvailable.substring(0, 4);
+                          const m = item.dateAvailable.substring(4, 6);
+                          const d = item.dateAvailable.substring(6, 8);
+                          leadtime = `${d}/${m}/${y}`; 
+                      }
+
+                      return (
+                        <TableRow key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50">
+                          <TableCell className="text-[13px] font-semibold text-slate-700 py-4 pl-6 whitespace-nowrap">{item.cityName}</TableCell>
+                          <TableCell className="text-[13px] text-slate-600 py-4 min-w-[200px]">{addressParts.join(", ")}</TableCell>
+                          <TableCell className="text-[13px] text-slate-600 py-4 whitespace-nowrap">{leadtime}</TableCell>
+                          <TableCell className="text-[13px] py-4 whitespace-nowrap font-bold text-slate-900">
+                            {item.availableQty}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </div>
         );
       case "Resources":
@@ -474,15 +523,15 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
         {/* Tab Header */}
         <div className="mb-10 w-full bg-[#F4F5F7] p-1.5 rounded-xl border border-gray-100 flex items-center overflow-x-auto no-scrollbar">
             <div className="flex gap-1.5 min-w-max">
-                {TABS.map((tab) => {
+                {visibleTabs.map((tab) => {
                 const isActive = activeTab === tab;
                 return (
                     <button
-                        key={tab}
-                        onClick={() => {
-                            setActiveTab(tab);
-                            setCurrentPage(1);
-                        }}
+                    key={tab}
+                    onClick={() => {
+                        setActiveTab(tab);
+                        setCurrentPage(1);
+                    }}
                         className={`
                             flex items-center justify-center px-6 py-2.5 text-[14px] font-semibold rounded-lg transition-all duration-200 whitespace-nowrap
                             ${isActive 
@@ -506,7 +555,7 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
 
       {/* --- MOBILE VIEW (Accordion) --- */}
       <div className="block sm:hidden space-y-3">
-        {TABS.map((tab) => {
+        {visibleTabs.map((tab) => {
           const isActive = activeTab === tab;
           return (
             <div key={tab} className="border border-gray-100 rounded-xl overflow-hidden bg-white shadow-sm">

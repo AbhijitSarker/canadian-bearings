@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Minus, Plus, ShoppingCart, Truck, Eye } from "lucide-react";
+import { Minus, Plus, ShoppingCart, Truck } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import toast from "react-hot-toast";
@@ -13,8 +13,7 @@ export default function ProductBuyBox({ product }) {
   const { isAuthenticated } = useAuth();
   const [isAdding, setIsAdding] = useState(false);
   const [priceData, setPriceData] = useState(null);
-  const [isPriceRevealed, setIsPriceRevealed] = useState(false);
-  const [isLoadingPrice, setIsLoadingPrice] = useState(false);
+  const [isLoadingPrice, setIsLoadingPrice] = useState(true);
 
   const handleQuantityChange = (type) => {
     if (type === "increment") {
@@ -24,37 +23,38 @@ export default function ProductBuyBox({ product }) {
     }
   };
 
-  const handleRevealPrice = async () => {
-    setIsLoadingPrice(true);
-    
-    // Determine which part number to use
-    const partNo = product.custSKU || product.cbSku;
-    
-    if (!partNo) {
-      // No part number available, show "On Request"
-      setPriceData({ por: true });
-      setIsPriceRevealed(true);
-      setIsLoadingPrice(false);
-      return;
-    }
-
-    try {
-      const data = await getProductPrice(partNo);
-      if (data.success) {
-        setPriceData(data.product);
-      } else {
+  useEffect(() => {
+    const fetchPrice = async () => {
+      setIsLoadingPrice(true);
+      
+      // Determine which part number to use
+      const partNo = product.custSKU || product.cbSku;
+      
+      if (!partNo) {
+        // No part number available, show "On Request"
         setPriceData({ por: true });
+        setIsLoadingPrice(false);
+        return;
       }
-      setIsPriceRevealed(true);
-    } catch (error) {
-      console.error("Error fetching price:", error);
-      toast.error("Failed to load price");
-      setPriceData({ por: true });
-      setIsPriceRevealed(true);
-    } finally {
-      setIsLoadingPrice(false);
-    }
-  };
+
+      try {
+        const data = await getProductPrice(partNo);
+        if (data.success) {
+          setPriceData(data.product);
+        } else {
+          setPriceData({ por: true });
+        }
+      } catch (error) {
+        console.error("Error fetching price:", error);
+        // Don't show toast on auto-fetch failure to avoid annoying user immediately on load
+        setPriceData({ por: true });
+      } finally {
+        setIsLoadingPrice(false);
+      }
+    };
+
+    fetchPrice();
+  }, [product.custSKU, product.cbSku]);
 
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
@@ -81,15 +81,8 @@ export default function ProductBuyBox({ product }) {
         <div className="mb-6">
           <p className="text-[13px] font-medium text-gray-400">Your Price</p>
           
-          {!isPriceRevealed ? (
-            <button
-              onClick={handleRevealPrice}
-              disabled={isLoadingPrice}
-              className="mt-2 flex items-center gap-2 rounded-lg bg-orange-50 px-4 py-2.5 text-sm font-semibold text-[#E65100] transition-all hover:bg-orange-100 disabled:opacity-50"
-            >
-              <Eye className="h-4 w-4" />
-              {isLoadingPrice ? "Loading..." : "Reveal Price"}
-            </button>
+          {isLoadingPrice ? (
+             <div className="mt-1 h-8 w-32 text-black animate-pulse rounded">Getting Price Info..</div>
           ) : (
             <>
               {priceData?.por || !priceData?.price ? (
