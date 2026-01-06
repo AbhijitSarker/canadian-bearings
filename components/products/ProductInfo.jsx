@@ -37,14 +37,15 @@ export default function ProductInfo({ brand, title, subtitle, itemNumber, featur
         </div>
       </div>
 
-      <ul className="mt-4 space-y-2.5">
+      <p className="mt-4 text-[15px] text-slate-600 leading-relaxed">
         {features.map((feature, index) => (
-          <li key={index} className="flex items-start gap-2.5 text-[15px] text-slate-600">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-            <span className="leading-snug">{feature}</span>
-          </li>
+          <React.Fragment key={index}>
+            <span className="font-bold text-slate-900">{feature.name}:</span>{" "}
+            <span>{feature.value}</span>
+            {index < features.length - 1 && ", "}
+          </React.Fragment>
         ))}
-      </ul>
+      </p>
     </div>
   );
 }

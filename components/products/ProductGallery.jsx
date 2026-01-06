@@ -9,11 +9,11 @@ export default function ProductGallery({ images, title }) {
   return (
     <div className="flex flex-col gap-4">
       {/* Main Image */}
-      <div className="flex items-center justify-center rounded-xl border border-gray-100 bg-gray-50/50 p-8">
+      <div className="flex h-[400px] items-center justify-center rounded-xl border border-gray-100 bg-gray-50/50 p-8">
         <img
           src={images[selectedImageIndex]}
           alt={title}
-          className="max-h-[400px] w-auto object-contain mix-blend-multiply"
+          className="h-full w-auto object-contain mix-blend-multiply"
         />
       </div>
 

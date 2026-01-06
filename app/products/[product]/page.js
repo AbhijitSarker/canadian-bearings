@@ -67,13 +67,30 @@ export default function ProductPage() {
   }
 
   // Map API response to component props
-  const images = productData.imageUrl 
-    ? [productData.imageUrl] 
-    : ["https://placehold.co/600x600/png"];
+  // Helper to fix protocol-relative URLs
+  const fixUrl = (url) => {
+    if (!url) return null;
+    return url.startsWith("//") ? `https:${url}` : url;
+  };
 
-  const features = productData.technicalSpecs?.map(spec => 
-    `${spec.name}: ${spec.value}${spec.unit ? ' ' + spec.unit : ''}`
-  ) || [];
+  const images = [];
+  const img1 = fixUrl(productData.imageUrl);
+  if (img1) images.push(img1);
+
+  const img2 = fixUrl(productData.categoryImageUrl);
+  if (img2) images.push(img2);
+
+  const img3 = fixUrl(productData.brandImageUrl);
+  if (img3) images.push(img3);
+
+  if (images.length === 0) {
+    images.push("https://placehold.co/600x600/png");
+  }
+
+  const features = productData.technicalSpecs?.map(spec => ({
+    name: spec.name,
+    value: `${spec.value}${spec.unit ? ' ' + spec.unit : ''}`
+  })) || [];
 
   const specs = productData.technicalSpecs?.map(spec => ({
     label: spec.name,
