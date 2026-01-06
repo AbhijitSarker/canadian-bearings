@@ -70,11 +70,11 @@ const SpecTable = ({ data, isLoading }) => {
 
     return (
         <div className="w-full">
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {displayData.map((item, index) => (
                     <div 
                         key={index} 
-                        className="flex items-center px-6 py-5 bg-[#F9FAFB] rounded-lg border border-transparent transition-colors hover:border-gray-200"
+                        className="flex items-center px-6 py-4 bg-[#F9FAFB] rounded-lg border border-transparent transition-colors hover:border-gray-200"
                     >
                         <div className="w-1/2 text-[15px] font-semibold text-slate-900">
                             {item.label || item.name}
