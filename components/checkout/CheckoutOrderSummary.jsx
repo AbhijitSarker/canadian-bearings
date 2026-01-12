@@ -9,7 +9,8 @@ const CheckoutOrderSummary = ({
   taxes, 
   total, 
   itemCount,
-  onCheckout 
+  onCheckout,
+  currentStep = 1
 }) => {
   return (
     <div className="bg-white rounded-lg border border-gray-100 p-6 sticky top-4">
@@ -56,9 +57,10 @@ const CheckoutOrderSummary = ({
 
       <Button 
         onClick={onCheckout}
-        className="w-full h-12 text-base bg-green-600 hover:bg-green-700"
+        disabled={currentStep !== 4}
+        className="w-full h-12 text-base bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Checkout
+        Place Order
       </Button>
 
       <p className="text-xs text-gray-400 mt-4 italic">

@@ -88,6 +88,9 @@ export default function CheckoutPage() {
       // Move to payment step
       setCurrentStep(3);
     } else if (currentStep === 3) {
+      // Move to review step
+      setCurrentStep(4);
+    } else if (currentStep === 4) {
       // Final checkout - would submit order to backend
       console.log('Checkout complete!', {
         contactInfo,
@@ -100,15 +103,8 @@ export default function CheckoutPage() {
   };
 
   const handleCheckout = () => {
-    if (currentStep === 1) {
-      // Move to step 2 if contact info is saved
-      if (contactInfo) {
-        setCurrentStep(2);
-      }
-    } else if (currentStep === 2) {
-      // Move to step 3 for payment
-      setCurrentStep(3);
-    } else {
+    // Only allow checkout on review page (step 4)
+    if (currentStep === 4) {
       handleNext();
     }
   };
@@ -118,7 +114,7 @@ export default function CheckoutPage() {
       <div className="min-h-screen py-8">
         <div className="container mx-auto px-4 max-w-7xl">
           {/* Stepper */}
-          <CheckoutStepper currentStep={currentStep} />
+          <CheckoutStepper currentStep={currentStep} onStepClick={setCurrentStep} />
 
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Main Content */}
@@ -146,7 +142,7 @@ export default function CheckoutPage() {
                       disabled={!contactInfo}
                       className="flex items-center gap-2 px-8 h-11 bg-green-600 hover:bg-green-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Next
+                      Save and Next
                       <ArrowRight className="w-4 h-4" />
                     </Button>
                   </div>
@@ -155,14 +151,81 @@ export default function CheckoutPage() {
 
               {currentStep === 2 && (
                 <>
-                  {/* Contact Info Summary (Read-only) */}
+                  {/* Shipping Address */}
+                  <ShippingAddressSelector
+                    addresses={shippingAddresses}
+                    selectedAddress={selectedShippingAddress}
+                    onSelectAddress={setSelectedShippingAddress}
+                    onAddAddress={handleAddShippingAddress}
+                  />
+
+                  {/* Shipping Method */}
+                  <ShippingMethodSelector
+                    selectedMethod={selectedShippingMethod}
+                    onSelectMethod={setSelectedShippingMethod}
+                  />
+
+                  {/* Navigation Buttons */}
+                  <div className="flex justify-between items-center pt-4">
+                    <Button
+                      onClick={() => setCurrentStep(1)}
+                      variant="outline"
+                      className="flex items-center gap-2 px-6 h-11 border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      Back
+                    </Button>
+                    <Button
+                      onClick={handleNext}
+                      className="flex items-center gap-2 px-8 h-11 bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      Save and Next
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </>
+              )}
+
+              {currentStep === 3 && (
+                <>
+                  {/* Payment Method */}
+                  <PaymentMethodSelector
+                    selectedMethod={selectedPaymentMethod}
+                    onSelectMethod={setSelectedPaymentMethod}
+                    onAddMethod={handleAddPaymentMethod}
+                  />
+
+                  {/* Navigation Buttons */}
+                  <div className="flex justify-between items-center pt-4">
+                    <Button
+                      onClick={() => setCurrentStep(2)}
+                      variant="outline"
+                      className="flex items-center gap-2 px-6 h-11 border-gray-300 text-gray-700 hover:bg-gray-50"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      Back
+                    </Button>
+                    <Button
+                      onClick={handleNext}
+                      className="flex items-center gap-2 px-8 h-11 bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      Review Checkout
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </>
+              )}
+
+              {currentStep === 4 && (
+                <>
+                  {/* Review Page - Show all details */}
                   {contactInfo && (
                     <div className="bg-white rounded-lg border border-gray-100 p-6">
                       <div className="flex justify-between items-start mb-4">
                         <h2 className="text-xl font-semibold text-gray-900">Contact Information</h2>
                         <button
                           onClick={() => setCurrentStep(1)}
-                          className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900"
+                          className="flex items-center gap-1 text-sm text-orange-500 hover:text-orange-600"
                         >
                           Edit
                         </button>
@@ -190,76 +253,13 @@ export default function CheckoutPage() {
                     </div>
                   )}
 
-                  {/* Shipping Address */}
-                  <ShippingAddressSelector
-                    addresses={shippingAddresses}
-                    selectedAddress={selectedShippingAddress}
-                    onSelectAddress={setSelectedShippingAddress}
-                    onAddAddress={handleAddShippingAddress}
-                  />
-
-                  {/* Shipping Method */}
-                  <ShippingMethodSelector
-                    selectedMethod={selectedShippingMethod}
-                    onSelectMethod={setSelectedShippingMethod}
-                  />
-
-                  {/* Navigation Buttons */}
-                  <div className="flex justify-between items-center pt-4">
-                    <Button
-                      onClick={handleBackToShopping}
-                      variant="outline"
-                      className="flex items-center gap-2 px-6 h-11 border-gray-300 text-gray-700 hover:bg-gray-50"
-                    >
-                      <ArrowLeft className="w-4 h-4" />
-                      Back to Shopping
-                    </Button>
-                    <Button
-                      onClick={handleNext}
-                      className="flex items-center gap-2 px-8 h-11 bg-green-600 hover:bg-green-700 text-white"
-                    >
-                      Next
-                      <ArrowRight className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </>
-              )}
-
-              {currentStep === 3 && (
-                <>
-                  {/* Contact Info Summary (Read-only) */}
-                  {contactInfo && (
-                    <div className="bg-white rounded-lg border border-gray-100 p-6">
-                      <div className="flex justify-between items-start mb-4">
-                        <h2 className="text-xl font-semibold text-gray-900">Contact Information</h2>
-                        <button
-                          onClick={() => setCurrentStep(1)}
-                          className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900"
-                        >
-                          Edit
-                        </button>
-                      </div>
-                      <div className="space-y-2 text-sm">
-                        <p className="text-gray-600">
-                          <span className="font-medium text-gray-900">Name:</span> {contactInfo.firstName} {contactInfo.lastName}
-                        </p>
-                        <p className="text-gray-600">
-                          <span className="font-medium text-gray-900">Email:</span> {contactInfo.email}
-                        </p>
-                        <p className="text-gray-600">
-                          <span className="font-medium text-gray-900">Phone:</span> ({contactInfo.countryCode}) {contactInfo.phone}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Shipping Summary (Read-only) */}
+                  {/* Shipping Summary */}
                   <div className="bg-white rounded-lg border border-gray-100 p-6">
                     <div className="flex justify-between items-start mb-4">
                       <h2 className="text-xl font-semibold text-gray-900">Shipping Details</h2>
                       <button
                         onClick={() => setCurrentStep(2)}
-                        className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900"
+                        className="flex items-center gap-1 text-sm text-orange-500 hover:text-orange-600"
                       >
                         Edit
                       </button>
@@ -270,7 +270,7 @@ export default function CheckoutPage() {
                         <p className="text-sm text-gray-600">{selectedShippingAddress.fullName}</p>
                         <p className="text-sm text-gray-600">{selectedShippingAddress.street}</p>
                         <p className="text-sm text-gray-600">
-                          {selectedShippingAddress.city}, {selectedShippingAddress.state} {selectedShippingAddress.zipCode}
+                          {selectedShippingAddress.city}, {selectedShippingAddress.state} ({selectedShippingAddress.country}), {selectedShippingAddress.zipCode}
                         </p>
                       </div>
                       <div className="pt-3 border-t border-gray-100">
@@ -280,28 +280,39 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  {/* Payment Method */}
-                  <PaymentMethodSelector
-                    selectedMethod={selectedPaymentMethod}
-                    onSelectMethod={setSelectedPaymentMethod}
-                    onAddMethod={handleAddPaymentMethod}
-                  />
+                  {/* Payment Summary */}
+                  <div className="bg-white rounded-lg border border-gray-100 p-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <h2 className="text-xl font-semibold text-gray-900">Payment Method</h2>
+                      <button
+                        onClick={() => setCurrentStep(3)}
+                        className="flex items-center gap-1 text-sm text-orange-500 hover:text-orange-600"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <p className="text-gray-600">
+                        <span className="font-medium text-gray-900">{selectedPaymentMethod.name}</span>
+                      </p>
+                      {selectedPaymentMethod.type === 'card' && selectedPaymentMethod.cardHolder && (
+                        <>
+                          <p className="text-sm text-gray-600">{selectedPaymentMethod.cardHolder}</p>
+                          <p className="text-sm text-gray-600">{selectedPaymentMethod.cardNumber}</p>
+                        </>
+                      )}
+                    </div>
+                  </div>
 
                   {/* Navigation Buttons */}
                   <div className="flex justify-between items-center pt-4">
                     <Button
-                      onClick={() => setCurrentStep(2)}
+                      onClick={() => setCurrentStep(3)}
                       variant="outline"
                       className="flex items-center gap-2 px-6 h-11 border-gray-300 text-gray-700 hover:bg-gray-50"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       Back
-                    </Button>
-                    <Button
-                      onClick={handleNext}
-                      className="flex items-center gap-2 px-8 h-11 bg-green-600 hover:bg-green-700 text-white"
-                    >
-                      Place Order
                     </Button>
                   </div>
                 </>
@@ -317,6 +328,7 @@ export default function CheckoutPage() {
                 taxes={taxes}
                 total={total}
                 itemCount={itemCount}
+                currentStep={currentStep}
                 onCheckout={handleCheckout}
               />
             </div>

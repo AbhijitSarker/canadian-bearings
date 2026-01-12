@@ -212,15 +212,6 @@ const ContactInformationForm = ({ initialData, onSave, isEditMode = false }) => 
           </div>
         </div>
 
-        {/* Submit Button */}
-        <div className="pt-4">
-          <Button
-            type="submit"
-            className="w-full md:w-auto px-8 h-11 bg-green-600 hover:bg-green-700 text-white"
-          >
-            Save
-          </Button>
-        </div>
       </form>
     </div>
   );
