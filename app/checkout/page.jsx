@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
@@ -59,10 +59,9 @@ export default function CheckoutPage() {
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   // Handlers
-  const handleSaveContactInfo = (data) => {
+  const handleSaveContactInfo = useCallback((data) => {
     setContactInfo(data);
-    setCurrentStep(2);
-  };
+  }, []);
 
   const handleAddShippingAddress = (address) => {
     const newAddress = {
@@ -139,7 +138,7 @@ export default function CheckoutPage() {
                     </Button>
                     <Button
                       onClick={() => contactInfo && setCurrentStep(2)}
-                      disabled={!contactInfo}
+                      disabled={!contactInfo?.firstName || !contactInfo?.lastName || !contactInfo?.email || !contactInfo?.phone}
                       className="flex items-center gap-2 px-8 h-11 bg-green-600 hover:bg-green-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Save and Next

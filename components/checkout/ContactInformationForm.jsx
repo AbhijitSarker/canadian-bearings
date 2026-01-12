@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Mail, Upload, Edit2 } from 'lucide-react';
 
@@ -17,6 +17,11 @@ const ContactInformationForm = ({ initialData, onSave, isEditMode = false }) => 
   });
 
   const [isEditing, setIsEditing] = useState(!isEditMode);
+
+  // Sync data with parent whenever it changes
+  useEffect(() => {
+    onSave(formData);
+  }, [formData, onSave]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
