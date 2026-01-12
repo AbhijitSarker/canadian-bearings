@@ -70,7 +70,7 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen py-8">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex flex-col items-center justify-center h-96">
             <Loader2 className="w-12 h-12 animate-spin text-green-600 mb-4" />
@@ -83,7 +83,7 @@ export default function CartPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50 py-8">
+      <div className="min-h-screen py-8">
         <div className="container mx-auto px-4 max-w-7xl">
 
           {/* Page Header */}

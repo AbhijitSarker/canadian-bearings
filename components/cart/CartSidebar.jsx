@@ -30,13 +30,23 @@ function CartItemRow({ item, onUpdate, onRemove }) {
 
       {/* Product Details */}
       <div className="flex-1 min-w-0">
-        <h4 className="font-medium text-gray-900 text-sm mb-1 truncate">
-          {item.cbSku || 'Product'}
+        <h4 className="font-medium text-gray-900 text-sm mb-1 truncate ">
+          <span className='font-semibold'>CB SKU: </span>{item.cbSku || 'Product'}
         </h4>
         <p className="text-xs text-gray-500 mb-2">
           Source: {item.sourceType || item.productSource}
           {item.sourceReferenceId && ` - ${item.sourceReferenceId}`}
         </p>
+        <div className="flex flex-col gap-1 mb-2">
+          <p className="text-xs text-gray-500">
+            ID: <span className="font-medium text-gray-700">{item.productId}</span>
+          </p>
+          {item.addedDate && (
+             <p className="text-xs text-gray-500">
+               Added: {new Date(item.addedDate).toLocaleDateString()}
+             </p>
+          )}
+        </div>
 
         {/* Quantity Controls */}
         <div className="flex items-center gap-2">
@@ -173,13 +183,22 @@ export default function CartSidebar() {
               >
                 {clearing ? 'Clearing...' : 'Clear Cart'}
               </button>
-                <button
-                  className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium"
+                <div className='flex gap-2'>
+                <Link
+                  href="/cart"
+                  onClick={closeCart}
+                  className="block w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium text-center"
                 >
-              <Link href="/cart">
+                  Go to Cart
+                </Link>
+                <Link
+                  href="/checkout"
+                  onClick={closeCart}
+                  className="block w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium text-center"
+                >
                   Proceed to Checkout
                 </Link>
-                </button>
+                </div>
             </div>
           </div>
         )}
