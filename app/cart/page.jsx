@@ -10,6 +10,7 @@ import EmptyCart from '@/components/cart/EmptyCart';
 import { Button } from '@/components/ui/button';
 import { searchGLCodes } from '@/lib/api/services/glcodes';
 import { useState, useEffect } from 'react';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 export default function CartPage() {
   const router = useRouter();
@@ -81,61 +82,63 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-7xl">
-        
-        {/* Page Header */}
-        <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-lg border border-gray-100">
-          <h1 className="text-2xl font-semibold text-gray-900">
-            Shopping Cart <span className="text-gray-500 font-normal">({items.length} {items.length === 1 ? 'item' : 'items'})</span>
-          </h1>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="text-gray-600 border-gray-200 hover:bg-gray-50"
-            onClick={() => window.print()}
-          >
-            <Printer size={16} />
-            Print
-          </Button>
-        </div>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4 max-w-7xl">
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Cart Items List */}
-          <div className="flex-1 space-y-4">
-            {transformedItems.length > 0 ? (
-              transformedItems.map(item => (
-                <CartItem 
-                  key={item.id} 
-                  item={item} 
-                  glCodes={glCodes}
-                  onUpdateQuantity={(id, qty) => handleUpdateItem(item.cartItemId, { quantity: qty })}
-                  onUpdateItem={handleUpdateItem}
-                  onRemove={(id) => handleRemove(item.cartItemId)}
+          {/* Page Header */}
+          <div className="flex justify-between items-center mb-6 bg-white p-4 rounded-lg border border-gray-100">
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Shopping Cart <span className="text-gray-500 font-normal">({items.length} {items.length === 1 ? 'item' : 'items'})</span>
+            </h1>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-gray-600 border-gray-200 hover:bg-gray-50"
+              onClick={() => window.print()}
+            >
+              <Printer size={16} />
+              Print
+            </Button>
+          </div>
+
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Cart Items List */}
+            <div className="flex-1 space-y-4">
+              {transformedItems.length > 0 ? (
+                transformedItems.map(item => (
+                  <CartItem
+                    key={item.id}
+                    item={item}
+                    glCodes={glCodes}
+                    onUpdateQuantity={(id, qty) => handleUpdateItem(item.cartItemId, { quantity: qty })}
+                    onUpdateItem={handleUpdateItem}
+                    onRemove={(id) => handleRemove(item.cartItemId)}
+                  />
+                ))
+              ) : (
+                <EmptyCart />
+              )}
+            </div>
+
+            {/* Order Summary Sidebar */}
+            {transformedItems.length > 0 && (
+              <div className="w-full lg:w-[380px] shrink-0">
+                <OrderSummary
+                  subtotal={subtotal}
+                  savings={savings}
+                  shipping={shipping}
+                  taxes={taxes}
+                  total={total}
+                  itemCount={items.reduce((acc, item) => acc + item.quantity, 0)}
+                  onCheckout={handleCheckout}
                 />
-              ))
-            ) : (
-              <EmptyCart />
+              </div>
             )}
           </div>
 
-          {/* Order Summary Sidebar */}
-          {transformedItems.length > 0 && (
-            <div className="w-full lg:w-[380px] shrink-0">
-              <OrderSummary 
-                subtotal={subtotal}
-                savings={savings}
-                shipping={shipping}
-                taxes={taxes}
-                total={total}
-                itemCount={items.reduce((acc, item) => acc + item.quantity, 0)}
-                onCheckout={handleCheckout}
-              />
-            </div>
-          )}
         </div>
-
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }

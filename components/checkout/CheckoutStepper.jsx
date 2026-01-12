@@ -4,7 +4,8 @@ import { Check } from 'lucide-react';
 const CheckoutStepper = ({ currentStep }) => {
   const steps = [
     { number: 1, title: 'Contact and Order Information' },
-    { number: 2, title: 'Shipping Details and Payment' },
+    { number: 2, title: 'Shipping Details' },
+    { number: 3, title: 'Payment Method' },
   ];
 
   return (
