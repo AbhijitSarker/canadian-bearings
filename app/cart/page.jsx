@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { Printer, Loader2, ShoppingBag } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import CartItem from '@/components/cart/CartItem';
@@ -11,6 +12,7 @@ import { searchGLCodes } from '@/lib/api/services/glcodes';
 import { useState, useEffect } from 'react';
 
 export default function CartPage() {
+  const router = useRouter();
   const { cart, loading, updateItem, removeItem } = useCart();
   const [glCodes, setGlCodes] = useState([]);
 
@@ -46,6 +48,10 @@ export default function CartPage() {
   const shipping = 0; // Will be calculated during checkout
   const taxes = 0; // Will be calculated during checkout
   const total = subtotal - savings + shipping + taxes;
+
+  const handleCheckout = () => {
+    router.push('/checkout');
+  };
 
   // Transform cart items to match CartItem component props
   const transformedItems = items.map(item => ({
@@ -123,6 +129,7 @@ export default function CartPage() {
                 taxes={taxes}
                 total={total}
                 itemCount={items.reduce((acc, item) => acc + item.quantity, 0)}
+                onCheckout={handleCheckout}
               />
             </div>
           )}
