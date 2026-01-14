@@ -167,7 +167,7 @@ export default function ProductTabs({ productUuid, productId, custSKU, cbSku, sp
   };
 
   const fetchInventoryData = async () => {
-    const partNo = custSKU || cbSku;
+    const partNo = cbSku || custSKU;
     
     if (!partNo) {
       setInventoryData({ success: false, message: "No part number available" });
