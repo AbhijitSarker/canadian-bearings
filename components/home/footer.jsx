@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import facebook from '@/assets/facebook.png'
 import instagram from '@/assets/instagram.png'
 import twitter from '@/assets/twitter.png'
@@ -38,9 +39,14 @@ export default function Footer() {
                 <button className="bg-[#FFFFFF33] rounded-full w-[36px] h-[36px] flex items-center justify-center hover:bg-green-500">
                   <Image src={twitter} alt="Twitter" />
                 </button>
-                <button className="bg-[#FFFFFF33] rounded-full w-[36px] h-[36px] flex items-center justify-center hover:bg-green-500">
-                  <Image src={linkedin} alt="LinedIn" />
-                </button>
+                <a 
+                  href="https://www.linkedin.com/company/canadian-bearings-ltd-/?viewAsMember=true" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="bg-[#FFFFFF33] rounded-full w-[36px] h-[36px] flex items-center justify-center hover:bg-green-500"
+                >
+                  <Image src={linkedin} alt="LinkedIn" />
+                </a>
               </div>
             </div>
           </div>
@@ -48,7 +54,7 @@ export default function Footer() {
             <div className="md:border-r border-b md:border-b-0 border-[#8C8C8C] mb-[32px] md:mb-0 md:pb-0 pb-[32px]">
               <Image src={siteLogo} alt="Site Logo" className="mb-[15px]" />
               <div className="max-w-[319px] w-full text-[16px] leading-[24px] font-[300] pr-[40px]">
-                BlockOut embodies Italian artisanship with unrivalled luxury and timeless style, dedication to luxury shines through in every pair.
+                Canadian Bearings (CB) has been at the forefront of innovation, offering solutions that prioritize safety, reliability, efficiency and sustainability.
               </div>
             </div>
             <div className="flex flex-col md:flex-row items-start justify-between gap-6 w-full">
@@ -61,12 +67,12 @@ export default function Footer() {
                     <button className="text-[16px] leading-[100%] font-[300] text-left">
                       Track Orders
                     </button>
-                    <button className="text-[16px] leading-[100%] font-[300] text-left">
+                    <Link href="/rfq" className="text-[16px] leading-[100%] font-[300] text-left hover:underline">
                       Request a Quote
-                    </button>
-                    <button className="text-[16px] leading-[100%] font-[300] text-left">
-                      Find a Location
-                    </button>
+                    </Link>
+                    <Link href="/locations" className="text-[16px] leading-[100%] font-[300] text-left hover:underline">
+                      Our Locations
+                    </Link>                   
                     <button className="text-[16px] leading-[100%] font-[300] text-left">
                       Support Center
                     </button>
@@ -126,22 +132,20 @@ export default function Footer() {
                     <button className="text-[16px] leading-[20px] font-[300] text-left flex items-center gap-x-2">
                       <EmailIcon />
                       <div>
-                        information@office.com
+                        info@canadianbearings.com
                       </div>
                     </button>
                     <button className="text-[16px] leading-[20px] font-[300] text-left flex items-start gap-x-2">
                       <CallIcon />
                       <div>
-                        <p>+ (0777) 888 88 888</p>
-                        <p>Monday - Friday</p>
-                        <p>From 8:30 am to 5:30 pm EST</p>
-                        <p>Saturday - Sunday : Closed</p>
+                        <p>1-800-229-2327</p>
+                        <p>Mon-Fri: 8am-4:30pm EST</p>                        
                       </div>
                     </button>
                     <button className="text-[16px] leading-[20px] font-[300] text-left flex items-center gap-x-2">
                       <MapIcon />
                       <div>
-                        2307 Beverley, New York
+                        1600 Drew Rd Mississauga, ON, L5S 1S5
                       </div>
                     </button>
                   </div>
@@ -160,9 +164,9 @@ export default function Footer() {
             <button className="pr-[11px] border-r border-neutral-300">
               Privacy Policy
             </button>
-            <button className="px-[11px] border-r border-neutral-300">
+            {/* <button className="px-[11px] border-r border-neutral-300">
               Customer Support
-            </button>
+            </button> */}
             <button className="pl-[11px]">
               Terms & Conditions
             </button>

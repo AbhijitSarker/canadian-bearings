@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react"
+import Link from "next/link"
 import TelephoneIcon from "@/assets/icons/telephoneIcon"
 import { useAuth } from "@/contexts/AuthContext"
 import ListUnorderedIcon from "@/assets/icons/listUnordered"
@@ -12,7 +13,7 @@ const dummy_languages = [
         flag: '🇺🇸',
         translations: {
             sales: 'Sales',
-            phone: '(250) 555-0199',
+            phone: '1-800-229-2327',
             quote: 'Request a Quote',
             support: 'Customer Support',
             knowledge: 'Knowledge Center',
@@ -26,7 +27,7 @@ const dummy_languages = [
         flag: '🇪🇸',
         translations: {
             sales: 'Ventas',
-            phone: '(250) 555-0199',
+            phone: '1-800-229-2327',
             quote: 'Solicitar Cotización',
             support: 'Atención al Cliente',
             knowledge: 'Centro de Conocimiento',
@@ -40,7 +41,7 @@ const dummy_languages = [
         flag: '🇫🇷',
         translations: {
             sales: 'Ventes',
-            phone: '(250) 555-0199',
+            phone: '1-800-229-2327',
             quote: 'Demander un Devis',
             support: 'Service Client',
             knowledge: 'Centre de Connaissances',
@@ -54,7 +55,7 @@ const dummy_languages = [
         flag: '🇩🇪',
         translations: {
             sales: 'Vertrieb',
-            phone: '(250) 555-0199',
+            phone: '1-800-229-2327',
             quote: 'Angebot Anfordern',
             support: 'Kundendienst',
             knowledge: 'Wissenszentrum',
@@ -81,15 +82,15 @@ export default function TopHeader({ bgColor = "bg-green-500", textColor = "text-
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <div className="px-[11px] border-r border-neutral-300 text-sm">
+                        <Link href="/rfq" className="px-[11px] border-r border-neutral-300 text-sm hover:underline">
                             {selectedLanguage.translations.quote}
-                        </div>
-                        <div className="px-[11px] border-r border-neutral-300 text-sm">
+                        </Link>
+                        <Link href="/account?tab=customer-support" className="px-[11px] border-r border-neutral-300 text-sm hover:underline">
                             {selectedLanguage.translations.support}
-                        </div>
-                        <div className="px-[11px] text-sm border-r border-neutral-300">
+                        </Link>
+                        <Link href="/account?tab=knowledge-center" className="px-[11px] text-sm border-r border-neutral-300 hover:underline">
                             {selectedLanguage.translations.knowledge}
-                        </div>
+                        </Link>
                         
                         {isAuthenticated && (
                             <>
@@ -153,15 +154,15 @@ export default function TopHeader({ bgColor = "bg-green-500", textColor = "text-
                         </div>
                     </div>
                     <div className="flex items-center gap-2 flex-wrap justify-end">
-                        <div className="px-[8px] border-r border-neutral-300 text-sm">
+                        <Link href="/rfq" className="px-[8px] border-r border-neutral-300 text-sm hover:underline">
                             {selectedLanguage.translations.quote}
-                        </div>
-                        <div className="px-[8px] border-r border-neutral-300 text-sm">
+                        </Link>
+                        <Link href="/account?tab=customer-support" className="px-[8px] border-r border-neutral-300 text-sm hover:underline">
                             {selectedLanguage.translations.support}
-                        </div>
-                        <div className="px-[8px] text-sm border-r border-neutral-300">
+                        </Link>
+                        <Link href="/account?tab=knowledge-center" className="px-[8px] text-sm border-r border-neutral-300 hover:underline">
                             {selectedLanguage.translations.knowledge}
-                        </div>
+                        </Link>
 
                          {isAuthenticated && (
                             <>
@@ -263,15 +264,15 @@ export default function TopHeader({ bgColor = "bg-green-500", textColor = "text-
 
                     {/* Links Row */}
                     <div className="flex items-center justify-center gap-2 text-xs flex-wrap">
-                        <div className="px-[8px] border-r border-neutral-300 whitespace-nowrap">
+                        <Link href="/rfq" className="px-[8px] border-r border-neutral-300 whitespace-nowrap hover:underline">
                             {selectedLanguage.translations.quote}
-                        </div>
-                        <div className="px-[8px] border-r border-neutral-300 whitespace-nowrap">
+                        </Link>
+                        <Link href="/account?tab=customer-support" className="px-[8px] border-r border-neutral-300 whitespace-nowrap hover:underline">
                             {selectedLanguage.code === 'EN' ? 'Support' : selectedLanguage.translations.support}
-                        </div>
-                        <div className="px-[8px] whitespace-nowrap">
+                        </Link>
+                        <Link href="/account?tab=knowledge-center" className="px-[8px] whitespace-nowrap hover:underline">
                             {selectedLanguage.code === 'EN' ? 'Knowledge' : selectedLanguage.translations.knowledge}
-                        </div>
+                        </Link>
                         
                     </div>
                 </div>

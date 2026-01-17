@@ -103,7 +103,7 @@ function OrderDetailsModal({ order, onClose }) {
                 </div>
                 <div className="text-center border-l border-gray-200">
                   <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Ordered</div>
-                  <div className="text-xs font-semibold text-gray-900">{line.qtyOrdered} Paces</div>
+                  <div className="text-xs font-semibold text-gray-900">{line.qtyOrdered} Pieces</div>
                 </div>
                 <div className="text-center border-l border-gray-200">
                   <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-0.5">Shipped</div>

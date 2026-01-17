@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { getAccountDetails, updateAccount } from '@/lib/api/services/account';
@@ -17,6 +18,8 @@ import GLCodesTab from "@/components/account/GLCodesTab";
 import CustomerSupportTab from "@/components/account/CustomerSupportTab";
 
 export default function MyAccountPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("my-account");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -50,6 +53,14 @@ export default function MyAccountPage() {
     phoneExtension: '',
     phoneCountryCode: "",
   });
+
+  // Initialize active tab from URL
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
 
   // Update personal details when user data changes
   useEffect(() => {
@@ -204,6 +215,8 @@ export default function MyAccountPage() {
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
     setSidebarOpen(false);
+    // Update URL with new tab
+    router.push(`/account?tab=${tabId}`, { scroll: false });
   };
 
   return (

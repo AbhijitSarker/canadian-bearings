@@ -81,6 +81,7 @@ const FilterSection = ({
                     className="w-5 h-5 rounded-sm border border-neutral-300 text-emerald-600 focus:ring-0"
                   />
                   <span className="text-sm text-neutral-800">{it.label}</span>
+                  <span className="text-sm text-neutral-800">{it.unit}</span>
                 </label>
                 <span className="text-sm text-neutral-500">{it.count}</span>
               </li>

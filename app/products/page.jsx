@@ -249,6 +249,7 @@ const ProductsPage = () => {
           items={attr.values.map(v => ({
             id: v.key,
             label: v.value,
+            unit: v.unit,
             count: v.count
           }))}
           selected={filters.attributes}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { X, FileText, Eye } from "lucide-react";
 
 export default function QuoteRequestForm({ initialUser, onClose, onSubmit }) {
   const [form, setForm] = useState({
@@ -14,11 +15,11 @@ export default function QuoteRequestForm({ initialUser, onClose, onSubmit }) {
   });
 
   const [lines, setLines] = useState([
-    { id: 1, part: "", description: "", qty: "", file: null },
-    { id: 2, part: "", description: "", qty: "", file: null },
-    { id: 3, part: "", description: "", qty: "", file: null },
-    { id: 4, part: "", description: "", qty: "", file: null },
+    { id: 1, part: "", description: "", qty: 1, files: [] },
+    { id: 2, part: "", description: "", qty: 1, files: [] }
   ]);
+
+  const [imageModal, setImageModal] = useState(null);
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +29,7 @@ export default function QuoteRequestForm({ initialUser, onClose, onSubmit }) {
   const addLine = () => {
     setLines((prev) => [
       ...prev,
-      { id: prev.length ? prev[prev.length - 1].id + 1 : 1, part: "", description: "", qty: "", file: null },
+      { id: prev.length ? prev[prev.length - 1].id + 1 : 1, part: "", description: "", qty: 1, files: [] },
     ]);
   };
 
@@ -40,26 +41,148 @@ export default function QuoteRequestForm({ initialUser, onClose, onSubmit }) {
     setLines((prev) => prev.map((l) => (l.id === id ? { ...l, [key]: value } : l)));
   };
 
-  const handleFile = (id, file) => {
-    updateLine(id, "file", file);
+  const handleFiles = (id, newFiles) => {
+    const fileArray = Array.from(newFiles);
+    const validFiles = fileArray.filter(file => {
+      const isValidType = file.type === "application/pdf" || file.type.startsWith("image/");
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      
+      if (!isValidType) {
+        toast.error(`${file.name} is not a valid file type. Only images and PDFs are allowed.`);
+        return false;
+      }
+      
+      if (file.size > maxSize) {
+        toast.error(`${file.name} is too large. Maximum file size is 10MB.`);
+        return false;
+      }
+      
+      return true;
+    });
+
+    if (validFiles.length > 0) {
+      setLines((prev) => prev.map((l) => 
+        l.id === id ? { ...l, files: [...l.files, ...validFiles] } : l
+      ));
+      toast.success(`${validFiles.length} file(s) added`);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const removeFile = (lineId, fileIndex) => {
+    setLines((prev) => prev.map((l) => 
+      l.id === lineId 
+        ? { ...l, files: l.files.filter((_, idx) => idx !== fileIndex) } 
+        : l
+    ));
+  };
+
+  const viewImage = (file) => {
+    const url = URL.createObjectURL(file);
+    setImageModal({ url, name: file.name });
+  };
+
+  const viewPdf = (file) => {
+    const url = URL.createObjectURL(file);
+    window.open(url, '_blank');
+  };
+
+  const prepareFormDataForServer = () => {
+    const formData = new FormData();
+    
+    // Add basic form fields
+    formData.append('firstName', form.firstName);
+    formData.append('lastName', form.lastName);
+    formData.append('email', form.email);
+    formData.append('phoneCountryCode', form.phoneCountryCode);
+    formData.append('phoneNumber', form.phoneNumber);
+    formData.append('comment', form.comment);
+    
+    // Add line items with their files
+    lines.forEach((line, index) => {
+      formData.append(`lines[${index}].id`, line.id);
+      formData.append(`lines[${index}].part`, line.part);
+      formData.append(`lines[${index}].description`, line.description);
+      formData.append(`lines[${index}].qty`, line.qty);
+      
+      // Add files for this line
+      line.files.forEach((file, fileIndex) => {
+        formData.append(`lines[${index}].files[${fileIndex}]`, file, file.name);
+      });
+    });
+    
+    return formData;
+  };
+
+  const resetForm = () => {
+    setForm({
+      firstName: initialUser?.firstName || "",
+      lastName: initialUser?.lastName || "",
+      email: initialUser?.email || "",
+      phoneCountryCode: "+1",
+      phoneNumber: "(555) 000-0000",
+      comment: "",
+    });
+    setLines([
+      { id: 1, part: "", description: "", qty: 1, files: [] },
+      { id: 2, part: "", description: "", qty: 1, files: [] }
+    ]);
+    setImageModal(null);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!form.firstName || !form.lastName) {
+      toast.error("Please enter your first and last name.");
+      return;
+    }
+    
     if (!form.email) {
       toast.error("Please enter your email.");
       return;
     }
-    toast.success("Quote request submitted — our team will contact you shortly.");
-    console.log("Quote submitted", { form, lines });
     
-    // Call the parent's onSubmit callback if provided
-    if (onSubmit) {
-      onSubmit({ form, lines });
+    if (!form.phoneNumber) {
+      toast.error("Please enter your phone number.");
+      return;
     }
     
-    // Close the form
-    onClose();
+    // Validate at least one line has data
+    const validLines = lines.filter(l => l.part || l.description);
+    if (validLines.length === 0) {
+      toast.error("Please add at least one product line.");
+      return;
+    }
+    
+    // Validate quantities are positive numbers
+    const invalidQty = lines.some(l => (l.part || l.description) && (l.qty <= 0 || isNaN(l.qty)));
+    if (invalidQty) {
+      toast.error("Please enter valid quantities for all product lines.");
+      return;
+    }
+    
+    // Prepare data for server
+    const formData = prepareFormDataForServer();
+    
+    console.log("Quote submitted - FormData ready for server");
+    console.log("Form data:", { form, lines });
+    
+    // Call the parent's onSubmit callback with FormData
+    if (onSubmit) {
+      const success = await onSubmit({ form, lines, formData, resetForm });
+      // Only close if submission was successful and onClose is defined
+      // For standalone pages, onClose might not trigger redirect
+      if (success && onClose) {
+        onClose();
+      }
+    } else {
+      // Fallback if no onSubmit handler
+      toast.success("Quote request submitted — our team will contact you shortly.");
+      if (onClose) {
+        onClose();
+      }
+    }
   };
 
   return (
@@ -172,24 +295,81 @@ export default function QuoteRequestForm({ initialUser, onClose, onSubmit }) {
                 </td>
                 <td className="px-4 py-3 w-24">
                   <input
+                    type="number"
+                    min="1"
                     value={line.qty}
-                    onChange={(e) => updateLine(line.id, "qty", e.target.value)}
+                    onChange={(e) => updateLine(line.id, "qty", parseInt(e.target.value) || 1)}
                     className="w-full rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Qty"
+                    placeholder="1"
                   />
                 </td>
                 <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
+                  <div className="space-y-2">
                     <label className="inline-flex items-center gap-2 bg-green-600 text-white px-3 py-1.5 rounded-md cursor-pointer text-sm font-medium hover:bg-green-700">
-                      + Upload
+                      Upload Image/Pdf
                       <input
                         type="file"
-                        accept=".jpg,.jpeg,.png,.pdf"
-                        onChange={(e) => handleFile(line.id, e.target.files?.[0] || null)}
+                        multiple
+                        accept="image/*,.pdf"
+                        onChange={(e) => e.target.files && handleFiles(line.id, e.target.files)}
                         className="hidden"
                       />
                     </label>
-                    <span className="text-gray-500 text-xs">{line.file ? line.file.name : ""}</span>
+                    
+                    {line.files.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {line.files.map((file, fileIndex) => {
+                          const isImage = file.type.startsWith("image/");
+                          const isPdf = file.type === "application/pdf";
+                          
+                          return (
+                            <div 
+                              key={fileIndex} 
+                              className="relative group border border-gray-200 rounded-md p-2 bg-white hover:shadow-md transition-shadow"
+                            >
+                              {isImage ? (
+                                <div className="relative">
+                                  <img
+                                    src={URL.createObjectURL(file)}
+                                    alt={file.name}
+                                    className="w-16 h-16 object-cover rounded cursor-pointer"
+                                    onClick={() => viewImage(file)}
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => viewImage(file)}
+                                    className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-0 hover:bg-opacity-50 rounded transition-all opacity-0 group-hover:opacity-100"
+                                  >
+                                    <Eye className="w-5 h-5 text-white" />
+                                  </button>
+                                </div>
+                              ) : isPdf ? (
+                                <div 
+                                  className="w-16 h-16 flex flex-col items-center justify-center cursor-pointer"
+                                  onClick={() => viewPdf(file)}
+                                >
+                                  <FileText className="w-8 h-8 text-red-600" />
+                                  <span className="text-xs text-gray-600 mt-1">PDF</span>
+                                </div>
+                              ) : null}
+                              
+                              <button
+                                type="button"
+                                onClick={() => removeFile(line.id, fileIndex)}
+                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow-md"
+                                aria-label={`Remove ${file.name}`}
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                              
+                              <p className="text-xs text-gray-600 mt-1 truncate max-w-[64px]" title={file.name}>
+                                {file.name}
+                              </p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 </td>
                 <td className="px-4 py-3">
@@ -218,13 +398,15 @@ export default function QuoteRequestForm({ initialUser, onClose, onSubmit }) {
         </button>
 
         <div className="ml-auto flex items-center gap-3">
-          <button 
-            type="button" 
-            onClick={onClose}
-            className="px-6 py-2 rounded-md border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50"
-          >
-            Cancel
-          </button>
+          {onClose && (
+            <button 
+              type="button" 
+              onClick={onClose}
+              className="px-6 py-2 rounded-md border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+          )}
           <button 
             type="submit" 
             className="bg-green-600 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-green-700"
@@ -235,6 +417,30 @@ export default function QuoteRequestForm({ initialUser, onClose, onSubmit }) {
       </div>
 
       <p className="text-xs text-gray-500">Please fill out the above form to connect directly with our sales team. Alternatively, you may email your request to sales@canadianbearings.com or call 905-670-6700</p>
+
+      {/* Image Modal */}
+      {imageModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 p-4"
+          onClick={() => setImageModal(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh]">
+            <button
+              type="button"
+              onClick={() => setImageModal(null)}
+              className="absolute -top-10 right-0 text-white hover:text-gray-300"
+            >
+              <X className="w-8 h-8" />
+            </button>
+            <img
+              src={imageModal.url}
+              alt={imageModal.name}
+              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+            />
+            <p className="text-white text-center mt-2">{imageModal.name}</p>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

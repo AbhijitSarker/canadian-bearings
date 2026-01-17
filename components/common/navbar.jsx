@@ -92,7 +92,7 @@ export default function Navbar() {
                             }
                             {isAuthenticated && (
                                 <div className="flex items-center gap-4 xl:gap-6 flex-shrink-0">
-                                    <Link href="#" className="text-neutral-700 text-sm font-medium hover:text-green-600 transition-colors">
+                                    {/* <Link href="#" className="text-neutral-700 text-sm font-medium hover:text-green-600 transition-colors">
                                         Product
                                     </Link>
                                     <Link href="#" className="text-neutral-700 text-sm font-medium hover:text-green-600 transition-colors">
@@ -106,7 +106,7 @@ export default function Navbar() {
                                     </Link>
                                     <Link href="#" className="text-neutral-700 text-sm font-medium hover:text-green-600 transition-colors">
                                         Industries
-                                    </Link>
+                                    </Link> */}
                                 </div>
                             )}
                         </div>
@@ -144,15 +144,15 @@ export default function Navbar() {
                                                 className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50"
                                                 onClick={() => setUserMenuOpen(false)}
                                             >
-                                                My Profile
+                                                My Account
                                             </Link>
-                                            <Link
+                                            {/* <Link
                                                 href="/orders"
                                                 className="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50"
                                                 onClick={() => setUserMenuOpen(false)}
                                             >
                                                 My Orders
-                                            </Link>
+                                            </Link> */}
                                             <button
                                                 onClick={handleLogout}
                                                 className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-neutral-50 flex items-center gap-2"
