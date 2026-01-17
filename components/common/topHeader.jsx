@@ -98,10 +98,9 @@ export default function TopHeader({ bgColor = "bg-green-500", textColor = "text-
                                     <ListUnorderedIcon width={16} height={16} />
                                     {selectedLanguage.translations.quickOrder}
                                 </div>
-                                <div className="flex items-center px-[11px] gap-x-[6px] text-sm">
-                                    <MapPinLineIcon width={16} height={16} />
+                                <Link href="/locations" className="px-[11px] border-r border-neutral-300 text-sm hover:underline">
                                     {selectedLanguage.translations.location}
-                                </div>
+                                </Link>
                             </>
                         )}
 
